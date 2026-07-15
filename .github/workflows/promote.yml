@@ -1,0 +1,65 @@
+name: Promote to production
+
+# Promove o conteúdo deste repositório (beta) por cima do site de produção
+# (thluiz/metron-hotsite → metron.hybris.world), abrindo um Pull Request para
+# revisão. O merge do PR é que dispara o deploy de produção.
+#
+# Rodar pela aba Actions → "Promote to production" → Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Nota opcional que aparece no corpo do PR"
+        required: false
+        default: ""
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout beta (origem)
+        uses: actions/checkout@v4
+        with:
+          path: beta
+
+      - name: Checkout produção (destino)
+        uses: actions/checkout@v4
+        with:
+          repository: thluiz/metron-hotsite
+          token: ${{ secrets.PROMOTE_TOKEN }}
+          path: prod
+
+      - name: Sobrepor conteúdo do beta na produção
+        # Copia tudo do beta por cima da produção, removendo arquivos que não
+        # existem mais no beta (--delete). Preserva os arquivos específicos de
+        # ambiente da produção: .git, .github (workflows/project-name) e README.
+        run: |
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='README.md' \
+            beta/ prod/
+
+      - name: Abrir PR de promoção na produção
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: prod
+          token: ${{ secrets.PROMOTE_TOKEN }}
+          branch: promote/from-beta
+          base: main
+          delete-branch: true
+          commit-message: "Promote: conteúdo do beta para produção"
+          title: "Promote: beta → produção"
+          body: |
+            Promoção automática do conteúdo de
+            [`metron-hotsite-beta`](https://github.com/thluiz/metron-hotsite-beta)
+            por cima da produção.
+
+            Disparado via **Actions → Promote to production**.
+
+            ${{ github.event.inputs.note }}
+
+            ---
+            O merge deste PR dispara o deploy de produção
+            (`metron.hybris.world`).

@@ -1,0 +1,29 @@
+---
+interface Props {
+  src?: string;
+  alt: string;
+  rotate?: number;
+  width?: string;
+  height?: string;
+  class?: string;
+}
+const {
+  src,
+  alt,
+  rotate = 3,
+  width = '220px',
+  height = '280px',
+  class: cls = '',
+} = Astro.props;
+---
+<div
+  class={`polaroid ${cls}`}
+  style={`transform: rotate(${rotate}deg); width: ${width};`}
+>
+  <div style={`height: ${height}; overflow: hidden;`}>
+    {src
+      ? <img src={src} alt={alt} style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+      : <div class="img-ph" style={`height:${height}`}>{alt}</div>
+    }
+  </div>
+</div>
