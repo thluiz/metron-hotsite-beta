@@ -2,177 +2,80 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 ---
-<Layout title="Metron Showrunners">
+<Layout title="Hybris — An Ancient Conflict, Reimagined | Metron Showrunners">
 
-  <div class="composition">
-    <img src="/images/metron-logo.png?v=1" alt="Metron Showrunners" class="metron-mark" />
-    <div class="ip-stage">
-      <img src="/images/hybris-logo.png?v=1" alt="Hybris" class="ip-logo ip-logo--hybris" />
-      <img src="/images/laya-logo.png?v=1" alt="Laya" class="ip-logo" />
-      <img src="/images/intersessoes-logo.png?v=1" alt="Intersessões" class="ip-logo" />
+  <main class="keyart-wrap">
+    <div class="keyart">
+      <img
+        src="/images/hybris-keyart.png?v=1"
+        alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
+        class="keyart-img"
+      />
+      <!-- Clickable overlay aligned with the baked-in 'Project' button.
+           TODO: trocar href="#" pela URL de destino do projeto. -->
+      <a href="#" class="project-hotspot" aria-label="Project"></a>
     </div>
-  </div>
-
-  <section id="slide-hybris" class="slide"></section>
-  <section id="slide-laya" class="slide"></section>
-  <section id="slide-intersessoes" class="slide"></section>
-
-  <nav id="nav-dots" aria-label="IP navigation">
-    <a href="#slide-hybris" aria-label="Hybris"></a>
-    <a href="#slide-laya" aria-label="Laya"></a>
-    <a href="#slide-intersessoes" aria-label="Intersessões"></a>
-  </nav>
+  </main>
 
 </Layout>
 
 <style>
-  .composition {
+  /* Aspect ratio of the key art: 1684 x 1190 */
+  .keyart-wrap {
     position: fixed;
+    inset: 0;
+    overflow: hidden;
+    /* Cream letterbox shown only where the image doesn't reach (mobile contain) */
+    background-color: #cabf9d;
+  }
+
+  .keyart {
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    pointer-events: none;
-  }
-  .metron-mark {
-    width: clamp(108px, 18.14vw, 272px);
-    height: auto;
-    display: block;
+    /* Desktop: cover — fill the viewport, cropping edges as needed.
+       max() keeps the image aspect while guaranteeing full coverage. */
+    width:  max(100vw, 100vh * 1684 / 1190);
+    height: max(100vh, 100vw * 1190 / 1684);
   }
 
-  .ip-stage {
-    position: relative;
-    width: clamp(122px, 20vw, 300px);
-    height: clamp(62px, 11vw, 160px);
-  }
-  .ip-stage::before {
-    content: '';
-    position: absolute;
-    inset: -140% -80%;
-    background: radial-gradient(ellipse closest-side at 50% 50%,
-      rgba(2, 5, 14, 0.70) 0%,
-      rgba(5, 10, 28, 0.45) 35%,
-      rgba(10, 18, 50, 0.18) 65%,
-      transparent 100%);
-    filter: blur(12px);
-    z-index: -1;
-    pointer-events: none;
-  }
-  .ip-logo {
-    position: absolute;
-    inset: 0;
+  .keyart-img {
+    display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    object-position: left center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .ip-logo.active {
-    opacity: 1;
-  }
-  .ip-logo--hybris {
-    transform: scale(1.35);
-    transform-origin: left center;
+    /* Box already matches the image aspect, so no distortion. */
+    object-fit: fill;
   }
 
+  /* Real, clickable button over the baked-in 'Project' pill.
+     Coordinates are a % of the image box, so they stay aligned
+     under both cover and contain. */
+  .project-hotspot {
+    position: absolute;
+    left: 84.5%;
+    top: 90.2%;
+    width: 9.5%;
+    height: 5.6%;
+    border-radius: 999px;
+    z-index: 3;
+    /* invisible hit area; subtle affordance on hover */
+    transition: background-color 0.2s ease;
+  }
+  .project-hotspot:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+  }
+  .project-hotspot:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 2px;
+  }
+
+  /* Mobile / narrow screens: contain — show the whole poster,
+     letterboxed on the cream background so nothing is cropped. */
   @media (max-width: 640px) {
-    .composition {
-      /* Composition becomes a transparent anchor: items are positioned
-         absolutely relative to viewport center, guaranteeing they share
-         the same horizontal baseline regardless of size. */
-      top: 50%;
-      left: 0;
-      right: 0;
-      transform: translateY(-50%);
-      display: block;
-    }
-    .metron-mark {
-      position: absolute;
-      right: calc(50% + 4px);
-      top: 0;
-      transform: translateY(-50%);
-      width: clamp(135px, 38vw, 272px);
-    }
-    .ip-stage {
-      position: absolute;
-      left: calc(50% + 12px);
-      top: 0;
-      transform: translateY(-50%);
-      width: clamp(145px, 42vw, 260px);
-      height: auto;
-      aspect-ratio: 1.7 / 1;
-    }
-    .ip-logo {
-      object-position: left center;
-    }
-    .ip-logo--hybris {
-      transform: scale(1.35);
-      transform-origin: left center;
+    .keyart {
+      width:  min(100vw, 100vh * 1684 / 1190);
+      height: min(100vh, 100vw * 1190 / 1684);
     }
   }
 </style>
-
-<script>
-  const slides = document.querySelectorAll('.slide');
-  const ipLogos = document.querySelectorAll('.ip-logo');
-  let currentIdx = 0;
-
-  const tick = () => {
-    const vh = window.innerHeight;
-    const vcenter = vh / 2;
-    let bestIdx = 0;
-    let bestDist = Infinity;
-    slides.forEach((slide, i) => {
-      const rect = (slide as HTMLElement).getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const dist = Math.abs(center - vcenter);
-      if (dist < bestDist) {
-        bestDist = dist;
-        bestIdx = i;
-      }
-    });
-    currentIdx = bestIdx;
-    ipLogos.forEach((logo, i) => {
-      logo.classList.toggle('active', i === bestIdx);
-    });
-  };
-
-  let navLock = false;
-  const navigate = (dir: number) => {
-    if (navLock) return;
-    const n = slides.length;
-    const target = ((currentIdx + dir) % n + n) % n;
-    navLock = true;
-    setTimeout(() => { navLock = false; }, 650);
-    (slides[target] as HTMLElement).scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // Horizontal wheel / trackpad → slide navigation
-  window.addEventListener('wheel', (e) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 10) {
-      e.preventDefault();
-      navigate(e.deltaX > 0 ? 1 : -1);
-    }
-  }, { passive: false });
-
-  // Keyboard shortcuts
-  window.addEventListener('keydown', (e) => {
-    const t = e.target as HTMLElement | null;
-    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-    if (e.code === 'Space' || e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      navigate(1);
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      navigate(-1);
-    }
-  });
-
-  window.addEventListener('scroll', tick, { passive: true });
-  window.addEventListener('resize', tick);
-  tick();
-</script>
