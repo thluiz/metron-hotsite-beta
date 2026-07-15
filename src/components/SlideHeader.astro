@@ -1,0 +1,30 @@
+---
+interface Props {
+  label?: string;
+  sublabel?: string;
+  subtitle?: string;
+}
+const { label, sublabel, subtitle } = Astro.props;
+---
+<header class="flex items-start justify-between px-8 pt-5 pb-0">
+  <!-- Logo centered via flex trick: empty spacer + logo + label -->
+  <div class="w-40 shrink-0"></div>
+
+  <div class="flex flex-col items-center">
+    <a href="#cover" class="hybris-logo">
+      METRON
+    </a>
+    {subtitle && (
+      <p class="font-cinzel text-xs tracking-[0.25em] text-white/70 mt-1 uppercase">{subtitle}</p>
+    )}
+  </div>
+
+  <div class="w-40 shrink-0 flex justify-end">
+    {label && (
+      <div class="slide-label text-right">
+        {label}
+        {sublabel && <span class="slide-sublabel">{sublabel}</span>}
+      </div>
+    )}
+  </div>
+</header>
