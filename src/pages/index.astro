@@ -34,10 +34,11 @@ import '../styles/global.css';
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* Desktop: cover — fill the viewport, cropping edges as needed.
-       max() keeps the image aspect while guaranteeing full coverage. */
-    width:  max(100vw, 100vh * 1684 / 1190);
-    height: max(100vh, 100vw * 1190 / 1684);
+    /* Contain — always show the whole poster, letterboxed on the cream
+       background so nothing (logo, footer, Project button) is cropped.
+       min() keeps the image aspect while fitting fully inside the viewport. */
+    width:  min(100vw, 100vh * 1684 / 1190);
+    height: min(100vh, 100vw * 1190 / 1684);
   }
 
   .keyart-img {
@@ -68,14 +69,5 @@ import '../styles/global.css';
   .project-hotspot:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85);
     outline-offset: 2px;
-  }
-
-  /* Mobile / narrow screens: contain — show the whole poster,
-     letterboxed on the cream background so nothing is cropped. */
-  @media (max-width: 640px) {
-    .keyart {
-      width:  min(100vw, 100vh * 1684 / 1190);
-      height: min(100vh, 100vw * 1190 / 1684);
-    }
   }
 </style>
