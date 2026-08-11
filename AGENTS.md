@@ -47,22 +47,42 @@ verde.
 
 ## Onde fica o quê
 
+O site hoje é **uma única key art em tela cheia** com a barra do rodapé
+clicável. Não há slides, scroll, navegação por teclado nem nav dots — tudo isso
+existiu até 2026-07 e foi removido junto com o código morto em 2026-08-11.
+
 ```
 src/
-  pages/index.astro     Página única: composição de logos, slides, navegação,
-                        handlers de teclado/scroll. É o coração do site.
+  pages/index.astro     A página inteira: a key art e a faixa clicável do
+                        rodapé. Os estilos ficam escopados aqui mesmo.
   layouts/Layout.astro  <html> + <head> (meta tags, título, favicon).
-  styles/global.css     Fundo, tipografia, slides, nav dots, animações.
-  components/            Componentes .astro reutilizáveis (alguns legados).
+  styles/global.css     Só o essencial: reset, margem do body e a cor de
+                        fundo creme. Nada específico de página.
 public/
-  images/               Logos (metron, hybris, laya, intersessoes). PNG.
+  images/hybris-keyart.png   A arte. É o site inteiro.
   fonts/                Cinzel / Cinzel Decorative (licença OFL — não remover
-                        os arquivos OFL*.txt).
+                        os arquivos OFL*.txt). Hoje nenhuma página usa texto,
+                        mas ficam para quando voltar a haver.
   favicon.svg
 tests/
-  seed.spec.ts          Seed Playwright para iteração visual (iPhone 12/SE/
-                        14 Pro Max via playwright.config.ts).
+  seed.spec.ts          Testes de regressão (iPhone 12/SE/14 Pro Max via
+                        playwright.config.ts). Rodam em WebKit — se der
+                        "Executable doesn't exist", é `npx playwright install
+                        webkit`.
 ```
+
+## A barra do rodapé leva para fora
+
+A faixa creme inteira do rodapé é um link para
+[`files.hybris.world`](https://files.hybris.world) — o índice dos materiais do
+Hybris, onde o acesso é por código. Esse site vive em **outro repositório**
+(`thluiz/files-hybris-world`), com infraestrutura própria (R2 + D1).
+
+O posicionamento da faixa (`top: 89.9%`) não é chute: foi medido no PNG, onde a
+barra `rgb(183,168,133)` começa em `y=1070` de 1190. Como é % da caixa da
+imagem, o alinhamento se mantém em qualquer viewport. **Se você trocar a key
+art, meça de novo e ajuste** — senão o link fica fora da barra desenhada. O
+teste `o link do rodapé fica alinhado com a faixa creme` pega isso.
 
 ## Boas práticas para hotsites
 
@@ -85,13 +105,27 @@ tests/
   `index.astro` e `global.css`). Teste sempre em viewport mobile — a maioria do
   tráfego de hotsite é mobile.
 - Use os projetos Playwright já configurados para checar iPhone 12/SE/14 Pro
-  Max antes de dar push em mudança visual.
+  Max antes de dar push em mudança visual:
+  ```bash
+  npm run preview          # num terminal
+  npx playwright test      # noutro
+  ```
+
+### Dívida conhecida
+- **Tailwind não é usado por nada.** Depois da limpeza de 2026-08-11 não sobrou
+  uma única classe utilitária no projeto, mas o `@astrojs/tailwind` continua
+  instalado e o preflight responde por ~5,7 KB dos 6,2 KB de CSS gerado.
+  Remover implica mexer no `package.json`, que **vai para a produção no
+  promote** — por isso ficou pendente de decisão, não por esquecimento.
 
 ### Acessibilidade
-- Toda imagem precisa de `alt` descritivo (as logos já têm).
-- Preserve a navegação por teclado (`Space`/setas) e os `aria-label` dos nav
-  dots ao mexer na navegação.
-- Contraste de texto sobre o fundo escuro precisa continuar legível.
+- Toda imagem precisa de `alt` descritivo. Como a key art **é** o conteúdo, o
+  `alt` dela carrega sozinho a mensagem do site para quem usa leitor de tela —
+  se trocar a arte, reescreva o `alt`.
+- O link do rodapé é uma área vazia sobre a imagem: ele depende do
+  `aria-label` para fazer sentido. Não remova.
+- `lang` do `<html>` precisa bater com o idioma do conteúdo. Hoje é `en`,
+  porque a arte e a mensagem são em inglês.
 
 ### SEO / metadados
 - Título e meta tags ficam em `src/layouts/Layout.astro`. Ao mudar

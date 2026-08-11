@@ -10,6 +10,16 @@ Este repositório é uma cópia completa do site de produção
 site beta, e quando estiver bom **promover** o conteúdo por cima do site de
 produção com um clique — sem mexer em git.
 
+## O site
+
+Uma página só: a key art do Hybris ocupando a tela inteira, com a barra creme
+do rodapé funcionando como link para [`files.hybris.world`](https://files.hybris.world)
+— o índice dos materiais da série, onde o acesso é por código.
+
+Esse índice vive em outro repositório
+([`thluiz/files-hybris-world`](https://github.com/thluiz/files-hybris-world)),
+com infraestrutura própria. Aqui não há backend nem estado.
+
 ## Fluxo de trabalho
 
 1. Edite o site normalmente (conteúdo em `src/` e `public/`).

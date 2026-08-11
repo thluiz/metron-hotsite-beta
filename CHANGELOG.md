@@ -2,6 +2,41 @@
 
 Mudanças notáveis por data, da mais recente para a mais antiga.
 
+## 2026-08-11
+
+### Adicionado
+- Barra do rodapé inteira clicável, levando ao índice dos materiais em
+  `files.hybris.world` (acesso por código, repositório
+  `thluiz/files-hybris-world`). Posição medida no PNG: a faixa creme começa
+  em `y=1070` de 1190 → `top: 89.9%`.
+- Testes de regressão no `tests/seed.spec.ts`, que antes só navegava: a key
+  art carrega de fato (`naturalWidth > 0`), o link aponta para o destino
+  certo, e a faixa clicável fica alinhada com a barra desenhada. Rodam nos
+  três perfis de iPhone, em WebKit.
+
+### Removido
+- Todo o código do site de slides, que já não fazia nada desde a troca pela
+  key art: o script de `IntersectionObserver`/crossfade/nav dots no
+  `Layout.astro`, ~250 linhas do `global.css` (fundo azul, grain com
+  `feTurbulence`, `.slide`, `#nav-dots`, animações), os componentes
+  `Lightning`, `Polaroid` e `SlideHeader`, e as logos `metron`, `hybris`,
+  `laya` e `intersessoes`.
+- O hotspot que cobria apenas a pílula "Project" desenhada na arte, e o
+  `href="#"` com TODO que ele carregava.
+
+### Alterado
+- `lang` do `<html>` de `pt-BR` para `en`, que é o idioma da arte e da
+  mensagem.
+- `<meta description>` deixou de ser "Metron" e passou a descrever a série;
+  `theme-color` alinhado ao creme do letterbox.
+
+## 2026-07-15
+
+### Alterado
+- Site substituído pela key art do Hybris em tela cheia (interino,
+  pré-fatiamento), com `contain` para mostrar o poster inteiro em qualquer
+  viewport.
+
 ## 2026-06-10
 
 ### Adicionado
