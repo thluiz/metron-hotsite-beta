@@ -2,81 +2,23 @@
 interface Props {
   title?: string;
 }
-const { title = 'Metron' } = Astro.props;
+const { title = 'Metron Showrunners' } = Astro.props;
 ---
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Metron" />
-    <meta name="theme-color" content="#b09060" />
+    <meta
+      name="description"
+      content="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners original epic drama series."
+    />
+    <!-- Mesmo creme do letterbox da key art. -->
+    <meta name="theme-color" content="#cabf9d" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1" />
     <title>{title}</title>
   </head>
   <body>
     <slot />
-
-    <script>
-      // Reveal elements when their parent slide is 50%+ visible
-      const slideObs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.querySelectorAll('.rv').forEach((el) => {
-                el.classList.add('visible');
-              });
-            }
-          });
-        },
-        { threshold: 0.45 }
-      );
-      document.querySelectorAll('.slide').forEach((s) => slideObs.observe(s));
-
-      // Scroll-driven crossfade: each slide's content fades based on how
-      // centered the slide is within the viewport. Slides off-screen sit
-      // at opacity 0; the centered slide at 1; transitioning slides cross-
-      // fade smoothly through the middle.
-      const fadeSlides = document.querySelectorAll('.slide');
-      const updateFades = () => {
-        const vh = window.innerHeight;
-        const vcenter = vh / 2;
-        fadeSlides.forEach((slide) => {
-          const rect = slide.getBoundingClientRect();
-          const center = rect.top + rect.height / 2;
-          // distance: 0 = perfectly centered, 1 = one viewport away
-          const distance = Math.abs(center - vcenter) / vh;
-          // Stay fully visible while within ~25% of center, then ramp down
-          const op = Math.max(0, Math.min(1, 1 - (distance - 0.25) * 2.5));
-          (slide as HTMLElement).style.setProperty('--content-opacity', String(op));
-        });
-      };
-      let scheduled = false;
-      window.addEventListener('scroll', () => {
-        if (!scheduled) {
-          scheduled = true;
-          requestAnimationFrame(() => { updateFades(); scheduled = false; });
-        }
-      }, { passive: true });
-      window.addEventListener('resize', updateFades);
-      updateFades();
-
-      // Nav dot active state
-      const dots = document.querySelectorAll('#nav-dots a');
-      const slides = document.querySelectorAll('.slide');
-      const dotObs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            const idx = Array.from(slides).indexOf(entry.target as Element);
-            if (entry.isIntersecting && idx >= 0 && dots[idx]) {
-              dots.forEach((d) => d.classList.remove('active'));
-              dots[idx].classList.add('active');
-            }
-          });
-        },
-        { threshold: 0.6 }
-      );
-      slides.forEach((s) => dotObs.observe(s));
-    </script>
   </body>
 </html>
