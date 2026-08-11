@@ -1,74 +1,52 @@
 # metron-hotsite-beta
 
-Ambiente **beta** do hotsite da Metron Showrunners, publicado em
-[`metron-beta.hybris.world`](https://metron-beta.hybris.world) via Cloudflare
-Pages (projeto `metron-hotsite-beta`).
+Ambiente **beta** do hotsite da Metron Showrunners, em
+[`metron-beta.hybris.world`](https://metron-beta.hybris.world). Cópia completa
+do site de produção ([`thluiz/metron-hotsite`](https://github.com/thluiz/metron-hotsite)
+→ `metron.hybris.world`): itera-se aqui e promove-se quando estiver bom.
 
-Este repositório é uma cópia completa do site de produção
-([`thluiz/metron-hotsite`](https://github.com/thluiz/metron-hotsite) →
-`metron.hybris.world`). A ideia é iterar livremente aqui, ver o resultado no
-site beta, e quando estiver bom **promover** o conteúdo por cima do site de
-produção com um clique — sem mexer em git.
+Detalhes técnicos e regras de trabalho no [`AGENTS.md`](AGENTS.md).
 
 ## O site
 
-Uma página só: a key art do Hybris ocupando a tela inteira, com a barra creme
-do rodapé funcionando como link para [`files.hybris.world`](https://files.hybris.world)
-— o índice dos materiais da série, onde o acesso é por código.
+Uma página: a key art do Hybris em tela cheia, com a barra creme do rodapé
+linkando [`files.hybris.world`](https://files.hybris.world) — o índice dos
+materiais da série, com acesso por código. Esse índice vive noutro repositório
+([`thluiz/files-hybris-world`](https://github.com/thluiz/files-hybris-world)).
 
-Esse índice vive em outro repositório
-([`thluiz/files-hybris-world`](https://github.com/thluiz/files-hybris-world)),
-com infraestrutura própria. Aqui não há backend nem estado.
+## Fluxo
 
-## Fluxo de trabalho
-
-1. Edite o site normalmente (conteúdo em `src/` e `public/`).
-2. Faça commit e push para `main` → o deploy automático publica em
-   `metron-beta.hybris.world`. Confira o resultado no site beta.
-3. Quando quiser publicar em produção, rode o **Promote** (ver abaixo).
+1. Edite `src/` e `public/`, commit e push na `main`.
+2. O deploy publica em `metron-beta.hybris.world`. Confira lá.
+3. Para produção, rode o **Promote**.
 
 ## Promover para produção
 
-O promote **não** publica direto no ar: ele abre um **Pull Request** no
-repositório de produção com o conteúdo deste repo por cima. Uma pessoa técnica
-revisa e faz o merge — e o merge é que dispara o deploy de produção.
+Não publica direto: abre um **PR** no repositório de produção. O merge é que
+dispara o deploy.
 
-Como rodar (não precisa de terminal nem git):
+**Actions → Promote to production → Run workflow.** O PR aparece em
+[`thluiz/metron-hotsite/pulls`](https://github.com/thluiz/metron-hotsite/pulls).
 
-1. Vá na aba **Actions** deste repositório no GitHub.
-2. Escolha o workflow **Promote to production** na lista à esquerda.
-3. Clique **Run workflow** → **Run workflow**.
-4. Quando terminar, um PR aparece em
-   [`thluiz/metron-hotsite`](https://github.com/thluiz/metron-hotsite/pulls)
-   para revisão e merge.
-
-O promote copia tudo (`src/`, `public/`, configs, `CHANGELOG.md`) **exceto** os
-arquivos específicos de ambiente (`.github/` e este `README.md`), que são
-diferentes entre beta e produção. Por isso as estruturas dos dois repositórios
-precisam permanecer compatíveis — evite renomear/reorganizar pastas de forma
-que só exista aqui.
+Copia tudo exceto `.github/` e este `README.md`, que diferem entre os ambientes.
+Havendo PRs do Dependabot abertos, mergeie o de promote primeiro — os dois tocam
+o `package-lock.json`.
 
 ## Stack
 
-- [Astro](https://astro.build/) 4 (output estático)
-- Tailwind CSS 3 (`@astrojs/tailwind`)
-- Hospedagem: Cloudflare Pages (projeto `metron-hotsite-beta`)
-
-## Comandos
+Astro 4 (estático) · Cloudflare Pages (projeto `metron-hotsite-beta`)
 
 ```bash
-npm install     # primeira vez
-npm run dev     # dev server (Astro)
-npm run build   # gera dist/
-npm run preview # serve dist/ localmente
+npm install
+npm run dev
+npm run build
+npm run preview
 ```
 
 ## Deploy
 
-Push em `main` dispara `.github/workflows/deploy.yml`, que faz build do Astro e
-publica em Cloudflare Pages (projeto `metron-hotsite-beta`). Secrets
-necessários no repo: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+Push na `main` dispara `.github/workflows/deploy.yml`. Secrets:
+`CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
 
-O promote (`.github/workflows/promote.yml`) usa `PROMOTE_TOKEN` (PAT com
-permissão de Contents + Pull requests no repo `metron-hotsite`) para abrir o PR
-de produção.
+O promote (`promote.yml`) usa `PROMOTE_TOKEN` — PAT com Contents + Pull requests
+no repo de produção.

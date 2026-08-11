@@ -11,9 +11,6 @@ import '../styles/global.css';
         alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
         class="keyart-img"
       />
-      <!-- A barra creme inteira do rodapé é clicável e leva ao índice dos
-           materiais. Cobre também o botão 'Project' desenhado na arte, que
-           fica dentro dela. -->
       <a
         href="https://files.hybris.world/"
         class="footer-link"
@@ -25,23 +22,20 @@ import '../styles/global.css';
 </Layout>
 
 <style>
-  /* Aspect ratio of the key art: 1684 x 1190 */
   .keyart-wrap {
     position: fixed;
     inset: 0;
     overflow: hidden;
-    /* Cream letterbox shown only where the image doesn't reach (mobile contain) */
+    /* Aparece só onde a imagem não alcança. */
     background-color: #cabf9d;
   }
 
+  /* Caixa com o aspect da arte (1684x1190), inteira dentro do viewport. */
   .keyart {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* Contain — always show the whole poster, letterboxed on the cream
-       background so nothing (logo, footer, Project button) is cropped.
-       min() keeps the image aspect while fitting fully inside the viewport. */
     width:  min(100vw, 100vh * 1684 / 1190);
     height: min(100vh, 100vw * 1190 / 1684);
   }
@@ -50,14 +44,11 @@ import '../styles/global.css';
     display: block;
     width: 100%;
     height: 100%;
-    /* Box already matches the image aspect, so no distortion. */
-    object-fit: fill;
+    object-fit: fill; /* a caixa já tem o aspect certo */
   }
 
-  /* Faixa clicável sobre a barra creme do rodapé.
-     O topo (89.9%) foi medido no próprio PNG: a barra rgb(183,168,133)
-     começa em y=1070 de 1190. Como é % da caixa da imagem, continua
-     alinhado em qualquer viewport, com cover ou contain. */
+  /* Faixa clicável sobre a barra creme do rodapé, que na arte começa em
+     y=1070 de 1190. Trocou a arte, meça de novo. */
   .footer-link {
     position: absolute;
     left: 0;
@@ -65,15 +56,13 @@ import '../styles/global.css';
     top: 89.9%;
     bottom: 0;
     z-index: 3;
-    /* área de clique invisível; leve realce no hover */
     transition: background-color 0.2s ease;
   }
   .footer-link:hover {
     background-color: rgba(255, 255, 255, 0.14);
   }
   .footer-link:focus-visible {
-    /* escuro porque o fundo aqui é claro (a barra creme) */
-    outline: 2px solid rgba(26, 18, 10, 0.75);
+    outline: 2px solid rgba(26, 18, 10, 0.75); /* escuro: o fundo aqui é claro */
     outline-offset: -2px;
   }
 </style>
