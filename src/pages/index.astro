@@ -11,9 +11,14 @@ import '../styles/global.css';
         alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
         class="keyart-img"
       />
-      <!-- Clickable overlay aligned with the baked-in 'Project' button.
-           TODO: trocar href="#" pela URL de destino do projeto. -->
-      <a href="#" class="project-hotspot" aria-label="Project"></a>
+      <!-- A barra creme inteira do rodapé é clicável e leva ao índice dos
+           materiais. Cobre também o botão 'Project' desenhado na arte, que
+           fica dentro dela. -->
+      <a
+        href="https://files.hybris.world/"
+        class="footer-link"
+        aria-label="Hybris Project — access the materials"
+      ></a>
     </div>
   </main>
 
@@ -49,25 +54,26 @@ import '../styles/global.css';
     object-fit: fill;
   }
 
-  /* Real, clickable button over the baked-in 'Project' pill.
-     Coordinates are a % of the image box, so they stay aligned
-     under both cover and contain. */
-  .project-hotspot {
+  /* Faixa clicável sobre a barra creme do rodapé.
+     O topo (89.9%) foi medido no próprio PNG: a barra rgb(183,168,133)
+     começa em y=1070 de 1190. Como é % da caixa da imagem, continua
+     alinhado em qualquer viewport, com cover ou contain. */
+  .footer-link {
     position: absolute;
-    left: 84.5%;
-    top: 90.2%;
-    width: 9.5%;
-    height: 5.6%;
-    border-radius: 999px;
+    left: 0;
+    right: 0;
+    top: 89.9%;
+    bottom: 0;
     z-index: 3;
-    /* invisible hit area; subtle affordance on hover */
+    /* área de clique invisível; leve realce no hover */
     transition: background-color 0.2s ease;
   }
-  .project-hotspot:hover {
-    background-color: rgba(255, 255, 255, 0.10);
+  .footer-link:hover {
+    background-color: rgba(255, 255, 255, 0.14);
   }
-  .project-hotspot:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.85);
-    outline-offset: 2px;
+  .footer-link:focus-visible {
+    /* escuro porque o fundo aqui é claro (a barra creme) */
+    outline: 2px solid rgba(26, 18, 10, 0.75);
+    outline-offset: -2px;
   }
 </style>
