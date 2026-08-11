@@ -1,15 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-/**
- * Guarda de regressão do hotsite. Roda contra o dev server ou o preview
- * (`baseURL` em playwright.config.ts) nos projetos iPhone 12 / SE / 14 Pro Max.
- *
- * Cobre as duas coisas que quebram sem fazer barulho: a key art não carregar
- * (a página fica creme e ninguém percebe no HTML) e a barra do rodapé sair de
- * cima da faixa creme desenhada na arte, deixando o link inalcançável.
- */
+/* Roda contra o dev server ou o preview (baseURL em playwright.config.ts),
+   nos três perfis de iPhone. */
 
-/* A faixa creme começa em y=1070 de 1190 no PNG original. */
+/* A faixa creme começa em y=1070 de 1190 no PNG. */
 const FOOTER_TOP_PCT = 89.9;
 
 test('a key art carrega de fato', async ({ page }) => {
@@ -17,8 +11,8 @@ test('a key art carrega de fato', async ({ page }) => {
   const img = page.locator('.keyart-img');
   await expect(img).toBeVisible();
 
-  // naturalWidth = 0 quando o browser não conseguiu decodificar a imagem —
-  // o <img> continua no DOM e a página parece só um retângulo creme.
+  // naturalWidth = 0 quando o browser não decodificou a imagem: o <img>
+  // continua no DOM e a página vira um retângulo creme.
   const naturalWidth = await img.evaluate(
     (el) => (el as HTMLImageElement).naturalWidth
   );
@@ -42,7 +36,7 @@ test('o link do rodapé fica alinhado com a faixa creme', async ({ page }) => {
   const topPct = ((link!.y - img!.y) / img!.height) * 100;
   expect(topPct).toBeCloseTo(FOOTER_TOP_PCT, 0);
 
-  // Precisa ir até a base da imagem, senão sobra uma tira não clicável.
+  // Sem isto sobraria uma tira não clicável no pé.
   const bottomGap = img!.y + img!.height - (link!.y + link!.height);
   expect(Math.abs(bottomGap)).toBeLessThan(2);
 });
