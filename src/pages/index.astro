@@ -44,6 +44,23 @@ import '../styles/global.css';
         />
       </div>
 
+      <button
+        type="button"
+        class="nav-arrow prev"
+        data-nav="prev"
+        aria-label="Previous key art"
+      >
+        <span aria-hidden="true">&#8249;</span>
+      </button>
+      <button
+        type="button"
+        class="nav-arrow next"
+        data-nav="next"
+        aria-label="Next key art"
+      >
+        <span aria-hidden="true">&#8250;</span>
+      </button>
+
       <div class="dots" role="tablist" aria-label="Choose key art">
         <button
           type="button"
@@ -130,6 +147,43 @@ import '../styles/global.css';
     outline-offset: -2px;
   }
 
+  /* Setas laterais, centralizadas na altura da arte (acima da barra do
+     rodapé, que fica só no terço inferior). */
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.45);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .nav-arrow:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
+  }
+  .nav-arrow.prev {
+    left: 3%;
+  }
+  .nav-arrow.next {
+    right: 3%;
+  }
+
   /* Dots ficam acima da barra do rodapé (que começa perto de 90%), pra não
      brigar com a faixa clicável. */
   .dots {
@@ -167,6 +221,8 @@ import '../styles/global.css';
 <script>
   const slides = Array.from(document.querySelectorAll<HTMLElement>('.slide'));
   const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('.dot'));
+  const prevButton = document.querySelector<HTMLButtonElement>('[data-nav="prev"]');
+  const nextButton = document.querySelector<HTMLButtonElement>('[data-nav="next"]');
   const AUTOPLAY_MS = 6000;
   const prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
@@ -190,6 +246,10 @@ import '../styles/global.css';
     show((current + 1) % slides.length);
   }
 
+  function prev() {
+    show((current - 1 + slides.length) % slides.length);
+  }
+
   function restartAutoplay() {
     if (prefersReducedMotion || slides.length < 2) return;
     clearInterval(timer);
@@ -201,6 +261,16 @@ import '../styles/global.css';
       show(i);
       restartAutoplay();
     });
+  });
+
+  prevButton?.addEventListener('click', () => {
+    prev();
+    restartAutoplay();
+  });
+
+  nextButton?.addEventListener('click', () => {
+    next();
+    restartAutoplay();
   });
 
   restartAutoplay();
