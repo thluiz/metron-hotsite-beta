@@ -5,17 +5,63 @@ import '../styles/global.css';
 <Layout title="Hybris — An Ancient Conflict, Reimagined | Metron Showrunners">
 
   <main class="keyart-wrap">
-    <div class="keyart">
-      <img
-        src="/images/hybris-keyart.png?v=1"
-        alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
-        class="keyart-img"
-      />
-      <a
-        href="https://files.hybris.world/"
-        class="footer-link"
-        aria-label="Hybris Project — access the materials"
-      ></a>
+    <div
+      class="keyart"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Metron Showrunners key art"
+    >
+      <div
+        class="slide is-active"
+        data-slide="0"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="1 of 2: Hybris"
+      >
+        <img
+          src="/images/hybris-keyart.png?v=1"
+          alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
+          class="keyart-img"
+        />
+        <a
+          href="https://files.hybris.world/"
+          class="footer-link"
+          aria-label="Hybris Project — access the materials"
+        ></a>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="1"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="2 of 2: Laya"
+      >
+        <img
+          src="/images/laya-keyart.png?v=1"
+          alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film."
+          class="keyart-img"
+        />
+      </div>
+
+      <div class="dots" role="tablist" aria-label="Choose key art">
+        <button
+          type="button"
+          class="dot is-active"
+          data-dot="0"
+          role="tab"
+          aria-selected="true"
+          aria-label="Show slide 1: Hybris"
+        ></button>
+        <button
+          type="button"
+          class="dot"
+          data-dot="1"
+          role="tab"
+          aria-selected="false"
+          aria-label="Show slide 2: Laya"
+        ></button>
+      </div>
     </div>
   </main>
 
@@ -40,6 +86,23 @@ import '../styles/global.css';
     height: min(100vh, 100vw * 1190 / 1684);
   }
 
+  /* Slides empilhados; o crossfade é só opacity. visibility some com um
+     delay pra não deixar o link do slide escondido focável/clicável. */
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+    z-index: 1;
+  }
+  .slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.8s ease, visibility 0s linear 0s;
+    z-index: 2;
+  }
+
   .keyart-img {
     display: block;
     width: 100%;
@@ -48,7 +111,8 @@ import '../styles/global.css';
   }
 
   /* Faixa clicável sobre a barra creme do rodapé, que na arte começa em
-     y=1070 de 1190. Trocou a arte, meça de novo. */
+     y=1070 de 1190. Trocou a arte, meça de novo. Só o slide da Hybris tem
+     link — a arte da Laya já traz a barra sem botão. */
   .footer-link {
     position: absolute;
     left: 0;
@@ -65,4 +129,79 @@ import '../styles/global.css';
     outline: 2px solid rgba(26, 18, 10, 0.75); /* escuro: o fundo aqui é claro */
     outline-offset: -2px;
   }
+
+  /* Dots ficam acima da barra do rodapé (que começa perto de 90%), pra não
+     brigar com a faixa clicável. */
+  .dots {
+    position: absolute;
+    left: 50%;
+    bottom: 12%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 4;
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .dot:hover {
+    transform: scale(1.15);
+  }
+  .dot.is-active {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  .dot:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
+  }
 </style>
+
+<script>
+  const slides = Array.from(document.querySelectorAll<HTMLElement>('.slide'));
+  const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('.dot'));
+  const AUTOPLAY_MS = 6000;
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  let current = 0;
+  let timer: ReturnType<typeof setInterval> | undefined;
+
+  function show(index: number) {
+    current = index;
+    slides.forEach((slide, i) =>
+      slide.classList.toggle('is-active', i === index)
+    );
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === index);
+      dot.setAttribute('aria-selected', String(i === index));
+    });
+  }
+
+  function next() {
+    show((current + 1) % slides.length);
+  }
+
+  function restartAutoplay() {
+    if (prefersReducedMotion || slides.length < 2) return;
+    clearInterval(timer);
+    timer = setInterval(next, AUTOPLAY_MS);
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      show(i);
+      restartAutoplay();
+    });
+  });
+
+  restartAutoplay();
+</script>
