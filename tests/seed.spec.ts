@@ -62,6 +62,20 @@ test('o dot da Laya troca o slide e some com o link do rodapé', async ({
   await expect(page.locator('[data-slide="0"] .footer-link')).not.toBeVisible();
 });
 
+test('as setas de navegação trocam de slide', async ({ page }) => {
+  await page.goto('/');
+
+  await page.locator('[data-nav="next"]').click();
+  await expect(page.locator('[data-slide="1"]')).toHaveClass(/is-active/);
+
+  await page.locator('[data-nav="prev"]').click();
+  await expect(page.locator('[data-slide="0"]')).toHaveClass(/is-active/);
+
+  // Volta pro início: a seta "prev" no primeiro slide deve ir pro último.
+  await page.locator('[data-nav="prev"]').click();
+  await expect(page.locator('[data-slide="1"]')).toHaveClass(/is-active/);
+});
+
 test('os dots refletem qual slide está ativo', async ({ page }) => {
   await page.goto('/');
 
