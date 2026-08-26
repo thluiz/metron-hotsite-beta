@@ -8,9 +8,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^5.1.0",
-    "astro": "^7.2.0",
-    "tailwindcss": "^3.4.14"
+    "astro": "^7.2.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
