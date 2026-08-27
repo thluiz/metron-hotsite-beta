@@ -151,6 +151,9 @@ import '../styles/global.css';
   @media (orientation: portrait) {
     .keyart-img {
       object-fit: cover; /* tela cheia, cropando bordas se preciso */
+      /* Ancorado embaixo: se algo for cortado por causa do aspect do
+         aparelho, corta o topo da arte, nunca a barra do rodapé. */
+      object-position: center bottom;
     }
   }
 
