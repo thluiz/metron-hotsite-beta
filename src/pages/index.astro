@@ -16,15 +16,15 @@ import '../styles/global.css';
         data-slide="0"
         role="group"
         aria-roledescription="slide"
-        aria-label="1 of 2: Hybris"
+        aria-label="1 of 4: Hybris"
       >
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/hybris-keyart-portrait.png?v=1"
+            srcset="/images/hybris-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/hybris-keyart.png?v=1"
+            src="/images/hybris-keyart.jpg?v=2"
             alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
             class="keyart-img"
           />
@@ -41,16 +41,56 @@ import '../styles/global.css';
         data-slide="1"
         role="group"
         aria-roledescription="slide"
-        aria-label="2 of 2: Laya"
+        aria-label="2 of 4: Laya"
       >
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/laya-keyart-portrait.png?v=1"
+            srcset="/images/laya-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/laya-keyart.png?v=1"
-            alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film."
+            src="/images/laya-keyart.jpg?v=2"
+            alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film. Coming soon."
+            class="keyart-img"
+          />
+        </picture>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="2"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="3 of 4: Inter/Sessions"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/intersessions-keyart-portrait.jpg?v=1"
+          />
+          <img
+            src="/images/intersessions-keyart.jpg?v=1"
+            alt="Inter/Sessions — No one stands alone. A Metron Showrunners Original Limited Series. Coming soon."
+            class="keyart-img"
+          />
+        </picture>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="3"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="4 of 4: Adorable Mrs. Steele"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/mrs-steele-keyart-portrait.jpg?v=1"
+          />
+          <img
+            src="/images/mrs-steele-keyart.jpg?v=1"
+            alt="Adorable Mrs. Steele. A Metron Showrunners Original Comedy Feature Film. Coming soon."
             class="keyart-img"
           />
         </picture>
@@ -90,6 +130,22 @@ import '../styles/global.css';
           aria-selected="false"
           aria-label="Show slide 2: Laya"
         ></button>
+        <button
+          type="button"
+          class="dot"
+          data-dot="2"
+          role="tab"
+          aria-selected="false"
+          aria-label="Show slide 3: Inter/Sessions"
+        ></button>
+        <button
+          type="button"
+          class="dot"
+          data-dot="3"
+          role="tab"
+          aria-selected="false"
+          aria-label="Show slide 4: Adorable Mrs. Steele"
+        ></button>
       </div>
     </div>
   </main>
@@ -105,14 +161,14 @@ import '../styles/global.css';
     background-color: #cabf9d;
   }
 
-  /* Caixa com o aspect da arte (1684x1190), inteira dentro do viewport. */
+  /* Caixa com o aspect da arte (3070x2304), inteira dentro do viewport. */
   .keyart {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width:  min(100vw, 100vh * 1684 / 1190);
-    height: min(100vh, 100vw * 1190 / 1684);
+    width:  min(100vw, 100vh * 3070 / 2304);
+    height: min(100vh, 100vw * 2304 / 3070);
   }
 
   /* Portrait (celular): a arte portrait cobre a tela inteira (crop via
@@ -168,24 +224,25 @@ import '../styles/global.css';
     }
   }
 
-  /* Faixa clicável sobre a barra creme do rodapé, que na arte começa em
-     y=1070 de 1190 (landscape). Trocou a arte, meça de novo. Só o slide da
-     Hybris tem link — a arte da Laya já traz a barra sem botão. */
+  /* Faixa clicável sobre a barra marrom do rodapé, medida por pixel na arte
+     landscape (3070x2304): começa em y=2085, ou seja 90.49% da altura.
+     Trocou a arte, meça de novo. Só o slide da Hybris tem link — as outras
+     IPs só têm "Coming Soon" sem destino, sem overlay clicável. */
   .footer-link {
     position: absolute;
     left: 0;
     right: 0;
-    top: var(--footer-link-top, 89.9%);
+    top: var(--footer-link-top, 90.49%);
     bottom: 0;
     z-index: 3;
     transition: background-color 0.2s ease;
   }
 
-  /* Medido por pixel na arte portrait (1296x2304): barra creme começa em
-     y=2180, ou seja 94.6% da altura. Trocou a arte, meça de novo. */
+  /* Medido por pixel na arte portrait (1311x2311): barra começa em y=2196,
+     ou seja 95.02% da altura. Trocou a arte, meça de novo. */
   @media (orientation: portrait) {
     .footer-link {
-      --footer-link-top: 94.6%;
+      --footer-link-top: 95.02%;
     }
   }
   .footer-link:hover {
