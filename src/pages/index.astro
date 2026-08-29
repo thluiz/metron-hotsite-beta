@@ -16,7 +16,7 @@ import '../styles/global.css';
         data-slide="0"
         role="group"
         aria-roledescription="slide"
-        aria-label="1 of 4: Hybris"
+        aria-label="1 of 5: Hybris"
       >
         <picture>
           <source
@@ -41,7 +41,32 @@ import '../styles/global.css';
         data-slide="1"
         role="group"
         aria-roledescription="slide"
-        aria-label="2 of 4: Laya"
+        aria-label="2 of 5: Not Even Death"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/not-even-death-keyart-portrait.jpg?v=1"
+          />
+          <img
+            src="/images/not-even-death-keyart.jpg?v=1"
+            alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film. View the script."
+            class="keyart-img is-ned"
+          />
+        </picture>
+        <a
+          href="https://files-ned.metronshowrunners.com/"
+          class="footer-link is-ned"
+          aria-label="Not Even Death — view the script"
+        ></a>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="2"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="3 of 5: Laya"
       >
         <picture>
           <source
@@ -58,10 +83,10 @@ import '../styles/global.css';
 
       <div
         class="slide"
-        data-slide="2"
+        data-slide="3"
         role="group"
         aria-roledescription="slide"
-        aria-label="3 of 4: Inter/Sessions"
+        aria-label="4 of 5: Inter/Sessions"
       >
         <picture>
           <source
@@ -78,10 +103,10 @@ import '../styles/global.css';
 
       <div
         class="slide"
-        data-slide="3"
+        data-slide="4"
         role="group"
         aria-roledescription="slide"
-        aria-label="4 of 4: Adorable Mrs. Steele"
+        aria-label="5 of 5: Adorable Mrs. Steele"
       >
         <picture>
           <source
@@ -128,7 +153,7 @@ import '../styles/global.css';
           data-dot="1"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 2: Laya"
+          aria-label="Show slide 2: Not Even Death"
         ></button>
         <button
           type="button"
@@ -136,7 +161,7 @@ import '../styles/global.css';
           data-dot="2"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 3: Inter/Sessions"
+          aria-label="Show slide 3: Laya"
         ></button>
         <button
           type="button"
@@ -144,7 +169,15 @@ import '../styles/global.css';
           data-dot="3"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 4: Adorable Mrs. Steele"
+          aria-label="Show slide 4: Inter/Sessions"
+        ></button>
+        <button
+          type="button"
+          class="dot"
+          data-dot="4"
+          role="tab"
+          aria-selected="false"
+          aria-label="Show slide 5: Adorable Mrs. Steele"
         ></button>
       </div>
     </div>
@@ -222,12 +255,22 @@ import '../styles/global.css';
          aparelho, corta o topo da arte, nunca a barra do rodapé. */
       object-position: center bottom;
     }
+
+    /* No Not Even Death o título encosta na borda direita da arte portrait.
+       Em aparelho mais alto que 1313x2329 (todo iPhone recente) o cover corta
+       ~18% da largura, e centralizado isso comia letras de "NOT EVEN DEATH".
+       Ancorado à direita, o corte cai no lado esquerdo — fundo escuro e a
+       ponta da mão. */
+    .keyart-img.is-ned {
+      object-position: right bottom;
+    }
   }
 
   /* Faixa clicável sobre a barra marrom do rodapé, medida por pixel na arte
      landscape (3070x2304): começa em y=2085, ou seja 90.49% da altura.
-     Trocou a arte, meça de novo. Só o slide da Hybris tem link — as outras
-     IPs só têm "Coming Soon" sem destino, sem overlay clicável. */
+     Trocou a arte, meça de novo. Só Hybris ("Hybris Project") e Not Even Death
+     ("View Script") têm botão desenhado na barra — Laya, Inter/Sessions e Mrs.
+     Steele só dizem "Coming Soon", sem destino nem overlay clicável. */
   .footer-link {
     position: absolute;
     left: 0;
@@ -245,6 +288,19 @@ import '../styles/global.css';
       --footer-link-top: 95.02%;
     }
   }
+  /* A arte do Not Even Death veio com moldura própria — landscape 3094x2322
+     (barra em y=2105 → 90.65%) e portrait 1313x2329 (barra em y=2198 →
+     94.38%). Sem esta correção a faixa começaria ~15px dentro da barra no
+     portrait. */
+  .footer-link.is-ned {
+    --footer-link-top: 90.65%;
+  }
+  @media (orientation: portrait) {
+    .footer-link.is-ned {
+      --footer-link-top: 94.38%;
+    }
+  }
+
   .footer-link:hover {
     background-color: rgba(255, 255, 255, 0.14);
   }
