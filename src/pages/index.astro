@@ -41,32 +41,7 @@ import '../styles/global.css';
         data-slide="1"
         role="group"
         aria-roledescription="slide"
-        aria-label="2 of 5: Not Even Death"
-      >
-        <picture>
-          <source
-            media="(orientation: portrait)"
-            srcset="/images/not-even-death-keyart-portrait.jpg?v=1"
-          />
-          <img
-            src="/images/not-even-death-keyart.jpg?v=1"
-            alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film. View the script."
-            class="keyart-img is-ned"
-          />
-        </picture>
-        <a
-          href="https://files-ned.metronshowrunners.com/"
-          class="footer-link is-ned"
-          aria-label="Not Even Death — view the script"
-        ></a>
-      </div>
-
-      <div
-        class="slide"
-        data-slide="2"
-        role="group"
-        aria-roledescription="slide"
-        aria-label="3 of 5: Laya"
+        aria-label="2 of 5: Laya"
       >
         <picture>
           <source
@@ -83,10 +58,10 @@ import '../styles/global.css';
 
       <div
         class="slide"
-        data-slide="3"
+        data-slide="2"
         role="group"
         aria-roledescription="slide"
-        aria-label="4 of 5: Inter/Sessions"
+        aria-label="3 of 5: Inter/Sessions"
       >
         <picture>
           <source
@@ -103,10 +78,10 @@ import '../styles/global.css';
 
       <div
         class="slide"
-        data-slide="4"
+        data-slide="3"
         role="group"
         aria-roledescription="slide"
-        aria-label="5 of 5: Adorable Mrs. Steele"
+        aria-label="4 of 5: Adorable Mrs. Steele"
       >
         <picture>
           <source
@@ -119,6 +94,27 @@ import '../styles/global.css';
             class="keyart-img"
           />
         </picture>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="4"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="5 of 5: Not Even Death"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/not-even-death-keyart-portrait.jpg?v=1"
+          />
+          <img
+            src="/images/not-even-death-keyart.jpg?v=1"
+            alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film. Script coming soon."
+            class="keyart-img is-ned"
+          />
+        </picture>
+        <span class="soon-badge" aria-hidden="true">Coming Soon</span>
       </div>
 
       <button
@@ -153,7 +149,7 @@ import '../styles/global.css';
           data-dot="1"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 2: Not Even Death"
+          aria-label="Show slide 2: Laya"
         ></button>
         <button
           type="button"
@@ -161,7 +157,7 @@ import '../styles/global.css';
           data-dot="2"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 3: Laya"
+          aria-label="Show slide 3: Inter/Sessions"
         ></button>
         <button
           type="button"
@@ -169,7 +165,7 @@ import '../styles/global.css';
           data-dot="3"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 4: Inter/Sessions"
+          aria-label="Show slide 4: Adorable Mrs. Steele"
         ></button>
         <button
           type="button"
@@ -177,7 +173,7 @@ import '../styles/global.css';
           data-dot="4"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 5: Adorable Mrs. Steele"
+          aria-label="Show slide 5: Not Even Death"
         ></button>
       </div>
     </div>
@@ -202,6 +198,9 @@ import '../styles/global.css';
     transform: translate(-50%, -50%);
     width:  min(100vw, 100vh * 3070 / 2304);
     height: min(100vh, 100vw * 2304 / 3070);
+    /* Altura da arte desenhada. Serve para dimensionar texto sobreposto sem
+       depender de vh puro, que erra quando a caixa é limitada pela largura. */
+    --art-h: min(100vh, 100vw * 2304 / 3070);
   }
 
   /* Portrait (celular): a arte portrait cobre a tela inteira (crop via
@@ -221,6 +220,9 @@ import '../styles/global.css';
       transform: none;
       width: 100%;
       height: 100%;
+      /* Em portrait a arte é cortada por object-fit: cover, então o que
+         importa é o tamanho da IMAGEM desenhada, não o da caixa. */
+      --art-h: max(100vh, 100vw * 2329 / 1313);
     }
   }
 
@@ -288,16 +290,53 @@ import '../styles/global.css';
       --footer-link-top: 95.02%;
     }
   }
-  /* A arte do Not Even Death veio com moldura própria — landscape 3094x2322
-     (barra em y=2105 → 90.65%) e portrait 1313x2329 (barra em y=2198 →
-     94.38%). Sem esta correção a faixa começaria ~15px dentro da barra no
-     portrait. */
-  .footer-link.is-ned {
-    --footer-link-top: 90.65%;
+  /* Enquanto files-ned.metronshowrunners.com não existe, o botão "View Script"
+     desenhado na arte do Not Even Death seria um link morto. Esta pastilha
+     cobre exatamente o botão desenhado, com a mesma cor de preenchimento
+     (#5e4620 sobre a barra #3d2d14), e diz o que é verdade.
+
+     Medida por pixel: landscape (3094x2322) o botão vai de x 82.77% a 93.99%
+     e de y 93.07% a 97.42%; portrait (1313x2329), de x 76.09% a 93.60% e de
+     y 95.75% a 98.07%. Trocou a arte, meça de novo.
+
+     Quando o destino existir, isto sai e volta um <a class="footer-link is-ned">
+     com --footer-link-top: 90.65% (landscape) e 94.38% (portrait), que é onde
+     a barra marrom começa nesta arte. */
+  .soon-badge {
+    position: absolute;
+    z-index: 3;
+    left: 82.6%;
+    right: 5.85%;
+    top: 92.9%;
+    bottom: 2.4%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #5e4620;
+    color: #f2e2b0;
+    border-radius: clamp(3px, calc(var(--art-h) * 0.011), 18px);
+    font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: calc(var(--art-h) * 0.021);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    /* Não é botão: não há para onde ir ainda. */
+    pointer-events: none;
   }
+
+  /* Em portrait o cover corta a largura, então o deslocamento horizontal tem
+     que ser medido na largura da IMAGEM, não na da caixa — senão a pastilha
+     descola do botão desenhado conforme o aparelho. */
   @media (orientation: portrait) {
-    .footer-link.is-ned {
-      --footer-link-top: 94.38%;
+    .soon-badge {
+      --img-w: max(100vw, 100vh * 1313 / 2329);
+      left: auto;
+      right: calc(var(--img-w) * 0.064);
+      width: calc(var(--img-w) * 0.1751);
+      top: auto;
+      bottom: calc(var(--art-h) * 0.0193);
+      height: calc(var(--art-h) * 0.0232);
+      border-radius: clamp(3px, calc(var(--art-h) * 0.006), 14px);
+      font-size: calc(var(--art-h) * 0.0112);
     }
   }
 
