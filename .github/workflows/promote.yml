@@ -22,6 +22,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: beta
+          # Histórico completo: precisa pra listar os commits desde a
+          # última promoção (ver "Montar changelog" abaixo).
+          fetch-depth: 0
 
       - name: Checkout produção (destino)
         uses: actions/checkout@v4
@@ -30,15 +33,40 @@ jobs:
           token: ${{ secrets.PROMOTE_TOKEN }}
           path: prod
 
+      - name: Montar changelog desde a última promoção
+        id: changelog
+        # O arquivo .promoted-from-beta-sha (só existe na produção, nunca no
+        # beta) guarda o SHA do beta que foi promovido da última vez. Sem ele
+        # (primeira promoção com este mecanismo), lista os últimos 10 commits
+        # em vez de tentar adivinhar um ponto de partida.
+        run: |
+          MARKER="prod/.promoted-from-beta-sha"
+          CURRENT_SHA=$(git -C beta rev-parse HEAD)
+
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            if [ -f "$MARKER" ] && git -C beta cat-file -e "$(cat "$MARKER")" 2>/dev/null; then
+              git -C beta log --pretty='- %h %s' "$(cat "$MARKER")"..HEAD
+            else
+              echo "_Sem registro da promoção anterior — últimos 10 commits do beta:_"
+              git -C beta log --pretty='- %h %s' -n 10
+            fi
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "$CURRENT_SHA" > "$MARKER"
+
       - name: Sobrepor conteúdo do beta na produção
         # Copia tudo do beta por cima da produção, removendo arquivos que não
         # existem mais no beta (--delete). Preserva os arquivos específicos de
-        # ambiente da produção: .git, .github (workflows/project-name) e README.
+        # ambiente da produção: .git, .github (workflows/project-name), README
+        # e o marcador de changelog escrito no passo anterior.
         run: |
           rsync -a --delete \
             --exclude='.git/' \
             --exclude='.github/' \
             --exclude='README.md' \
+            --exclude='.promoted-from-beta-sha' \
             beta/ prod/
 
       - name: Abrir PR de promoção na produção
@@ -49,17 +77,20 @@ jobs:
           branch: promote/from-beta
           base: main
           delete-branch: true
-          commit-message: "Promote: conteúdo do beta para produção"
-          title: "Promote: beta → produção"
+          commit-message: "Promote: beta content into production"
+          title: "Promote: beta → production"
           body: |
-            Promoção automática do conteúdo de
+            Automated promotion of
             [`metron-hotsite-beta`](https://github.com/thluiz/metron-hotsite-beta)
-            por cima da produção.
+            content over production.
 
-            Disparado via **Actions → Promote to production**.
+            Triggered via **Actions → Promote to production**.
 
             ${{ github.event.inputs.note }}
 
+            ### Commits included
+            ${{ steps.changelog.outputs.changelog }}
+
             ---
-            O merge deste PR dispara o deploy de produção
+            Merging this PR triggers the production deploy
             (`metron.hybris.world`).
