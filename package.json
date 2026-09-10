@@ -8,7 +8,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^7.2.0"
+    "astro": "^7.2.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
