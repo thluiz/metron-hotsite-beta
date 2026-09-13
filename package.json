@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "astro build && astro preview --background && playwright test",
+    "test:stop": "astro preview stop"
   },
   "dependencies": {
     "astro": "^7.2.0"
