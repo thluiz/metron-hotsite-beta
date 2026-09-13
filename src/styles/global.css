@@ -29,7 +29,27 @@ body {
    landscape essa barra come uma fatia maior da tela (mais baixa), então o
    vídeo centraliza contra uma altura maior que a visível e sai descolado.
    100dvh acompanha o viewport visível de verdade (iOS Safari 15.4+).
+
+   .ginner-container também é flex-direction: column só com
+   justify-content: center (centraliza o eixo vertical) — sem
+   align-items: center, o eixo horizontal fica no padrão stretch. Em
+   portrait o vídeo (16:9) precisa de mais largura do que a altura da tela
+   permite, então nunca encolhe abaixo de 100% da linha (fica edge-to-edge,
+   parece centralizado). Em landscape a tela é curta, o vídeo é forçado a
+   uma largura menor pra caber na altura, e sem align-items essa caixa mais
+   estreita gruda na borda esquerda em vez de centralizar.
+
+   Reforçado com margin auto no próprio vídeo (não só align-items no pai):
+   como não dá pra testar isso num Safari iOS real a partir daqui, é cinto e
+   suspensório — se um mecanismo falhar, o outro ainda centraliza.
+
    !important porque o <link> do GLightbox carrega depois deste arquivo. */
 .glightbox-container .ginner-container {
   height: 100dvh !important;
+  align-items: center !important;
+}
+.glightbox-container .gslide-video,
+.glightbox-container .gvideo-wrapper {
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
