@@ -55,10 +55,10 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/laya-keyart-portrait.jpg?v=3"
+            srcset="/images/laya-keyart-portrait.jpg?v=4"
           />
           <img
-            src="/images/laya-keyart.jpg?v=3"
+            src="/images/laya-keyart.jpg?v=4"
             alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film. Coming soon."
             class="keyart-img"
           />
@@ -336,14 +336,18 @@ import '../styles/global.css';
       --footer-link-top: 95.02%;
     }
   }
-  /* A arte da Laya é 3071x2305 em landscape, com a barra em y=2085 (90.46%):
-     dentro de meio pixel do padrão, então landscape não precisa de nada. Em
-     portrait ela é 1314x2338 e a barra começa em y=2208, 94.44% — e não os
-     95.02% do padrão, que vale para a arte do Hybris. Sem esta regra sobra
-     meio ponto percentual de barra fora da área clicável. */
+  /* A arte da Laya tem medida própria nas duas orientações. Landscape é
+     3074x2305 com a barra em y=2090 (90.67%); portrait é 1329x2351 com a
+     barra em y=2222 (94.51%). Os padrões — 90.49% e 95.02% — foram medidos
+     na arte do Hybris, e usá-los aqui deixa barra fora da área clicável.
+     Trocou a arte, meça de novo. */
+  .footer-link.is-laya {
+    --footer-link-top: 90.67%;
+  }
+
   @media (orientation: portrait) {
     .footer-link.is-laya {
-      --footer-link-top: 94.44%;
+      --footer-link-top: 94.51%;
     }
   }
 
