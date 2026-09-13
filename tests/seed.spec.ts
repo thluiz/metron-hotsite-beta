@@ -1,7 +1,34 @@
 import { expect, test } from '@playwright/test';
 
-/* Roda contra o dev server ou o preview (baseURL em playwright.config.ts),
-   nos três perfis de iPhone — ou seja, sempre em portrait. */
+/* Roda contra o PREVIEW (`npm run build && npm run preview`), nos três perfis
+   de iPhone — ou seja, sempre em portrait.
+
+   Contra o `astro dev` NÃO funciona, e falha de um jeito que engana: a
+   <astro-dev-toolbar> fica ancorada no rodé da viewport, exatamente sobre a
+   faixa que .footer-link ocupa (os últimos ~5% da arte). Ela intercepta o
+   clique; o Playwright tenta de novo até o autoplay trocar de slide, e aí a
+   mensagem vira "element is not visible", que aponta para o lugar errado.
+   O primeiro teste abaixo existe para dizer isso em um segundo. */
+
+test('a suíte está rodando contra o preview, não contra o dev', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  // A própria <astro-dev-toolbar> não serve de sinal aqui: ela é injetada por
+  // JS depois do load, e logo após o goto ainda não existe. O cliente do Vite
+  // vem no HTML desde o primeiro byte e só existe em dev.
+  const dev = await page
+    .locator('script[src*="@vite/client"], astro-dev-toolbar')
+    .count();
+
+  expect(
+    dev,
+    'Isto é o `astro dev`. A <astro-dev-toolbar> cobre a barra do rodapé e faz ' +
+      'os testes de clique falharem por motivo errado. Rode ' +
+      '`npm run build && npm run preview` antes da suíte.'
+  ).toBe(0);
+});
 
 /* Onde começa a barra marrom do rodapé na arte portrait da Hybris, medido por
    pixel: 2196 de 2311 (95.02%). Trocou a arte, meça de novo.
