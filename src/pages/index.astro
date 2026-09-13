@@ -124,11 +124,15 @@ import '../styles/global.css';
           />
           <img
             src="/images/not-even-death-keyart.jpg?v=1"
-            alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film. Script coming soon."
+            alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film."
             class="keyart-img is-ned"
           />
         </picture>
-        <span class="soon-badge" aria-hidden="true">Coming Soon</span>
+        <a
+          href="https://files-ned.metronshowrunners.com/"
+          class="footer-link is-ned"
+          aria-label="Not Even Death — view the script"
+        ></a>
       </div>
 
       <div
@@ -332,53 +336,21 @@ import '../styles/global.css';
       --footer-link-top: 95.02%;
     }
   }
-  /* Enquanto files-ned.metronshowrunners.com não existe, o botão "View Script"
-     desenhado na arte do Not Even Death seria um link morto. Esta pastilha
-     cobre exatamente o botão desenhado, com a mesma cor de preenchimento
-     (#5e4620 sobre a barra #3d2d14), e diz o que é verdade.
+  /* A arte do Not Even Death é 3094x2322 e a barra marrom começa em y=2104,
+     ou seja 90.65% da altura — não 90.49% como na do Hybris. Medido por
+     pixel; trocou a arte, meça de novo.
 
-     Medida por pixel: landscape (3094x2322) o botão vai de x 82.77% a 93.99%
-     e de y 93.07% a 97.42%; portrait (1313x2329), de x 76.09% a 93.60% e de
-     y 95.75% a 98.07%. Trocou a arte, meça de novo.
-
-     Quando o destino existir, isto sai e volta um <a class="footer-link is-ned">
-     com --footer-link-top: 90.65% (landscape) e 94.38% (portrait), que é onde
-     a barra marrom começa nesta arte. */
-  .soon-badge {
-    position: absolute;
-    z-index: 3;
-    left: 82.6%;
-    right: 5.85%;
-    top: 92.9%;
-    bottom: 2.4%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #5e4620;
-    color: #f2e2b0;
-    border-radius: clamp(3px, calc(var(--art-h) * 0.011), 18px);
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-    font-size: calc(var(--art-h) * 0.021);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    /* Não é botão: não há para onde ir ainda. */
-    pointer-events: none;
+     Até 2026-09-13 este bloco era uma pastilha "Coming Soon" cobrindo o botão
+     "View Script" desenhado na arte, porque o destino não existia e o link
+     seria morto. Existe agora. */
+  .footer-link.is-ned {
+    --footer-link-top: 90.65%;
   }
 
-  /* Em portrait o cover corta a largura, então o deslocamento horizontal tem
-     que ser medido na largura da IMAGEM, não na da caixa — senão a pastilha
-     descola do botão desenhado conforme o aparelho. */
+  /* Portrait (1313x2329): a barra começa em y=2198, 94.38% da altura. */
   @media (orientation: portrait) {
-    .soon-badge {
-      --img-w: max(100vw, 100vh * 1313 / 2329);
-      left: auto;
-      right: calc(var(--img-w) * 0.064);
-      width: calc(var(--img-w) * 0.1751);
-      top: auto;
-      bottom: calc(var(--art-h) * 0.0193);
-      height: calc(var(--art-h) * 0.0232);
-      border-radius: clamp(3px, calc(var(--art-h) * 0.006), 14px);
-      font-size: calc(var(--art-h) * 0.0112);
+    .footer-link.is-ned {
+      --footer-link-top: 94.38%;
     }
   }
 
