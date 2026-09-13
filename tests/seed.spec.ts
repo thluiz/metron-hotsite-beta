@@ -18,6 +18,14 @@ const SLIDES_COM_LINK = [
     aria: /Hybris Project/,
     footerTopPct: 95.02,
   },
+  {
+    nome: 'Laya',
+    dot: 1,
+    slide: 1,
+    href: 'https://youtu.be/bXL5xmmQPys',
+    aria: /Laya teaser/,
+    footerTopPct: 95.02,
+  },
 ];
 
 test('a key art da Hybris (slide inicial) carrega de fato', async ({ page }) => {
@@ -64,7 +72,7 @@ for (const ip of SLIDES_COM_LINK) {
   });
 }
 
-test('o dot da Laya troca o slide e some com o link do rodapé', async ({
+test('o dot da Laya troca o slide e esconde o link da Hybris', async ({
   page,
 }) => {
   await page.goto('/');
@@ -78,11 +86,20 @@ test('o dot da Laya troca o slide e some com o link do rodapé', async ({
     /Laya/
   );
 
-  // A Laya não tem botão pro projeto: sem .footer-link nesse slide.
-  await expect(layaSlide.locator('.footer-link')).toHaveCount(0);
-
-  // E o link da Hybris, agora escondido, não pode ficar clicável.
+  // O link da Hybris, agora escondido, não pode ficar clicável.
   await expect(page.locator('[data-slide="0"] .footer-link')).not.toBeVisible();
+});
+
+test('clicar na barra da Laya abre o teaser em vez de navegar', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.locator('[data-dot="1"]').click();
+
+  await page.locator('[data-slide="1"] .footer-link').click();
+
+  await expect(page.locator('.glightbox-container')).toBeVisible();
+  await expect(page).toHaveURL('/');
 });
 
 test('o Not Even Death avisa "Coming Soon" em vez de linkar para o vazio', async ({
