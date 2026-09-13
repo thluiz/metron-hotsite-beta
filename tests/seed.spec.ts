@@ -52,8 +52,8 @@ const SLIDES_COM_LINK = [
     slide: 1,
     href: 'https://youtu.be/bXL5xmmQPys',
     aria: /Laya teaser/,
-    // A arte da Laya tem a barra em 94.44%, nao nos 95.02% da do Hybris.
-    footerTopPct: 94.44,
+    // A arte da Laya tem a barra em 94.51%, nao nos 95.02% da do Hybris.
+    footerTopPct: 94.51,
   },
   {
     nome: 'Not Even Death',
