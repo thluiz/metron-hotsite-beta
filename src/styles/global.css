@@ -21,3 +21,15 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif;
 }
+
+/* O GLightbox (flyout de vídeo da Laya) centraliza o slide com
+   height: 100vh em .ginner-container. No Safari iOS, com a página sem
+   scroll, a barra do navegador não tem por que sumir — mas 100vh mede a
+   altura como se ela fosse sumir, maior que a área realmente visível. Em
+   landscape essa barra come uma fatia maior da tela (mais baixa), então o
+   vídeo centraliza contra uma altura maior que a visível e sai descolado.
+   100dvh acompanha o viewport visível de verdade (iOS Safari 15.4+).
+   !important porque o <link> do GLightbox carrega depois deste arquivo. */
+.glightbox-container .ginner-container {
+  height: 100dvh !important;
+}
