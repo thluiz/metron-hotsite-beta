@@ -6,9 +6,10 @@ import { expect, test } from '@playwright/test';
 /* Onde começa a barra marrom do rodapé na arte portrait da Hybris, medido por
    pixel: 2196 de 2311 (95.02%). Trocou a arte, meça de novo.
 
-   O Not Even Death desenha um botão "View Script", mas o destino ainda não
-   existe: em vez de link, ele leva a pastilha "Coming Soon" (ver mais abaixo).
-   Quando o destino subir, ele volta para esta lista. */
+   O Not Even Death tem a sua própria medida: a arte dele é outra (1313x2329),
+   e a barra começa em 2198, ou seja 94.38%. Até 2026-09-13 ele não estava
+   nesta lista, porque o destino não existia e havia no lugar uma pastilha
+   "Coming Soon". */
 const SLIDES_COM_LINK = [
   {
     nome: 'Hybris',
@@ -25,6 +26,14 @@ const SLIDES_COM_LINK = [
     href: 'https://youtu.be/bXL5xmmQPys',
     aria: /Laya teaser/,
     footerTopPct: 95.02,
+  },
+  {
+    nome: 'Not Even Death',
+    dot: 4,
+    slide: 4,
+    href: 'https://files-ned.metronshowrunners.com/',
+    aria: /view the script/,
+    footerTopPct: 94.38,
   },
 ];
 
@@ -102,7 +111,7 @@ test('clicar na barra da Laya abre o teaser em vez de navegar', async ({
   await expect(page).toHaveURL('/');
 });
 
-test('o Not Even Death avisa "Coming Soon" em vez de linkar para o vazio', async ({
+test('o dot do Not Even Death abre o slide e o link vai para o files-ned', async ({
   page,
 }) => {
   await page.goto('/');
@@ -115,22 +124,19 @@ test('o Not Even Death avisa "Coming Soon" em vez de linkar para o vazio', async
     /Not Even Death/
   );
 
-  // Sem destino ainda: nenhum link nesse slide, em nenhum lugar da página.
-  await expect(nedSlide.locator('a')).toHaveCount(0);
-  await expect(page.locator('a[href*="files-ned"]')).toHaveCount(0);
+  // O alt dizia "Script coming soon" enquanto o destino não existia. Dizer
+  // isso agora seria mentira para quem usa leitor de tela.
+  await expect(nedSlide.locator('.keyart-img')).not.toHaveAttribute(
+    'alt',
+    /coming soon/i
+  );
 
-  const badge = nedSlide.locator('.soon-badge');
-  await expect(badge).toBeVisible();
-  await expect(badge).toHaveText(/coming soon/i);
-
-  // A pastilha cobre o botão desenhado, que fica na barra do rodapé: se ela
-  // subir para o meio da arte, é porque a medida saiu do lugar.
-  const box = await badge.boundingBox();
-  const art = await nedSlide.locator('.keyart-img').boundingBox();
-  expect(box && art).toBeTruthy();
-  const topPct = ((box!.y - art!.y) / art!.height) * 100;
-  expect(topPct).toBeGreaterThan(90);
-  expect(box!.y + box!.height).toBeLessThanOrEqual(art!.y + art!.height + 1);
+  // Exatamente um link no slide, e é o do files-ned.
+  await expect(nedSlide.locator('a')).toHaveCount(1);
+  await expect(nedSlide.locator('a')).toHaveAttribute(
+    'href',
+    'https://files-ned.metronshowrunners.com/'
+  );
 });
 
 test('as setas de navegação trocam de slide', async ({ page }) => {
