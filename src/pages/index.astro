@@ -30,7 +30,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/laya-keyart-portrait.jpg?v=4"
+            srcset="/images/laya-keyart-portrait.jpg?v=5"
           />
           <img
             src="/images/laya-keyart.jpg?v=5"
@@ -40,7 +40,7 @@ import '../styles/global.css';
         </picture>
         <a
           href="https://youtu.be/bXL5xmmQPys"
-          class="footer-link glightbox is-laya"
+          class="footer-link glightbox"
           aria-label="Play the Laya teaser"
         ></a>
       </div>
@@ -55,7 +55,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/intersessions-keyart-portrait.jpg?v=1"
+            srcset="/images/intersessions-keyart-portrait.jpg?v=2"
           />
           <img
             src="/images/intersessions-keyart.jpg?v=2"
@@ -75,7 +75,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/hybris-keyart-portrait.jpg?v=2"
+            srcset="/images/hybris-keyart-portrait.jpg?v=3"
           />
           <img
             src="/images/hybris-keyart.jpg?v=3"
@@ -100,7 +100,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/mrs-steele-keyart-portrait.jpg?v=1"
+            srcset="/images/mrs-steele-keyart-portrait.jpg?v=2"
           />
           <img
             src="/images/mrs-steele-keyart.jpg?v=2"
@@ -120,7 +120,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/not-even-death-keyart-portrait.jpg?v=1"
+            srcset="/images/not-even-death-keyart-portrait.jpg?v=2"
           />
           <img
             src="/images/not-even-death-keyart.jpg?v=2"
@@ -130,7 +130,7 @@ import '../styles/global.css';
         </picture>
         <a
           href="https://files-ned.metronshowrunners.com/"
-          class="footer-link is-ned"
+          class="footer-link"
           aria-label="Not Even Death — view the script"
         ></a>
       </div>
@@ -145,7 +145,7 @@ import '../styles/global.css';
         <picture>
           <source
             media="(orientation: portrait)"
-            srcset="/images/cell-phone-keyart-portrait.jpg?v=1"
+            srcset="/images/cell-phone-keyart-portrait.jpg?v=2"
           />
           <img
             src="/images/cell-phone-keyart.jpg?v=2"
@@ -332,29 +332,30 @@ import '../styles/global.css';
   @media (orientation: portrait) {
     .keyart-img {
       object-fit: cover; /* tela cheia, cropando bordas se preciso */
-      /* Ancorado embaixo: se algo for cortado por causa do aspect do
-         aparelho, corta o topo da arte, nunca a barra do rodapé. */
-      object-position: center bottom;
+      /* 2026-09-19: a arte portrait nova também tem o botão desenhado no
+         topo (mesma pílula do landscape), não mais a barra no rodapé — então
+         o corte tem que proteger o TOPO agora, não mais embaixo. No aspect
+         de aparelho comum (mais estreito que o 0,5625 da arte) o cover corta
+         dos LADOS, não de cima/baixo, então "top" aqui é garantia extra —
+         ver o mesmo raciocínio em .keyart-img (landscape) acima. */
+      object-position: center top;
     }
 
-    /* No Not Even Death o título encosta na borda direita da arte portrait.
-       Em aparelho mais alto que 1313x2329 (todo iPhone recente) o cover corta
-       ~18% da largura, e centralizado isso comia letras de "NOT EVEN DEATH".
-       Ancorado à direita, o corte cai no lado esquerdo — fundo escuro e a
-       ponta da mão. */
+    /* Not Even Death mantém o título quase encostado na borda direita
+       também na arte portrait nova (margem ~0, igual à landscape). Ancorado
+       à direita, o corte lateral cai inteiro do lado esquerdo. */
     .keyart-img.is-ned {
-      object-position: right bottom;
+      object-position: right top;
     }
   }
 
-  /* Botão clicável sobre o botão já desenhado na arte 16:9 (pílula preta
-     no topo-centro). Medido por pixel nas 3 artes que têm destino real —
-     Laya "Watch Teaser" (~x 4170–5030 de 9216), Hybris "View Project"
-     (~x 4165–5020) e Not Even Death "View Script" (~x 4160–5040), todas com
-     y 0–250 de 5184 — e generosamente arredondado num retângulo único que
-     cobre as três. Inter/Sessions, Mrs. Steele e Cell Phone têm o mesmo
-     desenho de pílula ("Coming Soon"), mas sem destino: continuam sem este
-     elemento no HTML. Trocou a arte, meça de novo. */
+  /* Botão clicável sobre a pílula desenhada na arte (topo-centro). Medido
+     por pixel nas 6 artes novas — todas com o botão quase no mesmo lugar,
+     ~x 32%–38% a 64%–68% (landscape 9216 / portrait 2916–2920) e y 0–5,5%
+     — e generosamente arredondado num retângulo único que cobre as seis.
+     Inter/Sessions, Mrs. Steele e Cell Phone têm o mesmo desenho de pílula
+     ("Coming Soon"), mas sem destino: continuam sem elemento <a> no HTML.
+     Trocou a arte, meça de novo. */
   .footer-link {
     position: absolute;
     left: 44%;
@@ -365,29 +366,19 @@ import '../styles/global.css';
     transition: background-color 0.2s ease;
   }
 
-  /* Portrait ainda usa a arte antiga (sem botão desenhado no topo, com a
-     barra marrom clicável no rodapé) até as versões portrait novas
-     chegarem. Medidas por pixel na arte portrait antiga da Hybris
-     (1311x2311): barra em y=2196, 95.02% da altura. Trocou a arte, meça de
-     novo. */
+  /* Em portrait o object-fit: cover (acima) croppa os LADOS da arte pra
+     cobrir aparelhos mais estreitos que os 0,5625 dela — quanto mais
+     estreito o aparelho, mais a arte "zoom" e mais pra fora (perto das
+     bordas) o botão parece cair na tela. No aparelho mais estreito comum
+     (~0,46, ex. iPhone 12/Pro Max) isso empurra o botão até uns 28%–72%;
+     por isso a caixa aqui é mais larga que a do landscape (que não sofre
+     esse deslocamento, já que a caixa dele é sempre >= 1.45 de aspect). */
   @media (orientation: portrait) {
     .footer-link {
-      left: 0;
-      right: 0;
-      top: var(--footer-link-top, 95.02%);
-      bottom: 0;
-    }
-
-    /* A arte da Laya em portrait é 1329x2351 com a barra em y=2222
-       (94.51%). Trocou a arte, meça de novo. */
-    .footer-link.is-laya {
-      --footer-link-top: 94.51%;
-    }
-
-    /* A arte do Not Even Death em portrait é 1313x2329 com a barra em
-       y=2198 (94.38%). Trocou a arte, meça de novo. */
-    .footer-link.is-ned {
-      --footer-link-top: 94.38%;
+      left: 25%;
+      right: 25%;
+      top: 0;
+      bottom: 94%;
     }
   }
 

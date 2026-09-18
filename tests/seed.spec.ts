@@ -3,11 +3,12 @@ import { expect, test } from '@playwright/test';
 /* Roda contra o PREVIEW (`npm run build && npm run preview`), nos três perfis
    de iPhone — ou seja, sempre em portrait.
 
-   Contra o `astro dev` NÃO funciona, e falha de um jeito que engana: a
-   <astro-dev-toolbar> fica ancorada no rodé da viewport, exatamente sobre a
-   faixa que .footer-link ocupa (os últimos ~5% da arte). Ela intercepta o
-   clique; o Playwright tenta de novo até o autoplay trocar de slide, e aí a
-   mensagem vira "element is not visible", que aponta para o lugar errado.
+   Contra o `astro dev` pode falhar de um jeito que engana: a
+   <astro-dev-toolbar> se ancora no rodapé da viewport. Até 2026-09-19 isso
+   sempre colidia com a .footer-link (uma faixa nos últimos ~5% da arte); com
+   o botão desenhado no topo da arte (ver comentário mais abaixo) a colisão
+   deixou de ser garantida, mas o teste continua valendo como checagem geral
+   de que a suíte não está rodando contra o dev por engano.
    O primeiro teste abaixo existe para dizer isso em um segundo. */
 
 test('a suíte está rodando contra o preview, não contra o dev', async ({
@@ -30,21 +31,14 @@ test('a suíte está rodando contra o preview, não contra o dev', async ({
   ).toBe(0);
 });
 
-/* Onde começa a barra marrom do rodapé na arte portrait da Hybris, medido por
-   pixel: 2196 de 2311 (95.02%). Trocou a arte, meça de novo.
-
-   O Not Even Death tem a sua própria medida: a arte dele é outra (1313x2329),
-   e a barra começa em 2198, ou seja 94.38%. Até 2026-09-13 ele não estava
-   nesta lista, porque o destino não existia e havia no lugar uma pastilha
-   "Coming Soon".
-
-   Isto tudo vale só pra arte portrait (a suíte roda em perfis de iPhone —
-   ver comentário no topo do arquivo). Em 2026-09-18 a arte landscape virou
-   16:9 com o botão desenhado no topo em vez da barra no rodapé, mas a
-   portrait ainda é a antiga até a versão 16:9 dela chegar; por isso os
-   índices abaixo (dot/slide) já refletem a nova ordem do carrossel — Laya,
-   Inter/Sessions, Hybris, Mrs. Steele, Not Even Death, Cell Phone — mas as
-   % de rodapé continuam as mesmas. */
+/* A suíte roda em perfis de iPhone (portrait — ver comentário no topo do
+   arquivo). Em 2026-09-19 a arte portrait passou a ter o mesmo botão
+   desenhado no topo que a landscape (16:9, ver index.astro), substituindo a
+   faixa marrom que ficava no rodapé — por isso não há mais % por slide: é a
+   mesma caixa .footer-link para os três, perto do topo da arte (ver o teste
+   "fica alinhado" abaixo). Índices (dot/slide) refletem a ordem do
+   carrossel — Laya, Inter/Sessions, Hybris, Mrs. Steele, Not Even Death,
+   Cell Phone. */
 const SLIDES_COM_LINK = [
   {
     nome: 'Hybris',
@@ -52,7 +46,6 @@ const SLIDES_COM_LINK = [
     slide: 2,
     href: 'https://files.hybris.world/',
     aria: /Hybris Project/,
-    footerTopPct: 95.02,
   },
   {
     nome: 'Laya',
@@ -60,8 +53,6 @@ const SLIDES_COM_LINK = [
     slide: 0,
     href: 'https://youtu.be/bXL5xmmQPys',
     aria: /Laya teaser/,
-    // A arte da Laya tem a barra em 94.51%, nao nos 95.02% da do Hybris.
-    footerTopPct: 94.51,
   },
   {
     nome: 'Not Even Death',
@@ -69,7 +60,6 @@ const SLIDES_COM_LINK = [
     slide: 4,
     href: 'https://files-ned.metronshowrunners.com/',
     aria: /view the script/,
-    footerTopPct: 94.38,
   },
 ];
 
@@ -97,7 +87,7 @@ for (const ip of SLIDES_COM_LINK) {
     await expect(link).toHaveAttribute('aria-label', ip.aria);
   });
 
-  test(`o link do rodapé de ${ip.nome} fica alinhado com a barra`, async ({
+  test(`o botão de ${ip.nome} fica no topo, centralizado com a pílula`, async ({
     page,
   }) => {
     await page.goto('/');
@@ -108,12 +98,19 @@ for (const ip of SLIDES_COM_LINK) {
     const img = await page.locator(`${slide} .keyart-img`).boundingBox();
     expect(link && img).toBeTruthy();
 
+    // .footer-link em portrait é left:25%/right:25%/top:0/bottom:94% do
+    // .slide (ver index.astro) — encosta no topo e tem 6% da altura da
+    // arte, centralizado na largura. Números fixos porque a caixa é a
+    // mesma pros três slides, não medida por pixel de cada arte.
     const topPct = ((link!.y - img!.y) / img!.height) * 100;
-    expect(topPct).toBeCloseTo(ip.footerTopPct, 0);
+    expect(topPct).toBeCloseTo(0, 0);
 
-    // Sem isto sobraria uma tira não clicável no pé.
-    const bottomGap = img!.y + img!.height - (link!.y + link!.height);
-    expect(Math.abs(bottomGap)).toBeLessThan(2);
+    const heightPct = (link!.height / img!.height) * 100;
+    expect(heightPct).toBeCloseTo(6, 0);
+
+    const linkCenterX = link!.x + link!.width / 2;
+    const imgCenterX = img!.x + img!.width / 2;
+    expect(Math.abs(linkCenterX - imgCenterX)).toBeLessThan(2);
   });
 }
 
