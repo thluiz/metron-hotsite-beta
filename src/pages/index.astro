@@ -225,20 +225,20 @@ import '../styles/global.css';
     </div>
   </main>
 
-  <section class="books" aria-labelledby="books-title" lang="pt-BR">
-    <h2 id="books-title" class="books-title">Livros</h2>
+  <section class="books" aria-labelledby="books-title">
+    <h2 id="books-title" class="books-title">Books</h2>
     <div class="books-grid">
       <div class="book-item">
         <a
           href="https://a.co/d/074VoWqo"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Comprar Hybris, Livro 1: A História de Melissa — abre em nova janela"
+          aria-label="Buy Hybris, Book 1: Melissa's Story — opens in a new window"
         >
           <img
             class="book-cover"
             src="/images/books/hybris-livro-1-melissa.jpg?v=1"
-            alt="Hybris, Livro 1: A História de Melissa — inspirado no mito da Medusa. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            alt="Hybris, Book 1: Melissa's Story — inspired by the myth of Medusa. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
             loading="lazy"
             width="900"
             height="1414"
@@ -250,12 +250,12 @@ import '../styles/global.css';
           href="https://a.co/d/0gX00Jsc"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Comprar Hybris, Livro 2: A História de Peter — abre em nova janela"
+          aria-label="Buy Hybris, Book 2: Peter's Story — opens in a new window"
         >
           <img
             class="book-cover"
             src="/images/books/hybris-livro-2-peter.jpg?v=1"
-            alt="Hybris, Livro 2: A História de Peter — inspirado no mito de Perseu. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            alt="Hybris, Book 2: Peter's Story — inspired by the myth of Perseus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
             loading="lazy"
             width="900"
             height="1414"
@@ -267,12 +267,12 @@ import '../styles/global.css';
           href="https://a.co/d/04kTKcmm"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Comprar Hybris, Livro 3: A História de Matthew — abre em nova janela"
+          aria-label="Buy Hybris, Book 3: Matthew's Story — opens in a new window"
         >
           <img
             class="book-cover"
             src="/images/books/hybris-livro-3-matthew.jpg?v=1"
-            alt="Hybris, Livro 3: A História de Matthew — inspirado no mito de Midas. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            alt="Hybris, Book 3: Matthew's Story — inspired by the myth of Midas. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
             loading="lazy"
             width="900"
             height="1414"
@@ -283,7 +283,7 @@ import '../styles/global.css';
         <img
           class="book-cover"
           src="/images/books/hybris-livro-4-neville.jpg?v=1"
-          alt="Hybris, Livro 4: A História de Neville — inspirado no mito de Narciso. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          alt="Hybris, Book 4: Neville's Story — inspired by the myth of Narcissus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
           loading="lazy"
           width="900"
           height="1414"
@@ -293,7 +293,7 @@ import '../styles/global.css';
         <img
           class="book-cover"
           src="/images/books/hybris-livro-5-benedict.jpg?v=1"
-          alt="Hybris, Livro 5: A História de Benedict — inspirado no mito de Belerofonte. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          alt="Hybris, Book 5: Benedict's Story — inspired by the myth of Bellerophon. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
           loading="lazy"
           width="900"
           height="1414"
@@ -303,7 +303,7 @@ import '../styles/global.css';
         <img
           class="book-cover"
           src="/images/books/hybris-livro-6-theo.jpg?v=1"
-          alt="Hybris, Livro 6: A História de Theo — inspirado em um mito de Zeus. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          alt="Hybris, Book 6: Theo's Story — inspired by a myth of Zeus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing."
           loading="lazy"
           width="900"
           height="1414"
@@ -313,7 +313,7 @@ import '../styles/global.css';
         <img
           class="book-cover"
           src="/images/books/laya-livro.jpg?v=1"
-          alt="Laya, de Julio Camacho. Metron Publishing."
+          alt="Laya, by Julio Camacho. Metron Publishing."
           loading="lazy"
           width="900"
           height="1414"
@@ -414,51 +414,51 @@ import '../styles/global.css';
     display: block;
     width: 100%;
     height: 100%;
-    /* cover, não fill: com o piso de aspect 1.6 do .keyart (acima), a caixa
-       landscape nem sempre bate exatamente com o 16:9 da arte — fill
-       esticaria a imagem. Cover crop sem deformar; como a caixa nunca fica
-       mais "larga" que 16:9 (só mais "quadrada"), o corte é sempre lateral,
-       nunca em cima/embaixo — daí object-position: top ser só uma garantia
-       a mais, não algo que hoje entre em ação. */
+    /* cover, not fill: with .keyart's 1.6 aspect floor (above), the
+       landscape box doesn't always match the art's 16:9 exactly — fill
+       would stretch the image. Cover crops without distorting; since the
+       box never gets "wider" than 16:9 (only more "square"), the crop is
+       always on the sides, never top/bottom — hence object-position: top
+       being just extra insurance, not something that currently kicks in. */
     object-fit: cover;
     object-position: center top;
   }
 
-  /* Not Even Death tem margem ~0 na borda direita da arte landscape (o "H"
-     de DEATH quase toca o pixel 9216 de 9216). Ancorado à direita, qualquer
-     corte lateral cai inteiro do lado esquerdo (fundo de chuva, sem texto),
-     e a borda direita nunca é tocada. */
+  /* Not Even Death has ~0 margin on the landscape art's right edge (the
+     "H" in DEATH nearly touches pixel 9216 of 9216). Anchored to the
+     right, any side crop falls entirely on the left (rain background, no
+     text), and the right edge is never touched. */
   .keyart-img.is-ned {
     object-position: right top;
   }
 
   @media (orientation: portrait) {
     .keyart-img {
-      object-fit: cover; /* tela cheia, cropando bordas se preciso */
-      /* 2026-09-19: a arte portrait nova também tem o botão desenhado no
-         topo (mesma pílula do landscape), não mais a barra no rodapé — então
-         o corte tem que proteger o TOPO agora, não mais embaixo. No aspect
-         de aparelho comum (mais estreito que o 0,5625 da arte) o cover corta
-         dos LADOS, não de cima/baixo, então "top" aqui é garantia extra —
-         ver o mesmo raciocínio em .keyart-img (landscape) acima. */
+      object-fit: cover; /* full screen, cropping edges if needed */
+      /* 2026-09-19: the new portrait art also has the button drawn at the
+         top (same pill as landscape), no longer the footer bar — so the
+         crop now has to protect the TOP, not the bottom anymore. On a
+         common device aspect (narrower than the art's 0.5625) cover crops
+         the SIDES, not top/bottom, so "top" here is extra insurance — same
+         reasoning as .keyart-img (landscape) above. */
       object-position: center top;
     }
 
-    /* Not Even Death mantém o título quase encostado na borda direita
-       também na arte portrait nova (margem ~0, igual à landscape). Ancorado
-       à direita, o corte lateral cai inteiro do lado esquerdo. */
+    /* Not Even Death keeps the title nearly flush against the right edge
+       on the new portrait art too (~0 margin, same as landscape). Anchored
+       to the right, the side crop falls entirely on the left. */
     .keyart-img.is-ned {
       object-position: right top;
     }
   }
 
-  /* Botão clicável sobre a pílula desenhada na arte (topo-centro). Medido
-     por pixel nas 6 artes novas — todas com o botão quase no mesmo lugar,
-     ~x 32%–38% a 64%–68% (landscape 9216 / portrait 2916–2920) e y 0–5,5%
-     — e generosamente arredondado num retângulo único que cobre as seis.
-     Inter/Sessions, Mrs. Steele e Cell Phone têm o mesmo desenho de pílula
-     ("Coming Soon"), mas sem destino: continuam sem elemento <a> no HTML.
-     Trocou a arte, meça de novo. */
+  /* Clickable button over the pill drawn on the art (top-center). Measured
+     pixel-by-pixel on the 6 new art pieces — all with the button in almost
+     the same spot, ~x 32%–38% to 64%–68% (landscape 9216 / portrait
+     2916–2920) and y 0–5.5% — and generously rounded into a single
+     rectangle that covers all six. Inter/Sessions, Mrs. Steele and Cell
+     Phone have the same pill design ("Coming Soon") but no destination:
+     they stay without an <a> element in the HTML. Art changed, remeasure. */
   .footer-link {
     position: absolute;
     left: 44%;
@@ -469,13 +469,13 @@ import '../styles/global.css';
     transition: background-color 0.2s ease;
   }
 
-  /* Em portrait o object-fit: cover (acima) croppa os LADOS da arte pra
-     cobrir aparelhos mais estreitos que os 0,5625 dela — quanto mais
-     estreito o aparelho, mais a arte "zoom" e mais pra fora (perto das
-     bordas) o botão parece cair na tela. No aparelho mais estreito comum
-     (~0,46, ex. iPhone 12/Pro Max) isso empurra o botão até uns 28%–72%;
-     por isso a caixa aqui é mais larga que a do landscape (que não sofre
-     esse deslocamento, já que a caixa dele é sempre >= 1.45 de aspect). */
+  /* In portrait, object-fit: cover (above) crops the SIDES of the art to
+     cover devices narrower than its 0.5625 — the narrower the device, the
+     more the art "zooms" and the further out (toward the edges) the
+     button appears to land on screen. On the narrowest common device
+     (~0.46, e.g. iPhone 12/Pro Max) this pushes the button out to about
+     28%–72%; that's why this box is wider than the landscape one (which
+     doesn't suffer this shift, since its box is always >= 1.45 aspect). */
   @media (orientation: portrait) {
     .footer-link {
       left: 25%;
@@ -489,12 +489,12 @@ import '../styles/global.css';
     background-color: rgba(255, 255, 255, 0.14);
   }
   .footer-link:focus-visible {
-    outline: 2px solid rgba(26, 18, 10, 0.75); /* escuro: o fundo aqui é claro */
+    outline: 2px solid rgba(26, 18, 10, 0.75); /* dark: the background here is light */
     outline-offset: -2px;
   }
 
-  /* Setas laterais, centralizadas na altura da arte (acima da barra do
-     rodapé, que fica só no terço inferior). */
+  /* Side arrows, centered on the art's height (above the footer bar,
+     which sits only in the bottom third). */
   .nav-arrow {
     position: absolute;
     top: 50%;
@@ -530,9 +530,9 @@ import '../styles/global.css';
     right: 3%;
   }
 
-  /* Dots no terço inferior: em landscape o botão clicável fica no topo, longe
-     daqui; em portrait (arte antiga) ficam acima da barra do rodapé, pra não
-     brigar com a faixa clicável. */
+  /* Dots in the bottom third: in landscape the clickable button is at the
+     top, far from here; in portrait (old art) they sit above the footer
+     bar, to avoid clashing with the clickable strip. */
   .dots {
     position: absolute;
     left: 50%;
@@ -564,8 +564,8 @@ import '../styles/global.css';
     outline-offset: 2px;
   }
 
-  /* Segunda seção: livros da produtora, abaixo da key art (que agora ocupa
-     só 100dvh em vez da tela toda via position: fixed). */
+  /* Second section: the studio's books, below the key art (which now only
+     takes up 100dvh instead of the whole screen via position: fixed). */
   .books {
     background-color: #cabf9d;
     padding: 64px 6% 96px;
@@ -578,11 +578,11 @@ import '../styles/global.css';
     letter-spacing: 0.02em;
   }
 
-  /* 3 colunas em tela larga; cada capa portrait ocupa 1 coluna (3 por
-     linha), cada capa landscape leva .is-landscape e ocupa a linha inteira
-     (grid-column: 1 / -1) — 1 por linha. Em telas menores o grid cai pra 2
-     e depois 1 coluna, então o "1 a 3 por linha" do pedido vem do
-     viewport, não de um layout fixo por item. */
+  /* 3 columns on wide screens; each portrait cover takes 1 column (3 per
+     row), each landscape cover gets .is-landscape and spans the full row
+     (grid-column: 1 / -1) — 1 per row. On smaller screens the grid drops
+     to 2 and then 1 column, so the "1 to 3 per row" comes from the
+     viewport, not a fixed per-item layout. */
   .books-grid {
     max-width: 1400px;
     margin: 0 auto;
@@ -601,9 +601,9 @@ import '../styles/global.css';
     height: auto;
   }
 
-  /* Link que cobre a capa inteira (ex.: livro à venda). A imagem já é o
-     conteúdo clicável, então o link não tem texto visível próprio — só o
-     aria-label. */
+  /* Link that covers the whole cover (e.g.: book for sale). The image is
+     already the clickable content, so the link has no visible text of its
+     own — just the aria-label. */
   .book-item a {
     display: block;
     transition: opacity 0.2s ease;
