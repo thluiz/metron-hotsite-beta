@@ -225,36 +225,139 @@ import '../styles/global.css';
     </div>
   </main>
 
+  <section class="books" aria-labelledby="books-title" lang="pt-BR">
+    <h2 id="books-title" class="books-title">Livros</h2>
+    <div class="books-grid">
+      <div class="book-item">
+        <a
+          href="https://a.co/d/074VoWqo"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Comprar Hybris, Livro 1: A História de Melissa — abre em nova janela"
+        >
+          <img
+            class="book-cover"
+            src="/images/books/hybris-livro-1-melissa.jpg?v=1"
+            alt="Hybris, Livro 1: A História de Melissa — inspirado no mito da Medusa. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            loading="lazy"
+            width="900"
+            height="1414"
+          />
+        </a>
+      </div>
+      <div class="book-item">
+        <a
+          href="https://a.co/d/0gX00Jsc"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Comprar Hybris, Livro 2: A História de Peter — abre em nova janela"
+        >
+          <img
+            class="book-cover"
+            src="/images/books/hybris-livro-2-peter.jpg?v=1"
+            alt="Hybris, Livro 2: A História de Peter — inspirado no mito de Perseu. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            loading="lazy"
+            width="900"
+            height="1414"
+          />
+        </a>
+      </div>
+      <div class="book-item">
+        <a
+          href="https://a.co/d/04kTKcmm"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Comprar Hybris, Livro 3: A História de Matthew — abre em nova janela"
+        >
+          <img
+            class="book-cover"
+            src="/images/books/hybris-livro-3-matthew.jpg?v=1"
+            alt="Hybris, Livro 3: A História de Matthew — inspirado no mito de Midas. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+            loading="lazy"
+            width="900"
+            height="1414"
+          />
+        </a>
+      </div>
+      <div class="book-item">
+        <img
+          class="book-cover"
+          src="/images/books/hybris-livro-4-neville.jpg?v=1"
+          alt="Hybris, Livro 4: A História de Neville — inspirado no mito de Narciso. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          loading="lazy"
+          width="900"
+          height="1414"
+        />
+      </div>
+      <div class="book-item">
+        <img
+          class="book-cover"
+          src="/images/books/hybris-livro-5-benedict.jpg?v=1"
+          alt="Hybris, Livro 5: A História de Benedict — inspirado no mito de Belerofonte. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          loading="lazy"
+          width="900"
+          height="1414"
+        />
+      </div>
+      <div class="book-item">
+        <img
+          class="book-cover"
+          src="/images/books/hybris-livro-6-theo.jpg?v=1"
+          alt="Hybris, Livro 6: A História de Theo — inspirado em um mito de Zeus. De Julio Camacho e Guilherme Schlogel, adaptado por Rafael Doyle. Metron Publishing."
+          loading="lazy"
+          width="900"
+          height="1414"
+        />
+      </div>
+      <div class="book-item">
+        <img
+          class="book-cover"
+          src="/images/books/laya-livro.jpg?v=1"
+          alt="Laya, de Julio Camacho. Metron Publishing."
+          loading="lazy"
+          width="900"
+          height="1414"
+        />
+      </div>
+    </div>
+  </section>
+
 </Layout>
 
 <style>
   .keyart-wrap {
-    position: fixed;
-    inset: 0;
+    position: relative;
+    width: 100%;
+    /* dvh tracks the real visible viewport on mobile (browser bar
+       shows/hides) — plain vh measures as if it were always hidden, so
+       it over/under-shoots. vh fallback for browsers without dvh. */
+    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
-    /* Aparece só onde a imagem não alcança. */
+    /* Only shows where the image doesn't reach. */
     background-color: #cabf9d;
   }
 
-  /* Caixa com aspect 16:9, inteira dentro do viewport. Trocado de 3070x2304
-     (~4:3) pra 16:9 em 2026-09-18: em monitor wide/ultrawide o 4:3 antigo
-     era limitado pela altura e sobravam barras cor-de-creme enormes nas
-     laterais. As 6 artes landscape já vêm nesse formato.
+  /* Box with 16:9 aspect, fully inside the viewport. Changed from
+     3070x2304 (~4:3) to 16:9 on 2026-09-18: on a wide/ultrawide monitor
+     the old 4:3 was limited by height and left huge cream-colored bars on
+     the sides. The 6 landscape art pieces already come in that format.
 
-     A altura, porém, não trava mais em 100vw*9/16: esse teto sempre force o
-     aspect exato 16:9 e em telas mais "quadradas" (tablet em landscape,
-     janela redimensionada) sobravam barras horizontais enormes em cima e
-     embaixo. Em vez disso ela só encolhe até o piso de aspect 1.45 —
-     abaixo disso a arte é cropada pelas laterais via object-fit: cover (ver
-     .keyart-img) em vez de continuar encolhendo a caixa. 1.45 foi escolhido
-     porque o corte lateral que ele produz (~9,2% de cada lado) fica abaixo
-     da margem de segurança medida por pixel nas artes: logo da Laya a
-     ~11,4% da borda esquerda (a mais apertada de um logo/texto), homem da
-     Hybris a ~10,8% da esquerda. Not Even Death tem margem ~0 na direita
-     (título encostado), por isso não depende dessa margem — ver
-     object-position em .is-ned. 2026-09-19: já era 1.6 (corte ~5%); baixado
-     pra cortar mais como pedido, mas sem estourar a margem da Laya — não
-     abaixar mais que isso sem remedir as artes por pixel. */
+     The height, however, no longer locks to 100vw*9/16: that ceiling
+     always forces the exact 16:9 aspect, and on more "square" screens
+     (tablet in landscape, resized window) it left huge horizontal bars on
+     top and bottom. Instead it only shrinks down to an aspect floor of
+     1.45 — below that the art gets cropped on the sides via object-fit:
+     cover (see .keyart-img) instead of the box continuing to shrink. 1.45
+     was chosen because the side crop it produces (~9.2% on each side)
+     stays under the safety margin measured pixel-by-pixel on the art:
+     Laya's logo at ~11.4% from the left edge (the tightest of any
+     logo/text), Hybris's man at ~10.8% from the left. Not Even Death has
+     ~0 margin on the right (title flush against the edge), so it doesn't
+     depend on this margin — see object-position on .is-ned. 2026-09-19:
+     it was already 1.6 (crop ~5%); lowered to crop more as requested, but
+     without blowing past Laya's margin — don't lower it further without
+     remeasuring the art pixel-by-pixel. */
   .keyart {
     position: absolute;
     top: 50%;
@@ -262,20 +365,20 @@ import '../styles/global.css';
     transform: translate(-50%, -50%);
     width:  min(100vw, 100vh * 16 / 9);
     height: min(100vh, 100vw / 1.45);
-    /* Altura da arte desenhada. Serve para dimensionar texto sobreposto sem
-       depender de vh puro, que erra quando a caixa é limitada pela largura. */
+    /* Height of the drawn art. Used to size overlaid text without relying
+       on plain vh, which is wrong when the box is width-constrained. */
     --art-h: min(100vh, 100vw / 1.45);
   }
 
-  /* Portrait (celular): a arte portrait cobre a tela inteira (crop via
-     object-fit: cover), sem caixa com aspect fixo nem barras cor-de-creme.
-     Preenche o .keyart-wrap por inset (não por 100vw/100vh): unidades vh
-     em mobile seguem o "large viewport" (como se a barra do navegador
-     estivesse escondida), maior que a área realmente visível — com
-     top:50%/translate(-50%) isso sobrava simetricamente em cima E embaixo,
-     cortando a barra do rodapé mesmo com object-position: bottom. Herdar o
-     tamanho do wrap (que via position:fixed já acompanha o viewport visível
-     de verdade) evita o descompasso. */
+  /* Portrait (phone): the portrait art covers the whole screen (cropped
+     via object-fit: cover), with no fixed-aspect box or cream bars.
+     Fills .keyart-wrap via inset (not 100vw/100vh): vh units on mobile
+     follow the "large viewport" (as if the browser bar were hidden),
+     bigger than the actually visible area — with top:50%/translate(-50%)
+     that overflowed symmetrically on top AND bottom, cropping the footer
+     bar even with object-position: bottom. Inheriting the wrap's size
+     (which via position:fixed already tracks the real visible viewport)
+     avoids the mismatch. */
   @media (orientation: portrait) {
     .keyart {
       inset: 0;
@@ -284,14 +387,14 @@ import '../styles/global.css';
       transform: none;
       width: 100%;
       height: 100%;
-      /* Em portrait a arte é cortada por object-fit: cover, então o que
-         importa é o tamanho da IMAGEM desenhada, não o da caixa. */
+      /* In portrait the art is cropped by object-fit: cover, so what
+         matters is the size of the drawn IMAGE, not the box. */
       --art-h: max(100vh, 100vw * 2329 / 1313);
     }
   }
 
-  /* Slides empilhados; o crossfade é só opacity. visibility some com um
-     delay pra não deixar o link do slide escondido focável/clicável. */
+  /* Stacked slides; the crossfade is opacity only. visibility disappears
+     with a delay so the hidden slide's link isn't focusable/clickable. */
   .slide {
     position: absolute;
     inset: 0;
@@ -459,6 +562,71 @@ import '../styles/global.css';
   .dot:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.95);
     outline-offset: 2px;
+  }
+
+  /* Segunda seção: livros da produtora, abaixo da key art (que agora ocupa
+     só 100dvh em vez da tela toda via position: fixed). */
+  .books {
+    background-color: #cabf9d;
+    padding: 64px 6% 96px;
+  }
+
+  .books-title {
+    max-width: 1400px;
+    margin: 0 auto 32px;
+    font-size: clamp(22px, 4vw, 32px);
+    letter-spacing: 0.02em;
+  }
+
+  /* 3 colunas em tela larga; cada capa portrait ocupa 1 coluna (3 por
+     linha), cada capa landscape leva .is-landscape e ocupa a linha inteira
+     (grid-column: 1 / -1) — 1 por linha. Em telas menores o grid cai pra 2
+     e depois 1 coluna, então o "1 a 3 por linha" do pedido vem do
+     viewport, não de um layout fixo por item. */
+  .books-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 24px;
+  }
+
+  .book-item.is-landscape {
+    grid-column: 1 / -1;
+  }
+
+  .book-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Link que cobre a capa inteira (ex.: livro à venda). A imagem já é o
+     conteúdo clicável, então o link não tem texto visível próprio — só o
+     aria-label. */
+  .book-item a {
+    display: block;
+    transition: opacity 0.2s ease;
+  }
+  .book-item a:hover,
+  .book-item a:focus-visible {
+    opacity: 0.85;
+  }
+  .book-item a:focus-visible {
+    outline: 2px solid rgba(26, 18, 10, 0.75);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .books-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .books-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
