@@ -1,5 +1,5 @@
-/* O site é uma key art em tela cheia; os estilos dela ficam escopados em
-   src/pages/index.astro. Aqui só o que é global. */
+/* The site is a full-screen key art; its styles are scoped in
+   src/pages/index.astro. Only truly global stuff goes here. */
 
 *,
 *::before,
@@ -14,36 +14,39 @@ body {
 }
 
 body {
-  /* Mesmo creme do letterbox: a tela não pisca noutra cor enquanto a arte
-     não carrega. */
+  /* Same cream as the letterbox: the screen doesn't flash another color
+     while the art hasn't loaded yet. */
   background-color: #cabf9d;
   color: #1a120a;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif;
 }
 
-/* O GLightbox (flyout de vídeo da Laya) centraliza o slide com
-   height: 100vh em .ginner-container. No Safari iOS, com a página sem
-   scroll, a barra do navegador não tem por que sumir — mas 100vh mede a
-   altura como se ela fosse sumir, maior que a área realmente visível. Em
-   landscape essa barra come uma fatia maior da tela (mais baixa), então o
-   vídeo centraliza contra uma altura maior que a visível e sai descolado.
-   100dvh acompanha o viewport visível de verdade (iOS Safari 15.4+).
+/* GLightbox (the Laya video flyout) centers the slide with
+   height: 100vh on .ginner-container. On iOS Safari, with the page
+   having no scroll, there's no reason for the browser bar to hide — but
+   100vh measures the height as if it would hide, bigger than the actually
+   visible area. In landscape that bar eats a bigger slice of the screen
+   (it's shorter), so the video centers against a height bigger than
+   what's visible and ends up off-center. 100dvh tracks the real visible
+   viewport (iOS Safari 15.4+).
 
-   .ginner-container também é flex-direction: column só com
-   justify-content: center (centraliza o eixo vertical) — sem
-   align-items: center, o eixo horizontal fica no padrão stretch. Em
-   portrait o vídeo (16:9) precisa de mais largura do que a altura da tela
-   permite, então nunca encolhe abaixo de 100% da linha (fica edge-to-edge,
-   parece centralizado). Em landscape a tela é curta, o vídeo é forçado a
-   uma largura menor pra caber na altura, e sem align-items essa caixa mais
-   estreita gruda na borda esquerda em vez de centralizar.
+   .ginner-container is also flex-direction: column with only
+   justify-content: center (centers the vertical axis) — without
+   align-items: center, the horizontal axis stays at the default stretch.
+   In portrait the video (16:9) needs more width than the screen's height
+   allows, so it never shrinks below 100% of the row (ends up
+   edge-to-edge, looks centered). In landscape the screen is short, the
+   video is forced to a smaller width to fit the height, and without
+   align-items that narrower box sticks to the left edge instead of
+   centering.
 
-   Reforçado com margin auto no próprio vídeo (não só align-items no pai):
-   como não dá pra testar isso num Safari iOS real a partir daqui, é cinto e
-   suspensório — se um mecanismo falhar, o outro ainda centraliza.
+   Reinforced with margin auto on the video itself (not just align-items
+   on the parent): since there's no way to test this on a real iOS Safari
+   from here, it's belt and suspenders — if one mechanism fails, the other
+   still centers it.
 
-   !important porque o <link> do GLightbox carrega depois deste arquivo. */
+   !important because GLightbox's <link> loads after this file. */
 .glightbox-container .ginner-container {
   height: 100dvh !important;
   align-items: center !important;
