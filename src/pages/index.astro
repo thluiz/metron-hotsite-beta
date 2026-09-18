@@ -25,32 +25,7 @@ import '../styles/global.css';
         data-slide="0"
         role="group"
         aria-roledescription="slide"
-        aria-label="1 of 6: Hybris"
-      >
-        <picture>
-          <source
-            media="(orientation: portrait)"
-            srcset="/images/hybris-keyart-portrait.jpg?v=2"
-          />
-          <img
-            src="/images/hybris-keyart.jpg?v=2"
-            alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
-            class="keyart-img"
-          />
-        </picture>
-        <a
-          href="https://files.hybris.world/"
-          class="footer-link"
-          aria-label="Hybris Project — access the materials"
-        ></a>
-      </div>
-
-      <div
-        class="slide"
-        data-slide="1"
-        role="group"
-        aria-roledescription="slide"
-        aria-label="2 of 6: Laya"
+        aria-label="1 of 6: Laya"
       >
         <picture>
           <source
@@ -58,7 +33,7 @@ import '../styles/global.css';
             srcset="/images/laya-keyart-portrait.jpg?v=4"
           />
           <img
-            src="/images/laya-keyart.jpg?v=4"
+            src="/images/laya-keyart.jpg?v=5"
             alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film. Coming soon."
             class="keyart-img"
           />
@@ -72,10 +47,10 @@ import '../styles/global.css';
 
       <div
         class="slide"
-        data-slide="2"
+        data-slide="1"
         role="group"
         aria-roledescription="slide"
-        aria-label="3 of 6: Inter/Sessions"
+        aria-label="2 of 6: Inter/Sessions"
       >
         <picture>
           <source
@@ -83,11 +58,36 @@ import '../styles/global.css';
             srcset="/images/intersessions-keyart-portrait.jpg?v=1"
           />
           <img
-            src="/images/intersessions-keyart.jpg?v=1"
+            src="/images/intersessions-keyart.jpg?v=2"
             alt="Inter/Sessions — No one stands alone. A Metron Showrunners Original Limited Series. Coming soon."
             class="keyart-img"
           />
         </picture>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="2"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="3 of 6: Hybris"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/hybris-keyart-portrait.jpg?v=2"
+          />
+          <img
+            src="/images/hybris-keyart.jpg?v=3"
+            alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
+            class="keyart-img"
+          />
+        </picture>
+        <a
+          href="https://files.hybris.world/"
+          class="footer-link"
+          aria-label="Hybris Project — access the materials"
+        ></a>
       </div>
 
       <div
@@ -103,7 +103,7 @@ import '../styles/global.css';
             srcset="/images/mrs-steele-keyart-portrait.jpg?v=1"
           />
           <img
-            src="/images/mrs-steele-keyart.jpg?v=1"
+            src="/images/mrs-steele-keyart.jpg?v=2"
             alt="Adorable Mrs. Steele. A Metron Showrunners Original Comedy Feature Film. Coming soon."
             class="keyart-img"
           />
@@ -123,7 +123,7 @@ import '../styles/global.css';
             srcset="/images/not-even-death-keyart-portrait.jpg?v=1"
           />
           <img
-            src="/images/not-even-death-keyart.jpg?v=1"
+            src="/images/not-even-death-keyart.jpg?v=2"
             alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film."
             class="keyart-img is-ned"
           />
@@ -148,7 +148,7 @@ import '../styles/global.css';
             srcset="/images/cell-phone-keyart-portrait.jpg?v=1"
           />
           <img
-            src="/images/cell-phone-keyart.jpg?v=1"
+            src="/images/cell-phone-keyart.jpg?v=2"
             alt="Cell Phone — you're free to go. A Metron Showrunners Original Vertical Mobile Film. Coming soon."
             class="keyart-img"
           />
@@ -179,7 +179,7 @@ import '../styles/global.css';
           data-dot="0"
           role="tab"
           aria-selected="true"
-          aria-label="Show slide 1: Hybris"
+          aria-label="Show slide 1: Laya"
         ></button>
         <button
           type="button"
@@ -187,7 +187,7 @@ import '../styles/global.css';
           data-dot="1"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 2: Laya"
+          aria-label="Show slide 2: Inter/Sessions"
         ></button>
         <button
           type="button"
@@ -195,7 +195,7 @@ import '../styles/global.css';
           data-dot="2"
           role="tab"
           aria-selected="false"
-          aria-label="Show slide 3: Inter/Sessions"
+          aria-label="Show slide 3: Hybris"
         ></button>
         <button
           type="button"
@@ -236,17 +236,35 @@ import '../styles/global.css';
     background-color: #cabf9d;
   }
 
-  /* Caixa com o aspect da arte (3070x2304), inteira dentro do viewport. */
+  /* Caixa com aspect 16:9, inteira dentro do viewport. Trocado de 3070x2304
+     (~4:3) pra 16:9 em 2026-09-18: em monitor wide/ultrawide o 4:3 antigo
+     era limitado pela altura e sobravam barras cor-de-creme enormes nas
+     laterais. As 6 artes landscape já vêm nesse formato.
+
+     A altura, porém, não trava mais em 100vw*9/16: esse teto sempre force o
+     aspect exato 16:9 e em telas mais "quadradas" (tablet em landscape,
+     janela redimensionada) sobravam barras horizontais enormes em cima e
+     embaixo. Em vez disso ela só encolhe até o piso de aspect 1.45 —
+     abaixo disso a arte é cropada pelas laterais via object-fit: cover (ver
+     .keyart-img) em vez de continuar encolhendo a caixa. 1.45 foi escolhido
+     porque o corte lateral que ele produz (~9,2% de cada lado) fica abaixo
+     da margem de segurança medida por pixel nas artes: logo da Laya a
+     ~11,4% da borda esquerda (a mais apertada de um logo/texto), homem da
+     Hybris a ~10,8% da esquerda. Not Even Death tem margem ~0 na direita
+     (título encostado), por isso não depende dessa margem — ver
+     object-position em .is-ned. 2026-09-19: já era 1.6 (corte ~5%); baixado
+     pra cortar mais como pedido, mas sem estourar a margem da Laya — não
+     abaixar mais que isso sem remedir as artes por pixel. */
   .keyart {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width:  min(100vw, 100vh * 3070 / 2304);
-    height: min(100vh, 100vw * 2304 / 3070);
+    width:  min(100vw, 100vh * 16 / 9);
+    height: min(100vh, 100vw / 1.45);
     /* Altura da arte desenhada. Serve para dimensionar texto sobreposto sem
        depender de vh puro, que erra quando a caixa é limitada pela largura. */
-    --art-h: min(100vh, 100vw * 2304 / 3070);
+    --art-h: min(100vh, 100vw / 1.45);
   }
 
   /* Portrait (celular): a arte portrait cobre a tela inteira (crop via
@@ -293,7 +311,22 @@ import '../styles/global.css';
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: fill; /* a caixa já tem o aspect certo */
+    /* cover, não fill: com o piso de aspect 1.6 do .keyart (acima), a caixa
+       landscape nem sempre bate exatamente com o 16:9 da arte — fill
+       esticaria a imagem. Cover crop sem deformar; como a caixa nunca fica
+       mais "larga" que 16:9 (só mais "quadrada"), o corte é sempre lateral,
+       nunca em cima/embaixo — daí object-position: top ser só uma garantia
+       a mais, não algo que hoje entre em ação. */
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* Not Even Death tem margem ~0 na borda direita da arte landscape (o "H"
+     de DEATH quase toca o pixel 9216 de 9216). Ancorado à direita, qualquer
+     corte lateral cai inteiro do lado esquerdo (fundo de chuva, sem texto),
+     e a borda direita nunca é tocada. */
+  .keyart-img.is-ned {
+    object-position: right top;
   }
 
   @media (orientation: portrait) {
@@ -314,56 +347,45 @@ import '../styles/global.css';
     }
   }
 
-  /* Faixa clicável sobre a barra marrom do rodapé, medida por pixel na arte
-     landscape (3070x2304): começa em y=2085, ou seja 90.49% da altura.
-     Trocou a arte, meça de novo. Só Hybris ("Hybris Project") e Not Even Death
-     ("View Script") têm botão desenhado na barra — Laya, Inter/Sessions e Mrs.
-     Steele só dizem "Coming Soon", sem destino nem overlay clicável. */
+  /* Botão clicável sobre o botão já desenhado na arte 16:9 (pílula preta
+     no topo-centro). Medido por pixel nas 3 artes que têm destino real —
+     Laya "Watch Teaser" (~x 4170–5030 de 9216), Hybris "View Project"
+     (~x 4165–5020) e Not Even Death "View Script" (~x 4160–5040), todas com
+     y 0–250 de 5184 — e generosamente arredondado num retângulo único que
+     cobre as três. Inter/Sessions, Mrs. Steele e Cell Phone têm o mesmo
+     desenho de pílula ("Coming Soon"), mas sem destino: continuam sem este
+     elemento no HTML. Trocou a arte, meça de novo. */
   .footer-link {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: var(--footer-link-top, 90.49%);
-    bottom: 0;
+    left: 44%;
+    right: 44%;
+    top: 0;
+    bottom: 94.8%;
     z-index: 3;
     transition: background-color 0.2s ease;
   }
 
-  /* Medido por pixel na arte portrait (1311x2311): barra começa em y=2196,
-     ou seja 95.02% da altura. Trocou a arte, meça de novo. */
+  /* Portrait ainda usa a arte antiga (sem botão desenhado no topo, com a
+     barra marrom clicável no rodapé) até as versões portrait novas
+     chegarem. Medidas por pixel na arte portrait antiga da Hybris
+     (1311x2311): barra em y=2196, 95.02% da altura. Trocou a arte, meça de
+     novo. */
   @media (orientation: portrait) {
     .footer-link {
-      --footer-link-top: 95.02%;
+      left: 0;
+      right: 0;
+      top: var(--footer-link-top, 95.02%);
+      bottom: 0;
     }
-  }
-  /* A arte da Laya tem medida própria nas duas orientações. Landscape é
-     3074x2305 com a barra em y=2090 (90.67%); portrait é 1329x2351 com a
-     barra em y=2222 (94.51%). Os padrões — 90.49% e 95.02% — foram medidos
-     na arte do Hybris, e usá-los aqui deixa barra fora da área clicável.
-     Trocou a arte, meça de novo. */
-  .footer-link.is-laya {
-    --footer-link-top: 90.67%;
-  }
 
-  @media (orientation: portrait) {
+    /* A arte da Laya em portrait é 1329x2351 com a barra em y=2222
+       (94.51%). Trocou a arte, meça de novo. */
     .footer-link.is-laya {
       --footer-link-top: 94.51%;
     }
-  }
 
-  /* A arte do Not Even Death é 3094x2322 e a barra marrom começa em y=2104,
-     ou seja 90.65% da altura — não 90.49% como na do Hybris. Medido por
-     pixel; trocou a arte, meça de novo.
-
-     Até 2026-09-13 este bloco era uma pastilha "Coming Soon" cobrindo o botão
-     "View Script" desenhado na arte, porque o destino não existia e o link
-     seria morto. Existe agora. */
-  .footer-link.is-ned {
-    --footer-link-top: 90.65%;
-  }
-
-  /* Portrait (1313x2329): a barra começa em y=2198, 94.38% da altura. */
-  @media (orientation: portrait) {
+    /* A arte do Not Even Death em portrait é 1313x2329 com a barra em
+       y=2198 (94.38%). Trocou a arte, meça de novo. */
     .footer-link.is-ned {
       --footer-link-top: 94.38%;
     }
@@ -414,7 +436,8 @@ import '../styles/global.css';
     right: 3%;
   }
 
-  /* Dots ficam acima da barra do rodapé (que começa perto de 90%), pra não
+  /* Dots no terço inferior: em landscape o botão clicável fica no topo, longe
+     daqui; em portrait (arte antiga) ficam acima da barra do rodapé, pra não
      brigar com a faixa clicável. */
   .dots {
     position: absolute;

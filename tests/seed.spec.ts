@@ -36,20 +36,28 @@ test('a suíte está rodando contra o preview, não contra o dev', async ({
    O Not Even Death tem a sua própria medida: a arte dele é outra (1313x2329),
    e a barra começa em 2198, ou seja 94.38%. Até 2026-09-13 ele não estava
    nesta lista, porque o destino não existia e havia no lugar uma pastilha
-   "Coming Soon". */
+   "Coming Soon".
+
+   Isto tudo vale só pra arte portrait (a suíte roda em perfis de iPhone —
+   ver comentário no topo do arquivo). Em 2026-09-18 a arte landscape virou
+   16:9 com o botão desenhado no topo em vez da barra no rodapé, mas a
+   portrait ainda é a antiga até a versão 16:9 dela chegar; por isso os
+   índices abaixo (dot/slide) já refletem a nova ordem do carrossel — Laya,
+   Inter/Sessions, Hybris, Mrs. Steele, Not Even Death, Cell Phone — mas as
+   % de rodapé continuam as mesmas. */
 const SLIDES_COM_LINK = [
   {
     nome: 'Hybris',
-    dot: 0,
-    slide: 0,
+    dot: 2,
+    slide: 2,
     href: 'https://files.hybris.world/',
     aria: /Hybris Project/,
     footerTopPct: 95.02,
   },
   {
     nome: 'Laya',
-    dot: 1,
-    slide: 1,
+    dot: 0,
+    slide: 0,
     href: 'https://youtu.be/bXL5xmmQPys',
     aria: /Laya teaser/,
     // A arte da Laya tem a barra em 94.51%, nao nos 95.02% da do Hybris.
@@ -65,7 +73,7 @@ const SLIDES_COM_LINK = [
   },
 ];
 
-test('a key art da Hybris (slide inicial) carrega de fato', async ({ page }) => {
+test('a key art da Laya (slide inicial) carrega de fato', async ({ page }) => {
   await page.goto('/');
   const img = page.locator('.slide.is-active .keyart-img');
   await expect(img).toBeVisible();
@@ -109,21 +117,21 @@ for (const ip of SLIDES_COM_LINK) {
   });
 }
 
-test('o dot da Laya troca o slide e esconde o link da Hybris', async ({
+test('o dot da Hybris troca o slide e esconde o link da Laya', async ({
   page,
 }) => {
   await page.goto('/');
 
-  await page.locator('[data-dot="1"]').click();
+  await page.locator('[data-dot="2"]').click();
 
-  const layaSlide = page.locator('[data-slide="1"]');
-  await expect(layaSlide).toHaveClass(/is-active/);
-  await expect(layaSlide.locator('.keyart-img')).toHaveAttribute(
+  const hybrisSlide = page.locator('[data-slide="2"]');
+  await expect(hybrisSlide).toHaveClass(/is-active/);
+  await expect(hybrisSlide.locator('.keyart-img')).toHaveAttribute(
     'alt',
-    /Laya/
+    /Hybris/
   );
 
-  // O link da Hybris, agora escondido, não pode ficar clicável.
+  // O link da Laya, agora escondido, não pode ficar clicável.
   await expect(page.locator('[data-slide="0"] .footer-link')).not.toBeVisible();
 });
 
@@ -131,9 +139,9 @@ test('clicar na barra da Laya abre o teaser em vez de navegar', async ({
   page,
 }) => {
   await page.goto('/');
-  await page.locator('[data-dot="1"]').click();
+  await page.locator('[data-dot="0"]').click();
 
-  await page.locator('[data-slide="1"] .footer-link').click();
+  await page.locator('[data-slide="0"] .footer-link').click();
 
   await expect(page.locator('.glightbox-container')).toBeVisible();
   await expect(page).toHaveURL('/');
