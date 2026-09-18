@@ -1,16 +1,16 @@
 name: Promote to production
 
-# Promove o conteúdo deste repositório (beta) por cima do site de produção
-# (thluiz/metron-hotsite → metron.hybris.world), abrindo um Pull Request para
-# revisão. O merge do PR é que dispara o deploy de produção.
+# Promotes this repository's (beta) content over the production site
+# (thluiz/metron-hotsite → metron.hybris.world), opening a Pull Request for
+# review. Merging the PR is what triggers the production deploy.
 #
-# Rodar pela aba Actions → "Promote to production" → Run workflow.
+# Run from the Actions tab → "Promote to production" → Run workflow.
 
 on:
   workflow_dispatch:
     inputs:
       note:
-        description: "Nota opcional que aparece no corpo do PR"
+        description: "Optional note shown in the PR body"
         required: false
         default: ""
 
@@ -18,27 +18,27 @@ jobs:
   promote:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout beta (origem)
+      - name: Checkout beta (source)
         uses: actions/checkout@v4
         with:
           path: beta
-          # Histórico completo: precisa pra listar os commits desde a
-          # última promoção (ver "Montar changelog" abaixo).
+          # Full history: needed to list commits since the last promotion
+          # (see "Build changelog" below).
           fetch-depth: 0
 
-      - name: Checkout produção (destino)
+      - name: Checkout production (destination)
         uses: actions/checkout@v4
         with:
           repository: thluiz/metron-hotsite
           token: ${{ secrets.PROMOTE_TOKEN }}
           path: prod
 
-      - name: Montar changelog desde a última promoção
+      - name: Build changelog since the last promotion
         id: changelog
-        # O arquivo .promoted-from-beta-sha (só existe na produção, nunca no
-        # beta) guarda o SHA do beta que foi promovido da última vez. Sem ele
-        # (primeira promoção com este mecanismo), lista os últimos 10 commits
-        # em vez de tentar adivinhar um ponto de partida.
+        # The .promoted-from-beta-sha file (only exists in production, never
+        # in beta) holds the beta SHA that was promoted last time. Without it
+        # (first promotion with this mechanism), lists the last 10 commits
+        # instead of trying to guess a starting point.
         run: |
           MARKER="prod/.promoted-from-beta-sha"
           CURRENT_SHA=$(git -C beta rev-parse HEAD)
@@ -48,7 +48,7 @@ jobs:
             if [ -f "$MARKER" ] && git -C beta cat-file -e "$(cat "$MARKER")" 2>/dev/null; then
               git -C beta log --pretty='- %h %s' "$(cat "$MARKER")"..HEAD
             else
-              echo "_Sem registro da promoção anterior — últimos 10 commits do beta:_"
+              echo "_No record of a previous promotion — last 10 commits from beta:_"
               git -C beta log --pretty='- %h %s' -n 10
             fi
             echo "CHANGELOG_EOF"
@@ -56,11 +56,11 @@ jobs:
 
           echo "$CURRENT_SHA" > "$MARKER"
 
-      - name: Sobrepor conteúdo do beta na produção
-        # Copia tudo do beta por cima da produção, removendo arquivos que não
-        # existem mais no beta (--delete). Preserva os arquivos específicos de
-        # ambiente da produção: .git, .github (workflows/project-name), README
-        # e o marcador de changelog escrito no passo anterior.
+      - name: Overlay beta content onto production
+        # Copies everything from beta over production, removing files that no
+        # longer exist in beta (--delete). Preserves production's
+        # environment-specific files: .git, .github (workflows/project-name),
+        # README, and the changelog marker written in the previous step.
         run: |
           rsync -a --delete \
             --exclude='.git/' \
@@ -69,7 +69,7 @@ jobs:
             --exclude='.promoted-from-beta-sha' \
             beta/ prod/
 
-      - name: Abrir PR de promoção na produção
+      - name: Open promotion PR on production
         uses: peter-evans/create-pull-request@v6
         with:
           path: prod

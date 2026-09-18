@@ -1,40 +1,41 @@
 # metron-hotsite-beta
 
-Ambiente **beta** do hotsite da Metron Showrunners, em
-[`metron-beta.hybris.world`](https://metron-beta.hybris.world). Cópia completa
-do site de produção ([`thluiz/metron-hotsite`](https://github.com/thluiz/metron-hotsite)
-→ `metron.hybris.world`): itera-se aqui e promove-se quando estiver bom.
+**Beta** environment of the Metron Showrunners hotsite, at
+[`metron-beta.hybris.world`](https://metron-beta.hybris.world). Full copy
+of the production site ([`thluiz/metron-hotsite`](https://github.com/thluiz/metron-hotsite)
+→ `metron.hybris.world`): iterate here, promote when it's good.
 
-Detalhes técnicos e regras de trabalho no [`AGENTS.md`](AGENTS.md).
+Technical details and working rules in [`AGENTS.md`](AGENTS.md).
 
-## O site
+## The site
 
-Uma página: a key art do Hybris em tela cheia, com a barra creme do rodapé
-linkando [`files.hybris.world`](https://files.hybris.world) — o índice dos
-materiais da série, com acesso por código. Esse índice vive noutro repositório
+A single page: the Hybris key art full-screen, with the cream footer bar
+linking to [`files.hybris.world`](https://files.hybris.world) — the index
+of the series' materials, with access-code gating. That index lives in
+another repository
 ([`thluiz/files-hybris-world`](https://github.com/thluiz/files-hybris-world)).
 
-## Fluxo
+## Flow
 
-1. Edite `src/` e `public/`, commit e push na `main`.
-2. O deploy publica em `metron-beta.hybris.world`. Confira lá.
-3. Para produção, rode o **Promote**.
+1. Edit `src/` and `public/`, commit and push to `main`.
+2. The deploy publishes to `metron-beta.hybris.world`. Check it there.
+3. For production, run **Promote**.
 
-## Promover para produção
+## Promoting to production
 
-Não publica direto: abre um **PR** no repositório de produção. O merge é que
-dispara o deploy.
+Doesn't publish directly: opens a **PR** in the production repository. The
+merge is what triggers the deploy.
 
-**Actions → Promote to production → Run workflow.** O PR aparece em
+**Actions → Promote to production → Run workflow.** The PR shows up at
 [`thluiz/metron-hotsite/pulls`](https://github.com/thluiz/metron-hotsite/pulls).
 
-Copia tudo exceto `.github/` e este `README.md`, que diferem entre os ambientes.
-Havendo PRs do Dependabot abertos, mergeie o de promote primeiro — os dois tocam
-o `package-lock.json`.
+Copies everything except `.github/` and this `README.md`, which differ
+between environments. If there are open Dependabot PRs, merge the promote
+one first — both touch `package-lock.json`.
 
 ## Stack
 
-Astro 4 (estático) · Cloudflare Pages (projeto `metron-hotsite-beta`)
+Astro 4 (static) · Cloudflare Pages (project `metron-hotsite-beta`)
 
 ```bash
 npm install
@@ -45,8 +46,8 @@ npm run preview
 
 ## Deploy
 
-Push na `main` dispara `.github/workflows/deploy.yml`. Secrets:
-`CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
+Push to `main` triggers `.github/workflows/deploy.yml`. Secrets:
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
-O promote (`promote.yml`) usa `PROMOTE_TOKEN` — PAT com Contents + Pull requests
-no repo de produção.
+The promote workflow (`promote.yml`) uses `PROMOTE_TOKEN` — a PAT with
+Contents + Pull requests on the production repo.
