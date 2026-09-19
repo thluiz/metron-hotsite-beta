@@ -226,8 +226,20 @@ import '../styles/global.css';
   </main>
 
   <section class="books" aria-labelledby="books-title">
-    <h2 id="books-title" class="books-title">Books</h2>
-    <div class="books-grid">
+    <div class="books-header">
+      <h2 id="books-title" class="books-title">Metron Publishing</h2>
+      <p class="books-subtitle">Stories beyond the screen.</p>
+    </div>
+    <div class="books-carousel">
+      <button
+        type="button"
+        class="books-nav prev"
+        data-books-nav="prev"
+        aria-label="Previous titles"
+      >
+        <span aria-hidden="true">&#8249;</span>
+      </button>
+      <div class="books-track">
       <div class="book-item">
         <a
           href="https://a.co/d/074VoWqo"
@@ -319,6 +331,15 @@ import '../styles/global.css';
           height="1414"
         />
       </div>
+      </div>
+      <button
+        type="button"
+        class="books-nav next"
+        data-books-nav="next"
+        aria-label="Next titles"
+      >
+        <span aria-hidden="true">&#8250;</span>
+      </button>
     </div>
   </section>
 
@@ -334,8 +355,10 @@ import '../styles/global.css';
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
-    /* Only shows where the image doesn't reach. */
-    background-color: #cabf9d;
+    /* Only shows where the image doesn't reach. Matches the page background
+       (body, global.css) and the Books section below, so the whole page
+       reads as one dark canvas instead of a cream flash/letterbox. */
+    background-color: #05091a;
   }
 
   /* Box with 16:9 aspect, fully inside the viewport. Changed from
@@ -567,32 +590,76 @@ import '../styles/global.css';
   /* Second section: the studio's books, below the key art (which now only
      takes up 100dvh instead of the whole screen via position: fixed). */
   .books {
-    background-color: #cabf9d;
+    background-color: #05091a;
+    color: #f2ede2;
     padding: 64px 6% 96px;
   }
 
-  .books-title {
+  .books-header {
     max-width: 1400px;
-    margin: 0 auto 32px;
-    font-size: clamp(22px, 4vw, 32px);
-    letter-spacing: 0.02em;
+    margin: 0 auto 40px;
   }
 
-  /* 3 columns on wide screens; each portrait cover takes 1 column (3 per
-     row), each landscape cover gets .is-landscape and spans the full row
-     (grid-column: 1 / -1) — 1 per row. On smaller screens the grid drops
-     to 2 and then 1 column, so the "1 to 3 per row" comes from the
-     viewport, not a fixed per-item layout. */
-  .books-grid {
+  .books-title {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f2ede2;
+  }
+
+  .books-subtitle {
+    margin: 8px 0 0;
+    font-size: clamp(14px, 2vw, 18px);
+    color: #f2ede2;
+    opacity: 0.65;
+  }
+
+  /* Horizontal carousel instead of a grid: covers were reading too big
+     stacked 3-per-row, so all titles now sit in a single scroll-snapped
+     row. --books-cols sets how many are visible at once per breakpoint
+     (down to 2 on phones); .book-item's flex-basis is computed from it, so
+     changing the count in one place resizes every card. .is-landscape
+     (unused today, kept for a future landscape cover) spans double a
+     card's width plus the gap between them. */
+  .books-carousel {
     max-width: 1400px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .books-track {
+    --books-cols: 5;
+    --books-gap: 20px;
+    display: flex;
+    gap: var(--books-gap);
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .books-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .book-item {
+    flex: 0 0
+      calc((100% - (var(--books-cols) - 1) * var(--books-gap)) / var(--books-cols));
+    scroll-snap-align: start;
   }
 
   .book-item.is-landscape {
-    grid-column: 1 / -1;
+    flex-basis: calc(
+      (100% - (var(--books-cols) - 1) * var(--books-gap)) / var(--books-cols) * 2 +
+        var(--books-gap)
+    );
   }
 
   .book-cover {
@@ -613,19 +680,56 @@ import '../styles/global.css';
     opacity: 0.85;
   }
   .book-item a:focus-visible {
-    outline: 2px solid rgba(26, 18, 10, 0.75);
+    outline: 2px solid rgba(242, 237, 226, 0.85);
     outline-offset: 2px;
   }
 
-  @media (max-width: 900px) {
-    .books-grid {
-      grid-template-columns: repeat(2, 1fr);
+  .books-nav {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(242, 237, 226, 0.12);
+    color: #f2ede2;
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .books-nav:hover {
+    background: rgba(242, 237, 226, 0.22);
+    transform: scale(1.08);
+  }
+  .books-nav:focus-visible {
+    outline: 2px solid rgba(242, 237, 226, 0.85);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 1200px) {
+    .books-track {
+      --books-cols: 4;
     }
   }
 
-  @media (max-width: 560px) {
-    .books-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 900px) {
+    .books-track {
+      --books-cols: 3;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .books-track {
+      --books-cols: 2;
+    }
+    .books-nav {
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
     }
   }
 </style>
@@ -689,4 +793,19 @@ import '../styles/global.css';
 
   // @ts-ignore — global from the GLightbox CDN <script>, no type declarations.
   GLightbox({ selector: '.glightbox' });
+
+  const booksTrack = document.querySelector<HTMLElement>('.books-track');
+  const booksPrev = document.querySelector<HTMLButtonElement>(
+    '[data-books-nav="prev"]'
+  );
+  const booksNext = document.querySelector<HTMLButtonElement>(
+    '[data-books-nav="next"]'
+  );
+
+  booksPrev?.addEventListener('click', () => {
+    booksTrack?.scrollBy({ left: -booksTrack.clientWidth, behavior: 'smooth' });
+  });
+  booksNext?.addEventListener('click', () => {
+    booksTrack?.scrollBy({ left: booksTrack.clientWidth, behavior: 'smooth' });
+  });
 </script>
