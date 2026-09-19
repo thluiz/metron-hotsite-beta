@@ -618,11 +618,12 @@ import '../styles/global.css';
 
   /* Horizontal carousel instead of a grid: covers were reading too big
      stacked 3-per-row, so all titles now sit in a single scroll-snapped
-     row. --books-cols sets how many are visible at once per breakpoint
-     (down to 2 on phones); .book-item's flex-basis is computed from it, so
-     changing the count in one place resizes every card. .is-landscape
-     (unused today, kept for a future landscape cover) spans double a
-     card's width plus the gap between them. */
+     row. Cards are a fixed-ish width (--book-w, fluid between a phone and
+     a wide desktop floor/ceiling) rather than dividing the container into
+     a set number of columns — how many fit per screen is just whatever
+     width allows, which lands on ~2 on a phone in portrait without a
+     dedicated breakpoint. .is-landscape (unused today, kept for a future
+     landscape cover) spans double a card's width plus the gap. */
   .books-carousel {
     max-width: 1400px;
     margin: 0 auto;
@@ -632,8 +633,8 @@ import '../styles/global.css';
   }
 
   .books-track {
-    --books-cols: 5;
-    --books-gap: 20px;
+    --book-w: clamp(100px, 11vw, 150px);
+    --books-gap: 16px;
     display: flex;
     gap: var(--books-gap);
     flex: 1;
@@ -641,7 +642,7 @@ import '../styles/global.css';
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    padding-bottom: 4px;
+    padding: 14px 4px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -650,22 +651,29 @@ import '../styles/global.css';
   }
 
   .book-item {
-    flex: 0 0
-      calc((100% - (var(--books-cols) - 1) * var(--books-gap)) / var(--books-cols));
+    flex: 0 0 var(--book-w);
     scroll-snap-align: start;
   }
 
   .book-item.is-landscape {
-    flex-basis: calc(
-      (100% - (var(--books-cols) - 1) * var(--books-gap)) / var(--books-cols) * 2 +
-        var(--books-gap)
-    );
+    flex-basis: calc(2 * var(--book-w) + var(--books-gap));
   }
 
   .book-cover {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 2px;
+    /* Lifts the cover off the dark background; grows on hover/focus so the
+       picked title visibly "pops" toward the viewer. */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .book-item:hover .book-cover,
+  .book-item a:focus-visible .book-cover {
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.8);
+    transform: translateY(-6px) scale(1.04);
   }
 
   /* Link that covers the whole cover (e.g.: book for sale). The image is
@@ -673,11 +681,6 @@ import '../styles/global.css';
      own — just the aria-label. */
   .book-item a {
     display: block;
-    transition: opacity 0.2s ease;
-  }
-  .book-item a:hover,
-  .book-item a:focus-visible {
-    opacity: 0.85;
   }
   .book-item a:focus-visible {
     outline: 2px solid rgba(242, 237, 226, 0.85);
@@ -710,22 +713,7 @@ import '../styles/global.css';
     outline-offset: 2px;
   }
 
-  @media (max-width: 1200px) {
-    .books-track {
-      --books-cols: 4;
-    }
-  }
-
-  @media (max-width: 900px) {
-    .books-track {
-      --books-cols: 3;
-    }
-  }
-
   @media (max-width: 640px) {
-    .books-track {
-      --books-cols: 2;
-    }
     .books-nav {
       width: 32px;
       height: 32px;
