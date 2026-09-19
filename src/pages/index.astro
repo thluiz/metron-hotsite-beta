@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
+
+const year = new Date().getFullYear();
 ---
 <Layout title="Hybris — An Ancient Conflict, Reimagined | Metron Showrunners">
 
@@ -342,6 +344,18 @@ import '../styles/global.css';
       </button>
     </div>
   </section>
+
+  <footer class="site-footer">
+    <p class="site-footer-brand">Metron Showrunners</p>
+    <nav class="site-footer-links" aria-label="Project links">
+      <a href="https://youtu.be/bXL5xmmQPys" class="glightbox">Laya Trailer</a>
+      <span class="site-footer-sep" aria-hidden="true">&#183;</span>
+      <a href="https://files.hybris.world/">Hybris Project</a>
+      <span class="site-footer-sep" aria-hidden="true">&#183;</span>
+      <a href="https://files-ned.metronshowrunners.com/">Not Even Death Script</a>
+    </nav>
+    <p class="site-footer-copy">&#169; {year} Metron Showrunners. All rights reserved.</p>
+  </footer>
 
 </Layout>
 
@@ -719,6 +733,57 @@ import '../styles/global.css';
       height: 32px;
       font-size: 18px;
     }
+  }
+
+  /* Closing footer: same dark canvas as .books, so the page ends as one
+     continuous surface instead of a third background color. */
+  .site-footer {
+    background-color: #05091a;
+    color: #f2ede2;
+    padding: 32px 6% 40px;
+    border-top: 1px solid rgba(242, 237, 226, 0.14);
+    text-align: center;
+  }
+
+  .site-footer-brand {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .site-footer-links {
+    margin: 14px 0 0;
+    font-size: 13px;
+  }
+
+  .site-footer-links a {
+    color: #f2ede2;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(242, 237, 226, 0.4);
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .site-footer-links a:hover,
+  .site-footer-links a:focus-visible {
+    border-color: rgba(242, 237, 226, 0.9);
+  }
+
+  .site-footer-links a:focus-visible {
+    outline: 2px solid rgba(242, 237, 226, 0.85);
+    outline-offset: 3px;
+  }
+
+  .site-footer-sep {
+    margin: 0 10px;
+    opacity: 0.5;
+  }
+
+  .site-footer-copy {
+    margin: 18px 0 0;
+    font-size: 11px;
+    opacity: 0.5;
   }
 </style>
 
