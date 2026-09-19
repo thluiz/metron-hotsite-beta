@@ -792,7 +792,11 @@ import '../styles/global.css';
   restartAutoplay();
 
   // @ts-ignore — global from the GLightbox CDN <script>, no type declarations.
-  GLightbox({ selector: '.glightbox' });
+  const lightbox = GLightbox({ selector: '.glightbox' });
+  // The carousel autoplay keeps advancing slides behind the video overlay
+  // otherwise — pause it while the lightbox is open, resume on close.
+  lightbox.on('open', () => clearInterval(timer));
+  lightbox.on('close', () => restartAutoplay());
 
   const booksTrack = document.querySelector<HTMLElement>('.books-track');
   const booksPrev = document.querySelector<HTMLButtonElement>(
