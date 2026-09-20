@@ -949,10 +949,28 @@ const year = new Date().getFullYear();
     '[data-books-nav="next"]'
   );
 
+  // Native scroll clamps at both ends, so a plain scrollBy does nothing once
+  // you hit an edge. Wrap instead: jump (no animation, so it reads as a
+  // loop rather than a slow scroll back across every cover) to the far edge
+  // before scrolling, so prev/next always has somewhere to go.
+  const BOOKS_EDGE_TOLERANCE = 12; // rounding/padding leave scrollLeft a few px off 0 at rest
   booksPrev?.addEventListener('click', () => {
-    booksTrack?.scrollBy({ left: -booksTrack.clientWidth, behavior: 'smooth' });
+    if (!booksTrack) return;
+    if (booksTrack.scrollLeft <= BOOKS_EDGE_TOLERANCE) {
+      booksTrack.scrollTo({ left: booksTrack.scrollWidth, behavior: 'auto' });
+    } else {
+      booksTrack.scrollBy({ left: -booksTrack.clientWidth, behavior: 'smooth' });
+    }
   });
   booksNext?.addEventListener('click', () => {
-    booksTrack?.scrollBy({ left: booksTrack.clientWidth, behavior: 'smooth' });
+    if (!booksTrack) return;
+    if (
+      booksTrack.scrollLeft >=
+      booksTrack.scrollWidth - booksTrack.clientWidth - BOOKS_EDGE_TOLERANCE
+    ) {
+      booksTrack.scrollTo({ left: 0, behavior: 'auto' });
+    } else {
+      booksTrack.scrollBy({ left: booksTrack.clientWidth, behavior: 'smooth' });
+    }
   });
 </script>
