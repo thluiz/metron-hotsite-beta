@@ -113,7 +113,7 @@ const year = new Date().getFullYear();
       </div>
 
       <div
-        class="slide"
+        class="slide is-ned-slide"
         data-slide="4"
         role="group"
         aria-roledescription="slide"
@@ -417,72 +417,55 @@ const year = new Date().getFullYear();
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
-    /* Only shows where the image doesn't reach. Matches the page background
-       (body, global.css) and the Books section below, so the whole page
-       reads as one dark canvas instead of a cream flash/letterbox. */
+    /* The art now covers this box entirely, so this only shows in the
+       instant before the image decodes. Matches the page background (body,
+       global.css) and the Books section below, so that instant reads as
+       the same dark canvas rather than a cream flash. */
     background-color: #05091a;
   }
 
-  /* Box with 16:9 aspect, fully inside the viewport. Changed from
-     3070x2304 (~4:3) to 16:9 on 2026-09-18: on a wide/ultrawide monitor
-     the old 4:3 was limited by height and left huge cream-colored bars on
-     the sides. The 6 landscape art pieces already come in that format.
-
-     The height, however, no longer locks to 100vw*9/16: that ceiling
-     always forces the exact 16:9 aspect, and on more "square" screens
-     (tablet in landscape, resized window) it left huge horizontal bars on
-     top and bottom. Instead it only shrinks down to an aspect floor of
-     1.45 — below that the art gets cropped on the sides via object-fit:
-     cover (see .keyart-img) instead of the box continuing to shrink. 1.45
-     was chosen because the side crop it produces (~9.2% on each side)
-     stays under the safety margin measured pixel-by-pixel on the art:
-     Laya's logo at ~11.4% from the left edge (the tightest of any
-     logo/text), Hybris's man at ~10.8% from the left. Not Even Death has
-     ~0 margin on the right (title flush against the edge), so it doesn't
-     depend on this margin — see object-position on .is-ned. 2026-09-19:
-     it was already 1.6 (crop ~5%); lowered to crop more as requested, but
-     without blowing past Laya's margin — don't lower it further without
-     remeasuring the art pixel-by-pixel. */
+  /* The carousel's frame: fills .keyart-wrap edge to edge, on every
+     screen. It no longer sizes the art — the art overflows it (see
+     .slide). Arrows and dots hang off this box, not off the art, so they
+     stay on screen even where the art is cropped. */
   .keyart {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width:  min(100vw, 100vh * 16 / 9);
-    height: min(100vh, 100vw / 1.45);
-    /* Height of the drawn art. Used to size overlaid text without relying
-       on plain vh, which is wrong when the box is width-constrained. */
-    --art-h: min(100vh, 100vw / 1.45);
-  }
-
-  /* Portrait (phone): the portrait art covers the whole screen (cropped
-     via object-fit: cover), with no fixed-aspect box or cream bars.
-     Fills .keyart-wrap via inset (not 100vw/100vh): vh units on mobile
-     follow the "large viewport" (as if the browser bar were hidden),
-     bigger than the actually visible area — with top:50%/translate(-50%)
-     that overflowed symmetrically on top AND bottom, cropping the footer
-     bar even with object-position: bottom. Inheriting the wrap's size
-     (which via position:fixed already tracks the real visible viewport)
-     avoids the mismatch. */
-  @media (orientation: portrait) {
-    .keyart {
-      inset: 0;
-      top: auto;
-      left: auto;
-      transform: none;
-      width: 100%;
-      height: 100%;
-      /* In portrait the art is cropped by object-fit: cover, so what
-         matters is the size of the drawn IMAGE, not the box. */
-      --art-h: max(100vh, 100vw * 2329 / 1313);
-    }
+    inset: 0;
   }
 
   /* Stacked slides; the crossfade is opacity only. visibility disappears
-     with a delay so the hidden slide's link isn't focusable/clickable. */
+     with a delay so the hidden slide's link isn't focusable/clickable.
+
+     A slide IS the rectangle the art is drawn into, and in landscape that
+     rectangle deliberately OVERFLOWS the viewport: it is the smallest 16:9
+     box that still covers .keyart-wrap completely — max(), not min().
+     So the art reaches all four edges on any screen, and .keyart-wrap's
+     overflow:hidden clips whatever sticks out.
+
+     2026-09-21: this replaced a box that had to FIT inside the viewport
+     (16:9 ceiling, 1.45 aspect floor), which by construction left bars on
+     any screen outside that range. Filling the hero was asked for
+     explicitly, with the cost accepted: the overflow crops the art —
+     the bottom on a screen wider than 16:9, the sides on a squarer one —
+     and the button and title baked into the art can end up partly or
+     entirely off-screen. That is the trade, not a bug to fix by bringing
+     a fitted box back.
+
+     The box being exactly the art's aspect (3840x2160) and anchored the
+     way object-fit: cover anchors it means percentage overlays inside a
+     slide (.footer-link) still land on the drawn art — for as long as
+     that part of the art is on screen at all. */
   .slide {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* dvh pair for the same reason as .keyart-wrap; vh first, as the
+       fallback for browsers without dvh. */
+    width:  max(100vw, 100vh * 16 / 9);
+    width:  max(100vw, 100dvh * 16 / 9);
+    height: max(100vh, 100vw * 9 / 16);
+    height: max(100dvh, 100vw * 9 / 16);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.8s ease, visibility 0s linear 0.8s;
@@ -495,24 +478,52 @@ const year = new Date().getFullYear();
     z-index: 2;
   }
 
+  /* Not Even Death has ~0 margin on the right of its landscape art (the
+     "H" in DEATH nearly touches pixel 3840 of 3840). Anchoring its box to
+     the right edge throws the whole horizontal overflow to the left (rain
+     background, no text), so the title survives the crop. Same reasoning
+     as object-position on .keyart-img.is-ned — moved up to the box,
+     now that the box is what overflows. */
+  .slide.is-ned-slide {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  /* Portrait (phone): unchanged behaviour — the slide simply fills
+     .keyart-wrap and object-fit: cover on the <img> crops the portrait art
+     (1600x2844). Sized by inset/100%, never by vh: on mobile vh follows
+     the "large viewport" (as if the browser bar were hidden), which is
+     bigger than the visible area, and a centred box that size overflowed
+     on top AND bottom. The wrap already tracks the real visible viewport,
+     so inheriting its size avoids the mismatch. */
+  @media (orientation: portrait) {
+    .slide,
+    .slide.is-ned-slide {
+      inset: 0;
+      transform: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   .keyart-img {
     display: block;
     width: 100%;
     height: 100%;
-    /* cover, not fill: with .keyart's 1.6 aspect floor (above), the
-       landscape box doesn't always match the art's 16:9 exactly — fill
-       would stretch the image. Cover crops without distorting; since the
-       box never gets "wider" than 16:9 (only more "square"), the crop is
-       always on the sides, never top/bottom — hence object-position: top
-       being just extra insurance, not something that currently kicks in. */
+    /* In landscape the slide box is already exactly the art's 16:9, so
+       cover scales it with nothing left to crop at this level — the
+       cropping happens one level up, where the box overflows the viewport.
+       In portrait the box IS the viewport and cover does the cropping.
+       Kept as cover rather than fill so that a future piece of art that
+       isn't pixel-exact gets cropped instead of stretched. */
     object-fit: cover;
     object-position: center top;
   }
 
-  /* Not Even Death has ~0 margin on the landscape art's right edge (the
-     "H" in DEATH nearly touches pixel 9216 of 9216). Anchored to the
-     right, any side crop falls entirely on the left (rain background, no
-     text), and the right edge is never touched. */
+  /* Portrait art: the title sits nearly flush against the right edge, so
+     anchoring right keeps the side crop off it. In landscape it is the box
+     itself that's anchored right — see .slide.is-ned-slide. */
   .keyart-img.is-ned {
     object-position: right top;
   }
@@ -543,7 +554,10 @@ const year = new Date().getFullYear();
      2916–2920) and y 0–5.5% — and generously rounded into a single
      rectangle that covers all six. Inter/Sessions, Mrs. Steele and Cell
      Phone have the same pill design ("Coming Soon") but no destination:
-     they stay without an <a> element in the HTML. Art changed, remeasure. */
+     they stay without an <a> element in the HTML. Art changed, remeasure.
+     The percentages are of the SLIDE, which since 2026-09-21 is the drawn
+     art exactly (see .slide) — so they follow the art rather than
+     drifting as the crop changes. */
   .footer-link {
     position: absolute;
     left: 44%;
@@ -559,8 +573,8 @@ const year = new Date().getFullYear();
      more the art "zooms" and the further out (toward the edges) the
      button appears to land on screen. On the narrowest common device
      (~0.46, e.g. iPhone 12/Pro Max) this pushes the button out to about
-     28%–72%; that's why this box is wider than the landscape one (which
-     doesn't suffer this shift, since its box is always >= 1.45 aspect). */
+     28%–72%; that's why this box is wider than the landscape one
+     (whose box is the drawn art itself, so it doesn't shift). */
   @media (orientation: portrait) {
     .footer-link {
       left: 25%;
