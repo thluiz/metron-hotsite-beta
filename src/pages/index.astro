@@ -964,25 +964,91 @@ const year = new Date().getFullYear();
   );
 
   // Native scroll clamps at both ends, so a plain scrollBy does nothing once
-  // you hit an edge. Wrap instead: jump (no animation, so it reads as a
-  // loop rather than a slow scroll back across every cover) to the far edge
-  // before scrolling, so prev/next always has somewhere to go.
+  // you hit an edge. Until 2026-09-21 the wrap was an instant jump to the
+  // far edge: it avoided scrolling back across every cover, but it read as
+  // a glitch rather than as a carousel turning.
+  //
+  // Now the track ROTATES. The covers about to be revealed are moved to the
+  // other end of the DOM, the scroll position is corrected by exactly the
+  // width they added — instantly, so that frame looks identical and nothing
+  // appears to move — and only then does the smooth scroll run. The covers
+  // slide in from the side the arrow points at, one screenful per click, and
+  // the loop never travels across the whole row.
+  //
+  // DOM order and visual order stay in sync through the rotation, so tab
+  // order keeps matching what is on screen.
   const BOOKS_EDGE_TOLERANCE = 12; // rounding/padding leave scrollLeft a few px off 0 at rest
+
+  // Distance between two consecutive covers' left edges (card width + gap),
+  // read from layout rather than recomputed from the CSS custom properties.
+  function booksPitch(items: HTMLElement[]) {
+    if (items.length > 1) return items[1].offsetLeft - items[0].offsetLeft;
+    return items[0].offsetWidth || 1;
+  }
+
+  // Covers moved per click: one screenful, matching the scrollBy that runs
+  // away from the edges. Never the whole row (rotating by the full length
+  // is a no-op) and never zero.
+  function booksStep(track: HTMLElement, items: HTMLElement[]) {
+    const perPage = Math.floor(track.clientWidth / booksPitch(items));
+    return Math.min(Math.max(perPage, 1), items.length - 1);
+  }
+
+  function rotateBooks(track: HTMLElement, direction: 'prev' | 'next') {
+    const items = Array.from(track.children) as HTMLElement[];
+    if (items.length < 2) return;
+
+    const startLeft = track.scrollLeft;
+    const step = booksStep(track, items);
+    // Measured against a cover that does NOT move, so the shift below is the
+    // real pixel offset the rotation caused instead of a width we assumed.
+    const anchor = direction === 'prev' ? items[0] : items[items.length - 1];
+    const anchorBefore = anchor.offsetLeft;
+
+    if (direction === 'prev') {
+      track.prepend(...items.slice(-step));
+    } else {
+      track.append(...items.slice(0, step));
+    }
+
+    const shift = anchor.offsetLeft - anchorBefore;
+
+    // 'auto' overrides the track's CSS scroll-behavior: smooth, so this
+    // correction is instant and invisible.
+    track.scrollTo({ left: startLeft + shift, behavior: 'auto' });
+
+    if (prefersReducedMotion) {
+      track.scrollTo({ left: startLeft, behavior: 'auto' });
+      return;
+    }
+    // Next frame, so the correction is committed before the animation starts
+    // from it. The intermediate frame is visually identical to the previous
+    // one, so waiting for it costs nothing.
+    requestAnimationFrame(() =>
+      track.scrollTo({ left: startLeft, behavior: 'smooth' })
+    );
+  }
+
+  // Nothing to turn when every cover already fits on screen.
+  function booksScrollable(track: HTMLElement) {
+    return track.scrollWidth > track.clientWidth + BOOKS_EDGE_TOLERANCE;
+  }
+
   booksPrev?.addEventListener('click', () => {
-    if (!booksTrack) return;
+    if (!booksTrack || !booksScrollable(booksTrack)) return;
     if (booksTrack.scrollLeft <= BOOKS_EDGE_TOLERANCE) {
-      booksTrack.scrollTo({ left: booksTrack.scrollWidth, behavior: 'auto' });
+      rotateBooks(booksTrack, 'prev');
     } else {
       booksTrack.scrollBy({ left: -booksTrack.clientWidth, behavior: 'smooth' });
     }
   });
   booksNext?.addEventListener('click', () => {
-    if (!booksTrack) return;
+    if (!booksTrack || !booksScrollable(booksTrack)) return;
     if (
       booksTrack.scrollLeft >=
       booksTrack.scrollWidth - booksTrack.clientWidth - BOOKS_EDGE_TOLERANCE
     ) {
-      booksTrack.scrollTo({ left: 0, behavior: 'auto' });
+      rotateBooks(booksTrack, 'next');
     } else {
       booksTrack.scrollBy({ left: booksTrack.clientWidth, behavior: 'smooth' });
     }
