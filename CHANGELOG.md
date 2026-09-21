@@ -10,6 +10,30 @@ left out rather than guessed at.
 ## 2026-09-21
 
 ### Changed
+- New landscape key art for all six IPs, from 9211x4815 sources, served at
+  3840x2007 JPEG (every file came out smaller than the one it replaced;
+  `?v=6`). The portrait art was not touched.
+
+  The new pieces are **not 16:9**: 1.9133 against the old 1.7778. So the
+  slide box that makes the hero full-bleed had its aspect updated to match
+  — it has to equal the art exactly, or `object-fit: cover` starts cropping
+  inside the box as well and the button hotspot drifts off the drawn pill.
+
+  The CTA pill was remeasured with a percentage ruler over each of the six,
+  as `AGENTS.md` requires: it sits at x 45.2%–54.8%, y 1.6%–7.0% on all of
+  them — the same fixed-width pill, only the label differs. That is far
+  narrower than the previous art's pill (x 32%–68%), so the old hotspot
+  would have hung off the sides; it is now x 46%–54%, y 2.5%–6.2%, inset
+  inside the measured pill. Verified on screen at 21:9, 16:9 and 4:3: the
+  hotspot lands on the drawn pill at every width, including Not Even
+  Death's right-anchored box.
+
+  Being wider than 16:9, the art now loses its sides on ordinary monitors:
+  3.5% per side at 16:9, 8.2% at 16:10, 15.2% at 4:3. Measured margins say
+  what that costs — Mrs. Steele's title starts at 3.4% from the left, Laya's
+  logo at ~11%, and Not Even Death has content at both edges (icons from
+  3.6% left, the "H" in DEATH out to 99.3% right), which its right anchor
+  can no longer keep whole on both sides.
 - The hero art fills the viewport at every aspect ratio. The slide box is
   no longer the largest 16:9 that *fits* inside the viewport (with a 1.45
   aspect floor) but the smallest that *covers* it — `max()` instead of

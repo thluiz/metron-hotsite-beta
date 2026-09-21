@@ -35,7 +35,7 @@ const year = new Date().getFullYear();
             srcset="/images/laya-keyart-portrait.jpg?v=5"
           />
           <img
-            src="/images/laya-keyart.jpg?v=5"
+            src="/images/laya-keyart.jpg?v=6"
             alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film. Coming soon."
             class="keyart-img"
           />
@@ -60,7 +60,7 @@ const year = new Date().getFullYear();
             srcset="/images/intersessions-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/intersessions-keyart.jpg?v=2"
+            src="/images/intersessions-keyart.jpg?v=6"
             alt="Inter/Sessions — No one stands alone. A Metron Showrunners Original Limited Series. Coming soon."
             class="keyart-img"
           />
@@ -80,7 +80,7 @@ const year = new Date().getFullYear();
             srcset="/images/hybris-keyart-portrait.jpg?v=3"
           />
           <img
-            src="/images/hybris-keyart.jpg?v=3"
+            src="/images/hybris-keyart.jpg?v=6"
             alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series."
             class="keyart-img"
           />
@@ -105,7 +105,7 @@ const year = new Date().getFullYear();
             srcset="/images/mrs-steele-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/mrs-steele-keyart.jpg?v=2"
+            src="/images/mrs-steele-keyart.jpg?v=6"
             alt="Adorable Mrs. Steele. A Metron Showrunners Original Comedy Feature Film. Coming soon."
             class="keyart-img"
           />
@@ -125,7 +125,7 @@ const year = new Date().getFullYear();
             srcset="/images/not-even-death-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/not-even-death-keyart.jpg?v=2"
+            src="/images/not-even-death-keyart.jpg?v=6"
             alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film."
             class="keyart-img is-ned"
           />
@@ -150,7 +150,7 @@ const year = new Date().getFullYear();
             srcset="/images/cell-phone-keyart-portrait.jpg?v=2"
           />
           <img
-            src="/images/cell-phone-keyart.jpg?v=2"
+            src="/images/cell-phone-keyart.jpg?v=6"
             alt="Cell Phone — you're free to go. A Metron Showrunners Original Vertical Mobile Film. Coming soon."
             class="keyart-img"
           />
@@ -437,8 +437,9 @@ const year = new Date().getFullYear();
      with a delay so the hidden slide's link isn't focusable/clickable.
 
      A slide IS the rectangle the art is drawn into, and in landscape that
-     rectangle deliberately OVERFLOWS the viewport: it is the smallest 16:9
-     box that still covers .keyart-wrap completely — max(), not min().
+     rectangle deliberately OVERFLOWS the viewport: it is the smallest box of
+     the ART'S OWN ASPECT that still covers .keyart-wrap completely —
+     max(), not min().
      So the art reaches all four edges on any screen, and .keyart-wrap's
      overflow:hidden clips whatever sticks out.
 
@@ -446,12 +447,13 @@ const year = new Date().getFullYear();
      (16:9 ceiling, 1.45 aspect floor), which by construction left bars on
      any screen outside that range. Filling the hero was asked for
      explicitly, with the cost accepted: the overflow crops the art —
-     the bottom on a screen wider than 16:9, the sides on a squarer one —
-     and the button and title baked into the art can end up partly or
-     entirely off-screen. That is the trade, not a bug to fix by bringing
+     the bottom on a screen wider than the art, the sides on a squarer one
+     — and the title baked into the art can end up partly off-screen. The
+     drawn button survives either way: it sits top-centre, the two places
+     cover never crops. That is the trade, not a bug to fix by bringing
      a fitted box back.
 
-     The box being exactly the art's aspect (3840x2160) and anchored the
+     The box being exactly the art's aspect (3840x2007) and anchored the
      way object-fit: cover anchors it means percentage overlays inside a
      slide (.footer-link) still land on the drawn art — for as long as
      that part of the art is on screen at all. */
@@ -460,12 +462,17 @@ const year = new Date().getFullYear();
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    /* dvh pair for the same reason as .keyart-wrap; vh first, as the
+    /* The art's own aspect, 3840x2007 (1.9133) since 2026-09-21. It is NOT
+       16:9 any more — the new pieces came in at 9211x4815, wider than the
+       old 3840x2160. These four numbers and the art must agree exactly, or
+       object-fit: cover starts cropping inside the box too and the button
+       hotspot below drifts off the drawn pill. New art, change them.
+       dvh pair for the same reason as .keyart-wrap; vh first, as the
        fallback for browsers without dvh. */
-    width:  max(100vw, 100vh * 16 / 9);
-    width:  max(100vw, 100dvh * 16 / 9);
-    height: max(100vh, 100vw * 9 / 16);
-    height: max(100dvh, 100vw * 9 / 16);
+    width:  max(100vw, 100vh * 3840 / 2007);
+    width:  max(100vw, 100dvh * 3840 / 2007);
+    height: max(100vh, 100vw * 2007 / 3840);
+    height: max(100dvh, 100vw * 2007 / 3840);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.8s ease, visibility 0s linear 0.8s;
@@ -478,12 +485,17 @@ const year = new Date().getFullYear();
     z-index: 2;
   }
 
-  /* Not Even Death has ~0 margin on the right of its landscape art (the
-     "H" in DEATH nearly touches pixel 3840 of 3840). Anchoring its box to
-     the right edge throws the whole horizontal overflow to the left (rain
-     background, no text), so the title survives the crop. Same reasoning
-     as object-position on .keyart-img.is-ned — moved up to the box,
-     now that the box is what overflows. */
+  /* Not Even Death keeps almost no margin on the right of its landscape
+     art: remeasured on the 2026-09-21 piece, the "H" in DEATH runs to
+     ~99.3% of the width. Anchoring the box right throws the whole
+     horizontal overflow to the left, so the title survives.
+
+     Unlike the previous art, this one also has content near the LEFT edge
+     (the car/figures icons start at ~3.6%, "someone had to give up" at
+     ~5%), so the anchor is no longer free: on anything squarer than ~1.84
+     it eats that tagline. Centring instead would clip the title's H by
+     ~2.8% at 16:9. Kept anchored because the title is the brand; it is a
+     judgement call, not a measurement. */
   .slide.is-ned-slide {
     left: auto;
     right: 0;
@@ -548,22 +560,28 @@ const year = new Date().getFullYear();
     }
   }
 
-  /* Clickable button over the pill drawn on the art (top-center). Measured
-     pixel-by-pixel on the 6 new art pieces — all with the button in almost
-     the same spot, ~x 32%–38% to 64%–68% (landscape 9216 / portrait
-     2916–2920) and y 0–5.5% — and generously rounded into a single
-     rectangle that covers all six. Inter/Sessions, Mrs. Steele and Cell
-     Phone have the same pill design ("Coming Soon") but no destination:
-     they stay without an <a> element in the HTML. Art changed, remeasure.
-     The percentages are of the SLIDE, which since 2026-09-21 is the drawn
-     art exactly (see .slide) — so they follow the art rather than
-     drifting as the crop changes. */
+  /* Clickable button over the pill drawn on the art (top-centre).
+     Remeasured on the 2026-09-21 landscape art (9211x4815 sources) with a
+     percentage ruler over each piece: the pill sits at x 45.2%–54.8%,
+     y 1.6%–7.0% on all six. It is the same fixed-width pill everywhere —
+     only the label inside changes ("Watch Teaser", "View Project", "View
+     Script", "Coming Soon") — so one box serves all six. Note this is a
+     lot narrower than the previous art's pill (x 32%–68%): a hotspot
+     carried over from it would hang off the sides.
+
+     The box below is inset inside the measured pill on every side, so
+     rounding and per-piece drift can't put it on bare art. Inter/Sessions,
+     Mrs. Steele and Cell Phone have the same pill but no destination: they
+     stay without an <a> element in the HTML. Art changed, remeasure.
+
+     The percentages are of the SLIDE, which is the drawn art exactly (see
+     .slide) — so they follow the art instead of drifting with the crop. */
   .footer-link {
     position: absolute;
-    left: 44%;
-    right: 44%;
-    top: 0;
-    bottom: 94.8%;
+    left: 46%;
+    right: 46%;
+    top: 2.5%;
+    bottom: 93.8%;
     z-index: 3;
     transition: background-color 0.2s ease;
   }
@@ -574,7 +592,8 @@ const year = new Date().getFullYear();
      button appears to land on screen. On the narrowest common device
      (~0.46, e.g. iPhone 12/Pro Max) this pushes the button out to about
      28%–72%; that's why this box is wider than the landscape one
-     (whose box is the drawn art itself, so it doesn't shift). */
+     (whose box is the drawn art itself, so it doesn't shift). The portrait
+     art was NOT replaced on 2026-09-21, so these numbers still stand. */
   @media (orientation: portrait) {
     .footer-link {
       left: 25%;
