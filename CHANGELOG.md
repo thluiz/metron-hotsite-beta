@@ -23,21 +23,38 @@ left out rather than guessed at.
 - Not Even Death's right-edge anchoring moved from `object-position` up to
   the box itself (`.is-ned-slide`), keeping the title that sits flush
   against the right edge.
-- The books carousel now turns instead of jumping at the ends. The covers
-  about to be revealed are moved to the other end of the DOM, the scroll
-  position is corrected instantly by exactly the width they added (so that
-  frame looks unchanged), and only then does the smooth scroll run — so
-  they slide in from the side the arrow points at, one screenful per click,
-  without travelling across the whole row. Destination is the same as
-  before; only the instant `scrollTo` is gone. DOM order stays in sync with
-  visual order, so tab order still matches the screen, and no covers are
-  cloned. `prefers-reduced-motion` skips the animation.
+- The books carousel is now a proper infinite scroll-snap carousel. The row
+  of covers is cloned once before and once after the real one, the scroll
+  rests in the middle copy, navigation is by index, and every scroll target
+  is read from the target cover's own `offsetLeft` — no arithmetic on cover
+  widths or gaps anywhere. Each click glides exactly one cover
+  (~290ms ease-out) and the loop never reaches an end to clamp against.
+  The clones are `aria-hidden` with untabbable links, so assistive tech and
+  the tab order still meet each book once; native touch swipe still works and
+  gets normalised back into the middle copy when it settles.
+  `prefers-reduced-motion` skips the animation.
 
-  Known rough edge: because a rotation only happens at an end while the
-  middle still page-scrolls (a mid-track rotation would push the instant
-  correction past the scroll limit and become visible), *prev* then *next*
-  does not land back on the exact starting window — it takes two clicks.
-  Every cover stays reachable and no step is abrupt.
+  This replaced three attempts that each looked broken, all recorded in the
+  code comment so they don't get retried:
+
+  1. `scrollBy(clientWidth)`. One "page" is 5.35 covers (1296px) while the
+     whole scrollable range is 354px — seven 190px covers in a 1296px
+     viewport barely overflow — so every click slammed into the clamp.
+  2. Rotating a cover through the DOM and correcting the scroll to hide it.
+     `scroll-snap-type: mandatory` drags any programmatic scroll to the
+     nearest snap point, and at the right-hand end the resting position is
+     the scroll clamp, which is not a snap point: a correction aimed at
+     112px landed on 246px, a 134px one-frame jump.
+  3. Cloning, but stepping by a measured pitch and folding on a pixel
+     threshold. The pitch is fractional at some widths (182.5px on a 390px
+     phone), so clicks drifted and snapping yanked them back (net steps of
+     -185, -183, -191 instead of -182), and the fold raced the animation
+     (+1021 then -53 where -242 was due).
+
+  Verified per click rather than by eye: the net scroll is exactly one cover
+  every time at both widths, the motion is a clean ease-out (max 50-75px per
+  frame), and the block fold is invisible by construction — child *i* and
+  child *i+7* are asserted to be the same cover, same image.
 
 ### Removed
 - `--art-h`, which no rule consumed.

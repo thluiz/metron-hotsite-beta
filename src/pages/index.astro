@@ -963,94 +963,164 @@ const year = new Date().getFullYear();
     '[data-books-nav="next"]'
   );
 
-  // Native scroll clamps at both ends, so a plain scrollBy does nothing once
-  // you hit an edge. Until 2026-09-21 the wrap was an instant jump to the
-  // far edge: it avoided scrolling back across every cover, but it read as
-  // a glitch rather than as a carousel turning.
+  // Infinite CSS scroll-snap carousel. The row of covers is cloned once
+  // before and once after the real one; the scroll rests in the middle copy;
+  // navigation is by INDEX, and every scroll target is read from the target
+  // cover's own offsetLeft. Nothing is computed from a cover width or a gap.
   //
-  // Now the track ROTATES. The covers about to be revealed are moved to the
-  // other end of the DOM, the scroll position is corrected by exactly the
-  // width they added — instantly, so that frame looks identical and nothing
-  // appears to move — and only then does the smooth scroll run. The covers
-  // slide in from the side the arrow points at, one screenful per click, and
-  // the loop never travels across the whole row.
+  // That last point is the whole design, and it took three tries to get here:
   //
-  // DOM order and visual order stay in sync through the rotation, so tab
-  // order keeps matching what is on screen.
+  //   1. scrollBy(clientWidth) with an instant jump at the ends. One "page"
+  //      is 5.35 covers (1296px) while the entire scrollable range is 354px
+  //      — seven 190px covers in a 1296px viewport barely overflow — so
+  //      every click slammed into the clamp. A teleport, not a scroll.
+  //
+  //   2. Rotating one cover through the DOM and correcting the scroll to hide
+  //      the move. The correction has to survive `scroll-snap-type:
+  //      mandatory`, which drags any programmatic scroll to the nearest snap
+  //      point, and at the right-hand end the resting position is the scroll
+  //      clamp — not a snap point. Traced: a correction aimed at 112px landed
+  //      on 246px, a 134px one-frame jump. Exactly what it meant to hide.
+  //
+  //   3. Cloning (as here) but stepping by a measured pitch and folding on a
+  //      pixel threshold. The pitch is fractional at some widths (182.5px on
+  //      a 390px phone), so every click drifted by half a pixel and snapping
+  //      yanked it back: measured net steps of -185, -183, -191 instead of a
+  //      clean -182. And the pixel fold raced the animation, producing net
+  //      steps of +1021 then -53 where -242 was due.
+  //
+  // Indices fix both: an index is exact, and `offsetLeft` is the real laid-out
+  // position, so a target is always precisely a snap point and snapping has
+  // nothing to drag. Folding happens BEFORE the animation, never against it.
+  // If you touch this, measure the net scroll per click — it must be one
+  // cover every time, at every width.
   const BOOKS_EDGE_TOLERANCE = 12; // rounding/padding leave scrollLeft a few px off 0 at rest
+  const BOOKS_SETTLE_MS = 140; // quiet time after the last scroll event
+  const BOOKS_OWN_SCROLL_MS = 600; // covers a smooth glide plus its ease-out tail
 
-  // Distance between two consecutive covers' left edges (card width + gap),
-  // read from layout rather than recomputed from the CSS custom properties.
-  function booksPitch(items: HTMLElement[]) {
-    if (items.length > 1) return items[1].offsetLeft - items[0].offsetLeft;
-    return items[0].offsetWidth || 1;
-  }
+  function initBooks(track: HTMLElement) {
+    const originals = Array.from(track.children) as HTMLElement[];
+    const count = originals.length;
 
-  // Covers moved per click: one screenful, matching the scrollBy that runs
-  // away from the edges. Never the whole row (rotating by the full length
-  // is a no-op) and never zero.
-  function booksStep(track: HTMLElement, items: HTMLElement[]) {
-    const perPage = Math.floor(track.clientWidth / booksPitch(items));
-    return Math.min(Math.max(perPage, 1), items.length - 1);
-  }
+    // Measured before cloning, or the track would always look scrollable.
+    const overflows =
+      track.scrollWidth > track.clientWidth + BOOKS_EDGE_TOLERANCE;
 
-  function rotateBooks(track: HTMLElement, direction: 'prev' | 'next') {
-    const items = Array.from(track.children) as HTMLElement[];
-    if (items.length < 2) return;
+    const kids = () => Array.from(track.children) as HTMLElement[];
 
-    const startLeft = track.scrollLeft;
-    const step = booksStep(track, items);
-    // Measured against a cover that does NOT move, so the shift below is the
-    // real pixel offset the rotation caused instead of a width we assumed.
-    const anchor = direction === 'prev' ? items[0] : items[items.length - 1];
-    const anchorBefore = anchor.offsetLeft;
+    // Scroll offset that puts cover `i` at the start of the viewport, read
+    // from layout every time so nothing accumulates rounding.
+    const offsetOf = (i: number) => {
+      const k = kids();
+      return k[i].offsetLeft - k[0].offsetLeft;
+    };
 
-    if (direction === 'prev') {
-      track.prepend(...items.slice(-step));
-    } else {
-      track.append(...items.slice(0, step));
-    }
-
-    const shift = anchor.offsetLeft - anchorBefore;
-
-    // 'auto' overrides the track's CSS scroll-behavior: smooth, so this
-    // correction is instant and invisible.
-    track.scrollTo({ left: startLeft + shift, behavior: 'auto' });
-
-    if (prefersReducedMotion) {
-      track.scrollTo({ left: startLeft, behavior: 'auto' });
+    if (!(count >= 2 && overflows)) {
+      // Every cover fits: the arrows just walk the list and stop at the ends.
+      let plain = 0;
+      const step = (d: number) => {
+        plain = Math.min(Math.max(plain + d, 0), count - 1);
+        track.scrollTo({
+          left: offsetOf(plain),
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        });
+      };
+      booksPrev?.addEventListener('click', () => step(-1));
+      booksNext?.addEventListener('click', () => step(1));
       return;
     }
-    // Next frame, so the correction is committed before the animation starts
-    // from it. The intermediate frame is visually identical to the previous
-    // one, so waiting for it costs nothing.
-    requestAnimationFrame(() =>
-      track.scrollTo({ left: startLeft, behavior: 'smooth' })
+
+    const clone = (el: HTMLElement) => {
+      const copy = el.cloneNode(true) as HTMLElement;
+      copy.setAttribute('aria-hidden', 'true');
+      copy.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+      return copy;
+    };
+    track.prepend(...originals.map(clone));
+    track.append(...originals.map(clone));
+
+    // Indices [count, 2*count) are the real covers, between the two copies.
+    let index = count;
+
+    // A smooth glide stops emitting scroll events during its 1px-per-frame
+    // tail, which opens a gap longer than BOOKS_SETTLE_MS. The settle handler
+    // below used to fire into that gap, resync the index to a half-finished
+    // position and fold against the running animation — measured as net steps
+    // of +1071 then +135 where -242 was due. So our own scrolls are marked and
+    // the handler ignores them; arrow navigation folds in `turn` instead.
+    let ownScrollUntil = 0;
+    const markOwn = () => {
+      ownScrollUntil = performance.now() + BOOKS_OWN_SCROLL_MS;
+    };
+
+    const jump = (i: number) => {
+      index = i;
+      markOwn();
+      track.scrollTo({ left: offsetOf(i), behavior: 'auto' });
+    };
+    const glide = (i: number) => {
+      index = i;
+      markOwn();
+      track.scrollTo({
+        left: offsetOf(i),
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      });
+    };
+
+    jump(index);
+
+    // Bring the resting index back into the middle copy. The copies are
+    // identical, and the target is a cover's own offset, so this is invisible.
+    const fold = () => {
+      if (index < count) jump(index + count);
+      else if (index >= 2 * count) jump(index - count);
+    };
+
+    const turn = (step: number) => {
+      fold(); // before the animation, so it never races the scroll
+      glide(index + step);
+    };
+
+    booksPrev?.addEventListener('click', () => turn(-1));
+    booksNext?.addEventListener('click', () => turn(1));
+
+    // A touch swipe moves the scroll without going through `index`. Resync
+    // from layout once it settles, then fold if it drifted out of the middle
+    // copy. Arrow navigation is excluded: it keeps `index` itself and folds on
+    // the next click, before animating.
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    track.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(() => {
+          if (performance.now() < ownScrollUntil) return;
+          const k = kids();
+          const base = k[0].offsetLeft;
+          const at = track.scrollLeft;
+          let nearest = 0;
+          for (let n = 1; n < k.length; n++) {
+            if (
+              Math.abs(k[n].offsetLeft - base - at) <
+              Math.abs(k[nearest].offsetLeft - base - at)
+            ) {
+              nearest = n;
+            }
+          }
+          index = nearest;
+          fold();
+        }, BOOKS_SETTLE_MS);
+      },
+      { passive: true }
     );
+
+    // --book-w is a clamp(), so every offset changes with the viewport.
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => jump(index), 150);
+    });
   }
 
-  // Nothing to turn when every cover already fits on screen.
-  function booksScrollable(track: HTMLElement) {
-    return track.scrollWidth > track.clientWidth + BOOKS_EDGE_TOLERANCE;
-  }
-
-  booksPrev?.addEventListener('click', () => {
-    if (!booksTrack || !booksScrollable(booksTrack)) return;
-    if (booksTrack.scrollLeft <= BOOKS_EDGE_TOLERANCE) {
-      rotateBooks(booksTrack, 'prev');
-    } else {
-      booksTrack.scrollBy({ left: -booksTrack.clientWidth, behavior: 'smooth' });
-    }
-  });
-  booksNext?.addEventListener('click', () => {
-    if (!booksTrack || !booksScrollable(booksTrack)) return;
-    if (
-      booksTrack.scrollLeft >=
-      booksTrack.scrollWidth - booksTrack.clientWidth - BOOKS_EDGE_TOLERANCE
-    ) {
-      rotateBooks(booksTrack, 'next');
-    } else {
-      booksTrack.scrollBy({ left: booksTrack.clientWidth, behavior: 'smooth' });
-    }
-  });
+  if (booksTrack) initBooks(booksTrack);
 </script>
