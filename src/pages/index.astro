@@ -113,7 +113,7 @@ const year = new Date().getFullYear();
       </div>
 
       <div
-        class="slide is-ned-slide"
+        class="slide"
         data-slide="4"
         role="group"
         aria-roledescription="slide"
@@ -417,10 +417,11 @@ const year = new Date().getFullYear();
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
-    /* The art now covers this box entirely, so this only shows in the
-       instant before the image decodes. Matches the page background (body,
-       global.css) and the Books section below, so that instant reads as
-       the same dark canvas rather than a cream flash. */
+    /* This is the letterbox: it shows wherever the 16:9 art box doesn't
+       reach (top/bottom on a screen squarer than 16:9, left/right on a
+       wider one), and in the instant before the image decodes. Matches the
+       page background (body, global.css) and the Books section below, so
+       the bars read as the same dark canvas rather than as a gap. */
     background-color: #05091a;
   }
 
@@ -436,43 +437,40 @@ const year = new Date().getFullYear();
   /* Stacked slides; the crossfade is opacity only. visibility disappears
      with a delay so the hidden slide's link isn't focusable/clickable.
 
-     A slide IS the rectangle the art is drawn into, and in landscape that
-     rectangle deliberately OVERFLOWS the viewport: it is the smallest box of
-     the ART'S OWN ASPECT that still covers .keyart-wrap completely —
-     max(), not min().
-     So the art reaches all four edges on any screen, and .keyart-wrap's
-     overflow:hidden clips whatever sticks out.
+     A slide is the box the art is drawn into: in landscape, the largest
+     16:9 box that FITS inside the viewport — min(), not max() — centred
+     on both axes. Whatever the box doesn't cover is letterbox, painted by
+     .keyart-wrap's background: bars top and bottom on a screen squarer
+     than 16:9, bars left and right on a wider one.
 
-     2026-09-21: this replaced a box that had to FIT inside the viewport
-     (16:9 ceiling, 1.45 aspect floor), which by construction left bars on
-     any screen outside that range. Filling the hero was asked for
-     explicitly, with the cost accepted: the overflow crops the art —
-     the bottom on a screen wider than the art, the sides on a squarer one
-     — and the title baked into the art can end up partly off-screen. The
-     drawn button survives either way: it sits top-centre, the two places
-     cover never crops. That is the trade, not a bug to fix by bringing
-     a fitted box back.
+     Why 16:9 when the art is 1.9133 (3840x2007): 16:9 is the favoured
+     format, so a 16:9 screen gets the art edge to edge with no bars at
+     all. The art being wider than the box, object-fit: cover trims a
+     CONSTANT 7.08% of its width (3.54% each side, centred) at every
+     viewport — see .keyart-img. Constant is the point: the crop no longer
+     changes with the screen, so one hotspot works everywhere.
 
-     The box being exactly the art's aspect (3840x2007) and anchored the
-     way object-fit: cover anchors it means percentage overlays inside a
-     slide (.footer-link) still land on the drawn art — for as long as
-     that part of the art is on screen at all. */
+     History, so the wheel doesn't get reinvented: until 2026-09-21 this
+     box had to fit too (16:9 ceiling, 1.45 aspect floor). It was then
+     replaced by a box that COVERED the viewport, making the hero
+     full-bleed with no bars anywhere, because filling the screen had been
+     asked for. That was reverted on 2026-09-23: with the art at 1.9133,
+     covering a squarer screen cropped the sides hard (15.2% per side at
+     4:3), and ordinary monitors were eating the titles — Mrs. Steele's
+     starts 3.4% from the left edge. Bars were chosen over that. */
   .slide {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    /* The art's own aspect, 3840x2007 (1.9133) since 2026-09-21. It is NOT
-       16:9 any more — the new pieces came in at 9211x4815, wider than the
-       old 3840x2160. These four numbers and the art must agree exactly, or
-       object-fit: cover starts cropping inside the box too and the button
-       hotspot below drifts off the drawn pill. New art, change them.
+    transform: translate(-50%, -50%);
+    /* 16:9, capped by both viewport axes so the box always fits. The art's
+       own aspect is deliberately NOT used here: see the note above.
        dvh pair for the same reason as .keyart-wrap; vh first, as the
        fallback for browsers without dvh. */
-    width:  max(100vw, 100vh * 3840 / 2007);
-    width:  max(100vw, 100dvh * 3840 / 2007);
-    height: max(100vh, 100vw * 2007 / 3840);
-    height: max(100dvh, 100vw * 2007 / 3840);
+    width:  min(100vw, 100vh * 16 / 9);
+    width:  min(100vw, 100dvh * 16 / 9);
+    height: min(100vh, 100vw * 9 / 16);
+    height: min(100dvh, 100vw * 9 / 16);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.8s ease, visibility 0s linear 0.8s;
@@ -485,23 +483,6 @@ const year = new Date().getFullYear();
     z-index: 2;
   }
 
-  /* Not Even Death keeps almost no margin on the right of its landscape
-     art: remeasured on the 2026-09-21 piece, the "H" in DEATH runs to
-     ~99.3% of the width. Anchoring the box right throws the whole
-     horizontal overflow to the left, so the title survives.
-
-     Unlike the previous art, this one also has content near the LEFT edge
-     (the car/figures icons start at ~3.6%, "someone had to give up" at
-     ~5%), so the anchor is no longer free: on anything squarer than ~1.84
-     it eats that tagline. Centring instead would clip the title's H by
-     ~2.8% at 16:9. Kept anchored because the title is the brand; it is a
-     judgement call, not a measurement. */
-  .slide.is-ned-slide {
-    left: auto;
-    right: 0;
-    transform: none;
-  }
-
   /* Portrait (phone): unchanged behaviour — the slide simply fills
      .keyart-wrap and object-fit: cover on the <img> crops the portrait art
      (1600x2844). Sized by inset/100%, never by vh: on mobile vh follows
@@ -510,8 +491,7 @@ const year = new Date().getFullYear();
      on top AND bottom. The wrap already tracks the real visible viewport,
      so inheriting its size avoids the mismatch. */
   @media (orientation: portrait) {
-    .slide,
-    .slide.is-ned-slide {
+    .slide {
       inset: 0;
       transform: none;
       width: 100%;
@@ -523,21 +503,28 @@ const year = new Date().getFullYear();
     display: block;
     width: 100%;
     height: 100%;
-    /* In landscape the slide box is already exactly the art's 16:9, so
-       cover scales it with nothing left to crop at this level — the
-       cropping happens one level up, where the box overflows the viewport.
-       In portrait the box IS the viewport and cover does the cropping.
-       Kept as cover rather than fill so that a future piece of art that
-       isn't pixel-exact gets cropped instead of stretched. */
+    /* In landscape this is where the crop happens: the art is 1.9133 and
+       the box is 16:9, so cover trims 7.08% of the art's width, 3.54% off
+       each side, identically at every viewport. Nothing is trimmed
+       vertically (the art fills the box's height exactly), which is why
+       the hotspot's y percentages can be read straight off the art.
+       Centred rather than anchored to one side: Not Even Death has
+       content at both edges (icons from ~3.6% left, the "H" in DEATH out
+       to ~99.3% right), and anchoring would double the loss on one of
+       them and move its pill away from the shared hotspot.
+       Known casualty of the 3.54% right-hand trim, measured on the served
+       files: the bottom-right credit line runs past 96.46% on five of the
+       six, so it loses its last letters (Inter/Sessions 2.26%, Mrs. Steele
+       1.98%, Laya 0.88%, Hybris 0.57%, Cell Phone 0.44%; Not Even Death
+       ends at 95.36% and is fine). Shifting the trim to save it would need
+       ~5.8% off the left instead, which would cut Mrs. Steele's title
+       (starts at 3.4%) and Not Even Death's icons (3.6%) — worse. The
+       real fix is upstream: a ~4% safe margin on both sides of the art.
+       In portrait the box IS the viewport and cover crops there too.
+       Kept as cover rather than fill so a future piece of art that isn't
+       pixel-exact gets cropped instead of stretched. */
     object-fit: cover;
-    object-position: center top;
-  }
-
-  /* Portrait art: the title sits nearly flush against the right edge, so
-     anchoring right keeps the side crop off it. In landscape it is the box
-     itself that's anchored right — see .slide.is-ned-slide. */
-  .keyart-img.is-ned {
-    object-position: right top;
+    object-position: center;
   }
 
   @media (orientation: portrait) {
@@ -574,8 +561,13 @@ const year = new Date().getFullYear();
      Mrs. Steele and Cell Phone have the same pill but no destination: they
      stay without an <a> element in the HTML. Art changed, remeasure.
 
-     The percentages are of the SLIDE, which is the drawn art exactly (see
-     .slide) — so they follow the art instead of drifting with the crop. */
+     The percentages are of the SLIDE (the 16:9 box), not of the art, and
+     since 2026-09-23 the two differ: cover trims 3.54% off each side of
+     the art, so a point at fraction p of the ART sits at (p - 0.0354) /
+     0.9292 of the box. The measured pill, 45.2%–54.8% of the art, is
+     therefore 44.8%–55.2% of the box, and the values below sit inside
+     that. Vertically there is no trim, so the y numbers are the art's as
+     measured. Because the trim is constant, this holds at every viewport. */
   .footer-link {
     position: absolute;
     left: 46%;
