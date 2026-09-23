@@ -29,6 +29,18 @@ left out rather than guessed at.
   monitors were eating the titles, Mrs. Steele's starting 3.4% from the
   left edge.
 
+### Fixed
+- The nav arrows and the dots were positioned against the viewport, so the
+  moment letterbox bars existed they came off the artwork: at 21:9 the
+  arrows sat at 3% of 2560px, inside the left bar, and at 4:3 the dots
+  straddled the seam between art and bar. The hero's aspect now lives on
+  `.keyart` (the art box) instead of on `.slide`, and the slides simply
+  fill it — so every overlay inside, arrows and dots included, is measured
+  against the art. One consequence worth having: the aspect is defined in
+  exactly one place now, not two. Verified at 21:9, 16:9, 16:10, 4:3 and
+  portrait: all four controls sit inside the art, and their percentages
+  come out identical across viewports.
+
 ### Removed
 - Not Even Death's right-edge anchoring in landscape (`.is-ned-slide`, and
   the top-level `object-position: right`). With the trim now constant and
