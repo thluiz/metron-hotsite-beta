@@ -426,17 +426,23 @@ const year = new Date().getFullYear();
   }
 
   /* THE ART BOX, and the one place the hero's aspect is defined: the
-     largest 16:9 that FITS inside the viewport — min(), not max() —
-     centred on both axes. Whatever it doesn't cover is letterbox, painted
-     by .keyart-wrap's background: no bars at all on a 16:9 screen, bars
-     left and right on anything wider, top and bottom on anything squarer.
+     largest box of THE ART'S OWN ASPECT that FITS inside the viewport
+     — min(), not max() — centred on both axes. Whatever it doesn't
+     cover is letterbox, painted by .keyart-wrap's background: bars left
+     and right on a screen wider than the art, top and bottom on a squarer
+     one.
 
-     Why 16:9 when the art is 1.9133 (3840x2007): 16:9 is the favoured
-     format, so a 16:9 screen gets the art edge to edge. The art being
-     wider than the box, object-fit: cover trims a CONSTANT 7.08% of its
-     width (3.54% each side, centred) at every viewport — see
-     .keyart-img. Constant is the point: the crop no longer changes with
-     the screen, so one button hotspot works everywhere.
+     The aspect is the art's, 3840x2007 (1.9133), NOT 16:9. That is the
+     whole point: the art is shown complete at every viewport and nothing
+     is ever cropped — no title, no tagline, no credit line. The cost is
+     that even a 16:9 monitor gets thin bars (~38px top and bottom at
+     1080p), because the art is wider than 16:9. That trade was chosen
+     deliberately on 2026-09-23; don't "fix" the bars by forcing 16:9 here
+     without reading the history below.
+
+     These numbers and the art must agree exactly. If they drift,
+     object-fit: cover starts cropping inside the box and every percentage
+     overlay below stops meaning "of the art". New art, change them.
 
      Everything inside is positioned against this box, which is what makes
      the percentages elsewhere mean "of the art": the slides, the button
@@ -445,13 +451,20 @@ const year = new Date().getFullYear();
      the art: at 21:9 the arrows sat at 3% of 2560px, i.e. inside the left
      bar, and at 4:3 the dots straddled the seam between art and bar.
 
-     History: until 2026-09-21 the box fitted like this (with a 16:9
-     ceiling and a 1.45 aspect floor). It was then made to COVER the
-     viewport instead, for a full-bleed hero with no bars anywhere. That
-     was reverted on 2026-09-23: with the art at 1.9133, covering a squarer
-     screen cropped the sides hard (15.2% per side at 4:3) and ordinary
-     monitors were eating the titles — Mrs. Steele's starts 3.4% from the
-     left edge. Bars were chosen over that. */
+     History, three states in three days, so none of them gets retried by
+     accident:
+       1. Until 2026-09-21: a fitted box capped at 16:9 with a 1.45 aspect
+          floor, which cropped the sides on squarer screens.
+       2. 2026-09-21: made to COVER the viewport — full-bleed, no bars
+          anywhere — because filling the screen was asked for. With the
+          art at 1.9133 this cropped hard on ordinary monitors: 15.2% per
+          side at 4:3, eating the titles (Mrs. Steele's starts 3.4% from
+          the left edge).
+       3. 2026-09-23: fitted again, briefly capped at 16:9 so a 16:9 screen
+          would have no bars. That still trimmed a constant 3.54% off each
+          side, which clipped the bottom-right credit line on five of the
+          six pieces ("Horror Feature Fil"). Replaced same day by the art's
+          own aspect, below: bars everywhere, but the art intact. */
   .keyart {
     position: absolute;
     top: 50%;
@@ -459,10 +472,10 @@ const year = new Date().getFullYear();
     transform: translate(-50%, -50%);
     /* dvh pair for the same reason as .keyart-wrap; vh first, as the
        fallback for browsers without dvh. */
-    width:  min(100vw, 100vh * 16 / 9);
-    width:  min(100vw, 100dvh * 16 / 9);
-    height: min(100vh, 100vw * 9 / 16);
-    height: min(100dvh, 100vw * 9 / 16);
+    width:  min(100vw, 100vh * 3840 / 2007);
+    width:  min(100vw, 100dvh * 3840 / 2007);
+    height: min(100vh, 100vw * 2007 / 3840);
+    height: min(100dvh, 100vw * 2007 / 3840);
   }
 
   /* Portrait (phone): no letterbox at all — the portrait art covers the
@@ -502,26 +515,13 @@ const year = new Date().getFullYear();
     display: block;
     width: 100%;
     height: 100%;
-    /* In landscape this is where the crop happens: the art is 1.9133 and
-       the box is 16:9, so cover trims 7.08% of the art's width, 3.54% off
-       each side, identically at every viewport. Nothing is trimmed
-       vertically (the art fills the box's height exactly), which is why
-       the hotspot's y percentages can be read straight off the art.
-       Centred rather than anchored to one side: Not Even Death has
-       content at both edges (icons from ~3.6% left, the "H" in DEATH out
-       to ~99.3% right), and anchoring would double the loss on one of
-       them and move its pill away from the shared hotspot.
-       Known casualty of the 3.54% right-hand trim, measured on the served
-       files: the bottom-right credit line runs past 96.46% on five of the
-       six, so it loses its last letters (Inter/Sessions 2.26%, Mrs. Steele
-       1.98%, Laya 0.88%, Hybris 0.57%, Cell Phone 0.44%; Not Even Death
-       ends at 95.36% and is fine). Shifting the trim to save it would need
-       ~5.8% off the left instead, which would cut Mrs. Steele's title
-       (starts at 3.4%) and Not Even Death's icons (3.6%) — worse. The
-       real fix is upstream: a ~4% safe margin on both sides of the art.
-       In portrait the box IS the viewport and cover crops there too.
-       Kept as cover rather than fill so a future piece of art that isn't
-       pixel-exact gets cropped instead of stretched. */
+    /* In landscape nothing is cropped: .keyart is the art's own aspect, so
+       cover scales the art to the box with no overflow to trim. It stays
+       `cover` rather than `fill` purely as insurance — if a future piece
+       of art isn't pixel-exact against the numbers on .keyart, cover crops
+       it by the difference instead of stretching it, and a crop is easier
+       to spot than a subtle distortion.
+       In portrait the box IS the viewport and cover does crop there. */
     object-fit: cover;
     object-position: center;
   }
@@ -560,13 +560,12 @@ const year = new Date().getFullYear();
      Mrs. Steele and Cell Phone have the same pill but no destination: they
      stay without an <a> element in the HTML. Art changed, remeasure.
 
-     The percentages are of the SLIDE (the 16:9 box), not of the art, and
-     since 2026-09-23 the two differ: cover trims 3.54% off each side of
-     the art, so a point at fraction p of the ART sits at (p - 0.0354) /
-     0.9292 of the box. The measured pill, 45.2%–54.8% of the art, is
-     therefore 44.8%–55.2% of the box, and the values below sit inside
-     that. Vertically there is no trim, so the y numbers are the art's as
-     measured. Because the trim is constant, this holds at every viewport. */
+     The percentages are of the SLIDE, which fills .keyart, which is the
+     art's own aspect — so they are percentages of the drawn art, with no
+     conversion needed and no drift with the viewport. The measured pill is
+     45.2%–54.8% x 1.6%–7.0%; the values below sit inside it. (Between
+     2026-09-21 and 2026-09-23 the box was 16:9 while the art was 1.9133,
+     and these needed a 3.54%-per-side conversion. It no longer applies.) */
   .footer-link {
     position: absolute;
     left: 46%;
