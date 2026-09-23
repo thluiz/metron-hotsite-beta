@@ -9,25 +9,37 @@ left out rather than guessed at.
 
 ## 2026-09-23
 
+Three hero states landed today. This describes where it ended up; the two
+it passed through are kept in the `.keyart` comment so they don't get
+retried.
+
 ### Changed
-- The hero is letterboxed again, reverting the full-bleed experiment of
-  2026-09-21. The slide box is back to the largest 16:9 that FITS inside
-  the viewport (`min()`, not `max()`), centred, with `.keyart-wrap`'s
-  background showing as bars: none at all on a 16:9 screen, vertical bars
-  on anything wider (320px a side at 21:9), horizontal bars on anything
-  squarer (53px at 16:10, 78px at 3:2, 120px at 4:3).
+- The hero is letterboxed, reverting the full-bleed experiment of
+  2026-09-21. The art box is the largest box of **the art's own aspect**
+  (3840x2007, 1.9133) that fits inside the viewport (`min()`, not
+  `max()`), centred, with `.keyart-wrap`'s background showing as bars:
+  left and right on a screen wider than the art, top and bottom on a
+  squarer one, including ~38px top and bottom on a 1080p 16:9 monitor.
 
-  16:9 is favoured deliberately, so the most common monitor gets the art
-  edge to edge. The art being 1.9133, a 16:9 box trims a **constant** 7.08%
-  of its width, 3.54% each side, at every viewport. Constant is what makes
-  a single button hotspot valid everywhere: verified at 21:9, 16:9, 16:10,
-  3:2 and 4:3, the hotspot lands at 46.3%–53.7% of the drawn art, inside
-  the measured pill (45.2%–54.8%).
+  Nothing is ever cropped, at any viewport: no title, no tagline, no
+  credit line. The thin bars on 16:9 are the price, chosen knowingly.
 
-  Why the full-bleed version went: with art at 1.9133, covering a squarer
-  screen cropped the sides hard — 15.2% per side at 4:3 — and ordinary
-  monitors were eating the titles, Mrs. Steele's starting 3.4% from the
-  left edge.
+  It went through a 16:9-capped box first, so a 16:9 screen would have no
+  bars at all. That trimmed a constant 3.54% off each side of the art,
+  which clipped the bottom-right credit line on five of the six pieces
+  ("Horror Feature Fil" on Laya; Inter/Sessions lost 2.26%, Mrs. Steele
+  1.98%). Rebalancing the trim couldn't fix it — saving the credits needed
+  ~5.8% off the left, cutting Mrs. Steele's title (starts 3.4% from the
+  edge) and Not Even Death's icons (3.6%) instead — so the crop was dropped
+  altogether.
+
+  Why full-bleed went: with art at 1.9133, covering a squarer screen
+  cropped the sides hard (15.2% per side at 4:3) and ordinary monitors were
+  eating the titles.
+
+  The button hotspot needs no conversion now that the box is the art: it
+  is x 46%–54%, y 2.5%–6.2% of the drawn art, inside the pill measured at
+  x 45.2%–54.8%, y 1.6%–7.0%.
 
 ### Fixed
 - The nav arrows and the dots were positioned against the viewport, so the
@@ -36,31 +48,15 @@ left out rather than guessed at.
   straddled the seam between art and bar. The hero's aspect now lives on
   `.keyart` (the art box) instead of on `.slide`, and the slides simply
   fill it — so every overlay inside, arrows and dots included, is measured
-  against the art. One consequence worth having: the aspect is defined in
-  exactly one place now, not two. Verified at 21:9, 16:9, 16:10, 4:3 and
-  portrait: all four controls sit inside the art, and their percentages
-  come out identical across viewports.
+  against the art. The aspect is now defined in exactly one place, not two.
+  Verified at 21:9, 16:9, 16:10, 4:3 and portrait: all four controls sit
+  inside the art, with percentages identical across viewports.
 
 ### Removed
 - Not Even Death's right-edge anchoring in landscape (`.is-ned-slide`, and
-  the top-level `object-position: right`). With the trim now constant and
-  small, centring is measurably better for that piece: anchored, the whole
-  7.08% came off the left and destroyed the icons (from 3.6%) and the
-  "someone had to give up" tagline (from 5%); centred, those survive and
-  only the right edge of the "H" in DEATH is touched. Checked on screen,
-  not just computed. The portrait rule is untouched — that art still needs
-  it.
-
-### Known issue
-- The 3.54% right-hand trim clips the bottom-right credit line on five of
-  the six pieces, which end past 96.46% of the width: Inter/Sessions loses
-  2.26%, Mrs. Steele 1.98%, Laya 0.88%, Hybris 0.57%, Cell Phone 0.44%
-  (Not Even Death ends at 95.36% and is unaffected). Rebalancing the trim
-  cannot fix it — saving the credits needs ~5.8% off the left, which cuts
-  Mrs. Steele's title and Not Even Death's icons instead. Fixes, in order
-  of preference: a ~4% safe margin on both sides in the next art export;
-  or drop the 16:9 favouring and use the art's own aspect, which bars a
-  16:9 screen by 3.5% top and bottom but never clips anything.
+  the top-level `object-position: right`). It existed to push a side crop
+  away from the title; with no crop left in landscape it has nothing to do.
+  The portrait rule is untouched — that art still needs it.
 
 ## 2026-09-21
 
