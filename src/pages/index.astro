@@ -425,52 +425,67 @@ const year = new Date().getFullYear();
     background-color: #05091a;
   }
 
-  /* The carousel's frame: fills .keyart-wrap edge to edge, on every
-     screen. It no longer sizes the art — the art overflows it (see
-     .slide). Arrows and dots hang off this box, not off the art, so they
-     stay on screen even where the art is cropped. */
-  .keyart {
-    position: absolute;
-    inset: 0;
-  }
-
-  /* Stacked slides; the crossfade is opacity only. visibility disappears
-     with a delay so the hidden slide's link isn't focusable/clickable.
-
-     A slide is the box the art is drawn into: in landscape, the largest
-     16:9 box that FITS inside the viewport — min(), not max() — centred
-     on both axes. Whatever the box doesn't cover is letterbox, painted by
-     .keyart-wrap's background: bars top and bottom on a screen squarer
-     than 16:9, bars left and right on a wider one.
+  /* THE ART BOX, and the one place the hero's aspect is defined: the
+     largest 16:9 that FITS inside the viewport — min(), not max() —
+     centred on both axes. Whatever it doesn't cover is letterbox, painted
+     by .keyart-wrap's background: no bars at all on a 16:9 screen, bars
+     left and right on anything wider, top and bottom on anything squarer.
 
      Why 16:9 when the art is 1.9133 (3840x2007): 16:9 is the favoured
-     format, so a 16:9 screen gets the art edge to edge with no bars at
-     all. The art being wider than the box, object-fit: cover trims a
-     CONSTANT 7.08% of its width (3.54% each side, centred) at every
-     viewport — see .keyart-img. Constant is the point: the crop no longer
-     changes with the screen, so one hotspot works everywhere.
+     format, so a 16:9 screen gets the art edge to edge. The art being
+     wider than the box, object-fit: cover trims a CONSTANT 7.08% of its
+     width (3.54% each side, centred) at every viewport — see
+     .keyart-img. Constant is the point: the crop no longer changes with
+     the screen, so one button hotspot works everywhere.
 
-     History, so the wheel doesn't get reinvented: until 2026-09-21 this
-     box had to fit too (16:9 ceiling, 1.45 aspect floor). It was then
-     replaced by a box that COVERED the viewport, making the hero
-     full-bleed with no bars anywhere, because filling the screen had been
-     asked for. That was reverted on 2026-09-23: with the art at 1.9133,
-     covering a squarer screen cropped the sides hard (15.2% per side at
-     4:3), and ordinary monitors were eating the titles — Mrs. Steele's
-     starts 3.4% from the left edge. Bars were chosen over that. */
-  .slide {
+     Everything inside is positioned against this box, which is what makes
+     the percentages elsewhere mean "of the art": the slides, the button
+     hotspot, and — since 2026-09-23 — the arrows and dots too. They used
+     to hang off the viewport, so the moment bars appeared they drifted off
+     the art: at 21:9 the arrows sat at 3% of 2560px, i.e. inside the left
+     bar, and at 4:3 the dots straddled the seam between art and bar.
+
+     History: until 2026-09-21 the box fitted like this (with a 16:9
+     ceiling and a 1.45 aspect floor). It was then made to COVER the
+     viewport instead, for a full-bleed hero with no bars anywhere. That
+     was reverted on 2026-09-23: with the art at 1.9133, covering a squarer
+     screen cropped the sides hard (15.2% per side at 4:3) and ordinary
+     monitors were eating the titles — Mrs. Steele's starts 3.4% from the
+     left edge. Bars were chosen over that. */
+  .keyart {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* 16:9, capped by both viewport axes so the box always fits. The art's
-       own aspect is deliberately NOT used here: see the note above.
-       dvh pair for the same reason as .keyart-wrap; vh first, as the
+    /* dvh pair for the same reason as .keyart-wrap; vh first, as the
        fallback for browsers without dvh. */
     width:  min(100vw, 100vh * 16 / 9);
     width:  min(100vw, 100dvh * 16 / 9);
     height: min(100vh, 100vw * 9 / 16);
     height: min(100dvh, 100vw * 9 / 16);
+  }
+
+  /* Portrait (phone): no letterbox at all — the portrait art covers the
+     screen. Sized by inset/100% rather than vh, because on mobile vh
+     follows the "large viewport" (as if the browser bar were hidden),
+     which is bigger than the visible area; .keyart-wrap already tracks the
+     real one, so inheriting its size avoids the mismatch. */
+  @media (orientation: portrait) {
+    .keyart {
+      inset: 0;
+      transform: none;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  /* Stacked slides, each filling the art box (.keyart, which is where the
+     hero's aspect lives). The crossfade is opacity only; visibility
+     disappears with a delay so the hidden slide's link isn't
+     focusable/clickable. */
+  .slide {
+    position: absolute;
+    inset: 0;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.8s ease, visibility 0s linear 0.8s;
@@ -481,22 +496,6 @@ const year = new Date().getFullYear();
     visibility: visible;
     transition: opacity 0.8s ease, visibility 0s linear 0s;
     z-index: 2;
-  }
-
-  /* Portrait (phone): unchanged behaviour — the slide simply fills
-     .keyart-wrap and object-fit: cover on the <img> crops the portrait art
-     (1600x2844). Sized by inset/100%, never by vh: on mobile vh follows
-     the "large viewport" (as if the browser bar were hidden), which is
-     bigger than the visible area, and a centred box that size overflowed
-     on top AND bottom. The wrap already tracks the real visible viewport,
-     so inheriting its size avoids the mismatch. */
-  @media (orientation: portrait) {
-    .slide {
-      inset: 0;
-      transform: none;
-      width: 100%;
-      height: 100%;
-    }
   }
 
   .keyart-img {
@@ -603,8 +602,9 @@ const year = new Date().getFullYear();
     outline-offset: -2px;
   }
 
-  /* Side arrows, centered on the art's height (above the footer bar,
-     which sits only in the bottom third). */
+  /* Side arrows, vertically centred on the ART (not the viewport): they
+     sit inside .keyart, which is the art box, so with letterbox bars they
+     stay on the artwork instead of floating in a bar. */
   .nav-arrow {
     position: absolute;
     top: 50%;
@@ -640,7 +640,8 @@ const year = new Date().getFullYear();
     right: 3%;
   }
 
-  /* Dots in the bottom third: in landscape the clickable button is at the
+  /* Dots in the bottom third of the ART box (see .nav-arrow above for why
+     that matters with bars): in landscape the clickable button is at the
      top, far from here; in portrait (old art) they sit above the footer
      bar, to avoid clashing with the clickable strip. */
   .dots {
