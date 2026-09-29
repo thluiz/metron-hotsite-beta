@@ -27,7 +27,7 @@ const year = new Date().getFullYear();
         data-slide="0"
         role="group"
         aria-roledescription="slide"
-        aria-label="1 of 6: Laya"
+        aria-label="1 of 7: Laya"
       >
         <picture>
           <source
@@ -52,7 +52,7 @@ const year = new Date().getFullYear();
         data-slide="1"
         role="group"
         aria-roledescription="slide"
-        aria-label="2 of 6: Inter/Sessions"
+        aria-label="2 of 7: Inter/Sessions"
       >
         <picture>
           <source
@@ -72,7 +72,7 @@ const year = new Date().getFullYear();
         data-slide="2"
         role="group"
         aria-roledescription="slide"
-        aria-label="3 of 6: Hybris"
+        aria-label="3 of 7: Hybris"
       >
         <picture>
           <source
@@ -97,7 +97,7 @@ const year = new Date().getFullYear();
         data-slide="3"
         role="group"
         aria-roledescription="slide"
-        aria-label="4 of 6: Adorable Mrs. Steele"
+        aria-label="4 of 7: Adorable Mrs. Steele"
       >
         <picture>
           <source
@@ -117,7 +117,7 @@ const year = new Date().getFullYear();
         data-slide="4"
         role="group"
         aria-roledescription="slide"
-        aria-label="5 of 6: Not Even Death"
+        aria-label="5 of 7: Not Even Death"
       >
         <picture>
           <source
@@ -142,7 +142,7 @@ const year = new Date().getFullYear();
         data-slide="5"
         role="group"
         aria-roledescription="slide"
-        aria-label="6 of 6: Cell Phone"
+        aria-label="6 of 7: Cell Phone"
       >
         <picture>
           <source
@@ -152,6 +152,26 @@ const year = new Date().getFullYear();
           <img
             src="/images/cell-phone-keyart.jpg?v=6"
             alt="Cell Phone — you're free to go. A Metron Showrunners Original Vertical Mobile Film. Coming soon."
+            class="keyart-img"
+          />
+        </picture>
+      </div>
+
+      <div
+        class="slide"
+        data-slide="6"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="7 of 7: Immune"
+      >
+        <picture>
+          <source
+            media="(orientation: portrait)"
+            srcset="/images/immune-keyart-portrait.jpg?v=1"
+          />
+          <img
+            src="/images/immune-keyart.jpg?v=1"
+            alt="Immune — You think you're above it. You're not. A Metron Showrunners Original Anthology Limited Series. Coming soon."
             class="keyart-img"
           />
         </picture>
@@ -222,6 +242,14 @@ const year = new Date().getFullYear();
           role="tab"
           aria-selected="false"
           aria-label="Show slide 6: Cell Phone"
+        ></button>
+        <button
+          type="button"
+          class="dot"
+          data-dot="6"
+          role="tab"
+          aria-selected="false"
+          aria-label="Show slide 7: Immune"
         ></button>
       </div>
     </div>
@@ -551,14 +579,16 @@ const year = new Date().getFullYear();
      percentage ruler over each piece: the pill sits at x 45.2%–54.8%,
      y 1.6%–7.0% on all six. It is the same fixed-width pill everywhere —
      only the label inside changes ("Watch Teaser", "View Project", "View
-     Script", "Coming Soon") — so one box serves all six. Note this is a
+     Script", "Coming Soon") — so one box serves all seven (Immune, added
+     2026-09-29, measured the same). Note this is a
      lot narrower than the previous art's pill (x 32%–68%): a hotspot
      carried over from it would hang off the sides.
 
      The box below is inset inside the measured pill on every side, so
      rounding and per-piece drift can't put it on bare art. Inter/Sessions,
-     Mrs. Steele and Cell Phone have the same pill but no destination: they
-     stay without an <a> element in the HTML. Art changed, remeasure.
+     Mrs. Steele, Cell Phone and Immune have the same pill but no
+     destination: they stay without an <a> element in the HTML. Art
+     changed, remeasure.
 
      The percentages are of the SLIDE, which fills .keyart, which is the
      art's own aspect — so they are percentages of the drawn art, with no

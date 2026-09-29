@@ -38,7 +38,7 @@ test('the suite is running against preview, not dev', async ({ page }) => {
    percentages: it's the same .footer-link box for all three, near the top
    of the art (see the "stays aligned" test below). Indices (dot/slide)
    reflect the carousel order — Laya, Inter/Sessions, Hybris, Mrs. Steele,
-   Not Even Death, Cell Phone. */
+   Not Even Death, Cell Phone, Immune. */
 const SLIDES_WITH_LINK = [
   {
     name: 'Hybris',
