@@ -7,6 +7,18 @@ The 2026-08-12 → 2026-09-20 entries were reconstructed from git history on
 grouped by commit date; anything not evident from the commits themselves was
 left out rather than guessed at.
 
+## 2026-09-29
+
+### Added
+- Seventh IP in the hero carousel: **Immune** ("Original Anthology Limited
+  Series"), last in the rotation, after Cell Phone and before wrapping back
+  to Laya. Landscape served at 3840x2007 (q82, from a 9211x4815 source,
+  same as the other six), portrait at 1600x2853 (q88). Both come in well
+  under the others (~300 KB each) because the art is mostly smooth white.
+  "Coming Soon" pill, no destination, so no `.footer-link`. The pill sits
+  in the same place as on the other six (x 45.2%–54.8%, y ~1.9%–6.9%), so
+  the shared hotspot box needed no change. Slide labels now read "n of 7".
+
 ## 2026-09-23
 
 Three hero states landed today. This describes where it ended up; the two
