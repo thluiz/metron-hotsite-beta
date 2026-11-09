@@ -14,9 +14,19 @@ left out rather than guessed at.
   `files-laya.metronshowrunners.com`, next to the existing Watch Teaser.
   The art only has the teaser pill baked in, so this one is a real `<a>`
   drawn in CSS to match it (`.view-project`), placed just left of the pill
-  in the clear sky. In portrait it sits at the far left edge (2%–25%) and
-  stops where the teaser hotspot starts, so the two never overlap. Also
-  added "Laya Project" to the footer links. New test in `seed.spec.ts`.
+  in the clear sky. Also added "Laya Project" to the footer links. New test
+  in `seed.spec.ts`.
+
+### Fixed
+- The View Project button drifted in size from the baked Watch Teaser pill
+  as the window resized (fixed 11px font, % of the viewport). It is now
+  sized in units of the art itself (`.keyart` became a size container, so
+  `cqw`/`cqh`), like the pill is. Landscape: same box as the pill, matching
+  its measured x 45.3%–54.7%, y 1.9%–6.9%. Portrait: side by side at the
+  pill's own size doesn't fit on a phone (~400 art px free to its left), so
+  it is a constant 0.8x of the pill, anchored to the pill's left edge
+  through the cover-crop. The test now checks the size against the art
+  scale instead of the hotspot.
 
 ## 2026-09-29
 

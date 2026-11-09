@@ -632,33 +632,59 @@ const year = new Date().getFullYear();
 
   /* Laya's second button, "View Project". Unlike .footer-link this one is
      VISIBLE: the art only has the "Watch Teaser" pill baked in, so this is
-     a real pill drawn in CSS to match it (dark brown fill, cream text) and
-     parked just LEFT of the baked one, in the clear sky. Left rather than
-     right because the right side is the woman's hair; below, in portrait,
-     is the moon and the title's horns.
-     Landscape: same box as the baked pill (9.6% x 5.4% of the art, y 1.6%),
-     its right edge 1% short of the pill's left edge (45.2%); font sized off
-     the art's own width, as the baked text is (~1.22%). Portrait: see the
-     media query below. If the Laya art changes, remeasure. */
+     a real pill drawn in CSS to match it and parked just LEFT of the baked
+     one, in the clear sky. Left rather than right because the right side is
+     the woman's hair; below, in portrait, are the moon and the title's
+     horns.
+
+     THE SIZE MUST TRACK THE ART. The baked pill scales with the image, so
+     everything here is sized in units of the art, never in px/% of the
+     screen — an earlier version used a fixed 11px font and % of the
+     viewport, and the two buttons drifted apart as the window resized.
+     .keyart is a size container (below), so cqw/cqh are the art box's own
+     width/height. Browsers without container units fall back to vw/vh,
+     which is exact except where there are bars or scrollbars.
+
+     Measured on the art (2026-11-09):
+       landscape 3840x2007: pill x 45.3%–54.7%, y 1.9%–6.9%; the text's
+         cap/ascender height is 38px, i.e. a ~1.36% (of art width) font.
+       portrait 1600x2841: pill x 34.0%–66.0% (544–1056px), y 0–142px, flush
+         with the top; text ink 50px tall (~69px font).
+     Landscape: same box as the pill, 1.1% to its left. If the Laya art
+     changes, remeasure. */
+  @supports (width: 1cqw) {
+    .keyart {
+      container-type: size;
+    }
+  }
+
   .view-project {
+    --cw: 100vw;
+    --ch: 100dvh;
     position: absolute;
     right: 55.8%;
     top: 1.9%;
-    width: 9.6%;
-    height: 5.0%;
+    width: 9.4%;
+    height: 5%;
     z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #42392a;
     color: #f5e8bd;
-    border-radius: 0.55em;
+    border-radius: 0.38em;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-    font-size: min(1.22vw, 2.334vh);
-    font-size: min(1.22vw, 2.334dvh);
+    font-size: min(1.36vw, 2.6dvh);
     text-decoration: none;
     white-space: nowrap;
     transition: background-color 0.2s ease;
+  }
+  @supports (width: 1cqw) {
+    .view-project {
+      --cw: 100cqw;
+      --ch: 100cqh;
+      font-size: 1.36cqw;
+    }
   }
   .view-project:hover {
     background-color: #574b37;
@@ -668,21 +694,30 @@ const year = new Date().getFullYear();
     outline-offset: 2px;
   }
 
-  /* Portrait: the baked pill is black here and sits flush at the top
-     (x 34%–66% of the art; 28%–72% on the narrowest phones once cover
-     crops the sides). The free sky is to its left, so the button goes at
-     the far left edge, 2%–25% — it must stop where the teaser hotspot
-     starts (25%) so the two never overlap. 11px type fits "View Project"
-     in ~70px of the ~86px that is on a 375px-wide phone. */
+  /* Portrait: the baked pill is black and flush at the top, 512x142 art px
+     at x 544. The slide is the viewport and the art is scaled to COVER it,
+     so --s (screen px per art px) is the larger of the two axis ratios, and
+     when the width is the cropped axis the art loses (1600*s - width)/2 on
+     each side — --pill-left is where the baked pill's left edge lands.
+     Side by side at the pill's own size does not fit on a phone (only
+     ~400 art px are free to its left), so this one is a fixed 0.8x of it —
+     356x114 art px, font 48 vs 69 — vertically centred on the pill and 24
+     art px short of it. It scales with the art like the pill does, so the
+     ratio between the two holds at every window size. */
   @media (orientation: portrait) {
     .view-project {
-      left: 2%;
-      right: auto;
-      top: 0.8%;
-      width: 23%;
-      height: 3.6%;
+      --s: max(calc(var(--cw) / 1600), calc(var(--ch) / 2841));
+      --pill-left: calc(
+        544 * var(--s) - max(0px, 1600 * var(--s) - var(--cw)) / 2
+      );
+      left: auto;
+      right: calc(var(--cw) - var(--pill-left) + 24 * var(--s));
+      top: calc(14 * var(--s));
+      width: calc(356 * var(--s));
+      height: calc(114 * var(--s));
       background-color: #000;
-      font-size: 11px;
+      border-radius: calc(32 * var(--s));
+      font-size: calc(48 * var(--s));
     }
     .view-project:hover {
       background-color: #1c1c1c;
