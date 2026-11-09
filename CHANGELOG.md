@@ -7,6 +7,17 @@ The 2026-08-12 → 2026-09-20 entries were reconstructed from git history on
 grouped by commit date; anything not evident from the commits themselves was
 left out rather than guessed at.
 
+## 2026-11-09
+
+### Added
+- Laya's slide gets a second button, **View Project**, to
+  `files-laya.metronshowrunners.com`, next to the existing Watch Teaser.
+  The art only has the teaser pill baked in, so this one is a real `<a>`
+  drawn in CSS to match it (`.view-project`), placed just left of the pill
+  in the clear sky. In portrait it sits at the far left edge (2%–25%) and
+  stops where the teaser hotspot starts, so the two never overlap. Also
+  added "Laya Project" to the footer links. New test in `seed.spec.ts`.
+
 ## 2026-09-29
 
 ### Added

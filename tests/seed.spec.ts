@@ -145,6 +145,28 @@ test('clicking the Laya bar opens the teaser instead of navigating', async ({
   await expect(page).toHaveURL('/');
 });
 
+test('the Laya slide has a visible View Project button next to the teaser one', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const btn = page.locator('[data-slide="0"] .view-project');
+  await expect(btn).toBeVisible();
+  await expect(btn).toHaveText('View Project');
+  await expect(btn).toHaveAttribute(
+    'href',
+    'https://files-laya.metronshowrunners.com/'
+  );
+
+  // The teaser hotspot stays, and the two don't overlap.
+  const hotspot = await page
+    .locator('[data-slide="0"] .footer-link')
+    .boundingBox();
+  const box = await btn.boundingBox();
+  expect(hotspot && box).toBeTruthy();
+  expect(box!.x + box!.width).toBeLessThanOrEqual(hotspot!.x);
+});
+
 test('the Not Even Death dot opens the slide and the link goes to files-ned', async ({
   page,
 }) => {

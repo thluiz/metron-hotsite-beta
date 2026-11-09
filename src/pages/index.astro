@@ -45,6 +45,11 @@ const year = new Date().getFullYear();
           class="footer-link glightbox"
           aria-label="Play the Laya teaser"
         ></a>
+        <a
+          href="https://files-laya.metronshowrunners.com/"
+          class="view-project"
+          aria-label="View Project: Laya"
+        >View Project</a>
       </div>
 
       <div
@@ -426,6 +431,8 @@ const year = new Date().getFullYear();
     <nav class="site-footer-links" aria-label="Project links">
       <a href="https://youtu.be/bXL5xmmQPys" class="glightbox">Laya Trailer</a>
       <span class="site-footer-sep" aria-hidden="true">&#183;</span>
+      <a href="https://files-laya.metronshowrunners.com/">Laya Project</a>
+      <span class="site-footer-sep" aria-hidden="true">&#183;</span>
       <a href="https://files.hybris.world/">Hybris Project</a>
       <span class="site-footer-sep" aria-hidden="true">&#183;</span>
       <a href="https://files-ned.metronshowrunners.com/">Not Even Death Script</a>
@@ -620,6 +627,65 @@ const year = new Date().getFullYear();
       right: 25%;
       top: 0;
       bottom: 94%;
+    }
+  }
+
+  /* Laya's second button, "View Project". Unlike .footer-link this one is
+     VISIBLE: the art only has the "Watch Teaser" pill baked in, so this is
+     a real pill drawn in CSS to match it (dark brown fill, cream text) and
+     parked just LEFT of the baked one, in the clear sky. Left rather than
+     right because the right side is the woman's hair; below, in portrait,
+     is the moon and the title's horns.
+     Landscape: same box as the baked pill (9.6% x 5.4% of the art, y 1.6%),
+     its right edge 1% short of the pill's left edge (45.2%); font sized off
+     the art's own width, as the baked text is (~1.22%). Portrait: see the
+     media query below. If the Laya art changes, remeasure. */
+  .view-project {
+    position: absolute;
+    right: 55.8%;
+    top: 1.9%;
+    width: 9.6%;
+    height: 5.0%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #42392a;
+    color: #f5e8bd;
+    border-radius: 0.55em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    font-size: min(1.22vw, 2.334vh);
+    font-size: min(1.22vw, 2.334dvh);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+  .view-project:hover {
+    background-color: #574b37;
+  }
+  .view-project:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
+  }
+
+  /* Portrait: the baked pill is black here and sits flush at the top
+     (x 34%–66% of the art; 28%–72% on the narrowest phones once cover
+     crops the sides). The free sky is to its left, so the button goes at
+     the far left edge, 2%–25% — it must stop where the teaser hotspot
+     starts (25%) so the two never overlap. 11px type fits "View Project"
+     in ~70px of the ~86px that is on a 375px-wide phone. */
+  @media (orientation: portrait) {
+    .view-project {
+      left: 2%;
+      right: auto;
+      top: 0.8%;
+      width: 23%;
+      height: 3.6%;
+      background-color: #000;
+      font-size: 11px;
+    }
+    .view-project:hover {
+      background-color: #1c1c1c;
     }
   }
 
