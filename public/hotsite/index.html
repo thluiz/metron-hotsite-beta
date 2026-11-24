@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<base href="/hotsite/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners original epic drama series.">
+<meta name="theme-color" content="#05091a">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=1">
+<title>Hybris — An Ancient Conflict, Reimagined | Metron Showrunners</title>
+<link rel="stylesheet" href="assets/glightbox.min.css">
+<style>
+@font-face{font-family:Cinzel;src:url(assets/cinzel-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:Cormorant;src:url(assets/cormorant-garamond-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+*,:before,:after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{color:#f2ede2;background-color:#05091a;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif}
+.glightbox-container .ginner-container{align-items:center!important;height:100dvh!important}
+.glightbox-container .gslide-video,.glightbox-container .gvideo-wrapper{margin-left:auto!important;margin-right:auto!important}
+:root{--gold:#d9c08a;--ease:cubic-bezier(.2,.7,.1,1)}
+
+/* ---------- key art: full page, original framing (unchanged) ---------- */
+.keyart-wrap{background-color:#05091a;width:100%;height:100dvh;position:relative;overflow:hidden}
+.keyart{width:min(100vw,191.33dvh);height:min(100dvh,52.2656vw);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);container-type:size}
+@media (orientation:portrait){.keyart{width:100%;height:100%;inset:0;transform:none}}
+.slide{opacity:0;visibility:hidden;z-index:1;transition:opacity .8s,visibility 0s linear .8s;position:absolute;inset:0}
+.slide.is-active{opacity:1;visibility:visible;z-index:2;transition:opacity .8s,visibility linear}
+.keyart-img{object-fit:cover;object-position:center;width:100%;height:100%;display:block}
+@media (orientation:portrait){.keyart-img{object-fit:cover;object-position:center top}.keyart-img.is-ned{object-position:right top}}
+
+/* ---------- the single project call-to-action (replaces the buttons that were printed on the art) ----------
+   Landscape: bottom-left, on the same baseline as the METRON signature (bottom-right) — like a poster credit block.
+   Portrait: centred just above the slide dots. One typographic treatment for every state. */
+.cta{position:absolute;z-index:5;display:inline-flex;align-items:center;gap:1.15em;left:50%;top:3.6%;transform:translateX(-50%);
+  font-family:"Metron Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;font-size:1.38cqw;letter-spacing:.01em;line-height:1;white-space:nowrap;
+  color:#fff;text-decoration:none;text-shadow:0 .08em .3em rgba(0,0,0,.65),0 0 .06em rgba(0,0,0,.4);
+  transition:opacity .45s var(--ease),color .45s var(--ease)}
+.cta::before{content:"";position:absolute;z-index:-1;inset:-1.5em -2.2em -1.5em -1.8em;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(5,9,26,.62),rgba(5,9,26,.28) 55%,rgba(5,9,26,0));pointer-events:none;transition:opacity .45s}
+.cta .rule{display:block;width:2.2em;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.9));box-shadow:0 1px 4px rgba(0,0,0,.5);transition:width .6s var(--ease)}
+.cta .rule.r2{display:block;background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,0))}
+.cta .lbl{position:relative;padding:.7em 0}
+.cta .lbl::after{content:"";position:absolute;left:0;right:0;bottom:.25em;height:1px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
+.cta.swap{opacity:0;transition-duration:.25s}
+/* entrance: quick, discreet — cloud blooms, hairlines draw out from the label, text settles with a single light sweep */
+.cta.enter::before{animation:ctaCloud .9s var(--ease) both}
+.cta.enter .lbl{animation:ctaText .75s var(--ease) .08s both}
+.cta.enter .rule{animation:ctaRuleL .8s var(--ease) .18s both;transform-origin:right center}
+.cta.enter .rule.r2{animation-name:ctaRuleR;transform-origin:left center}
+.cta.enter .lbl{animation:ctaText .75s var(--ease) .08s both,ctaGlow 1.4s ease-out .7s both}
+@keyframes ctaCloud{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes ctaText{from{opacity:0;transform:translateY(-.45em);letter-spacing:.22em;filter:blur(3px)}to{opacity:1;transform:none;letter-spacing:.01em;filter:none}}
+@keyframes ctaRuleL{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes ctaRuleR{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+@keyframes ctaGlow{0%{text-shadow:0 .08em .3em rgba(0,0,0,.65),0 0 .06em rgba(0,0,0,.4)}35%{text-shadow:0 .08em .3em rgba(0,0,0,.65),0 0 .9em rgba(255,236,190,.75)}100%{text-shadow:0 .08em .3em rgba(0,0,0,.65),0 0 .06em rgba(0,0,0,.4)}}
+@media (prefers-reduced-motion:reduce){.cta.enter::before,.cta.enter .lbl,.cta.enter .rule{animation:none}}
+.cta[href]{cursor:pointer}
+.cta[href]:hover{color:#fff}
+.cta[href]:hover .rule{width:3.4em}
+.cta[href]:hover .lbl::after{transform:scaleX(1)}
+.cta[href]:focus-visible{outline:1px solid rgba(242,237,226,.85);outline-offset:6px}
+.cta:not([href]){cursor:default}
+@media (orientation:portrait){
+  .cta{--rw:max(100cqw, calc(100cqh * .5626));left:50%;top:2.4%;bottom:auto;transform:translateX(-50%);font-size:calc(var(--rw) * .036);letter-spacing:.01em;gap:.8em}
+  .cta .rule.r2{display:block}
+  .cta .rule{width:1.8em}
+  .cta[href]:hover .rule{width:2.6em}
+}
+
+@font-face{font-family:"Metron Sans";src:url(assets/inter-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Metron Sans";src:url(assets/inter-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Metron Serif";src:url(assets/cormorant-garamond-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
+
+/* ---------- navigation: numbered index with progress hairlines (replaces arrows + dots) ---------- */
+.pager{position:absolute;z-index:6;left:50%;bottom:4.4%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5em;font-size:max(10px,.68cqw);color:#fff;
+  text-shadow:0 .08em .3em rgba(0,0,0,.65)}
+.pager::before{content:"";position:absolute;z-index:-1;inset:-1.8em -3.4em -1.8em -3.4em;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(5,9,26,.45),rgba(5,9,26,.16) 60%,rgba(5,9,26,0));pointer-events:none}
+.pager-top{display:flex;align-items:center;gap:.5em}
+.count{font-size:1.28em;white-space:nowrap;font-family:"Metron Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.06em;display:flex;align-items:baseline;gap:.45em}
+.count .now{font-weight:700;line-height:1}
+.count .of{font-weight:400;opacity:.8;line-height:1}
+.step{all:unset;cursor:pointer;display:grid;place-items:center;width:2.5em;height:2.5em;border-radius:50%;color:#fff;opacity:.6;transition:opacity .3s,background .3s}
+.step svg{width:1.2em;height:1.2em;stroke:currentColor;fill:none;stroke-width:1.4;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+.step:hover{opacity:1;background:rgba(255,255,255,.1)}
+.step:focus-visible{outline:1px solid rgba(255,255,255,.8);outline-offset:2px;opacity:1}
+.title{font-family:"Metron Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;letter-spacing:.01em;font-size:1.02em;white-space:nowrap;min-width:9em;transition:opacity .35s}
+.title.out{opacity:0}
+.ticks{display:flex;gap:.45em;align-items:center}
+.tick{all:unset;cursor:pointer;position:relative;height:1.4em;width:1.9em;display:flex;align-items:center}
+.tick::before{content:"";display:block;width:100%;height:1px;background:rgba(255,255,255,.32);box-shadow:0 1px 3px rgba(0,0,0,.45);transition:height .3s,background .3s}
+.tick i{position:absolute;left:0;top:50%;height:1px;margin-top:0;width:0;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.4)}
+.tick.done i{width:100%;height:1px;margin-top:0}
+.tick.is-active i{animation:fill var(--dur,6s) linear forwards}
+.tick.is-active.paused i{animation-play-state:paused}
+.tick.is-active::before{background:rgba(255,255,255,.32)}
+.tick:hover::before{background:rgba(255,255,255,.85)}
+.tick span{position:absolute;bottom:130%;left:50%;transform:translate(-50%,4px);font-family:"Metron Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;font-size:.9em;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.tick:hover span,.tick:focus-visible span{opacity:1;transform:translate(-50%,0)}
+.tick.is-active span{display:none}
+.tick:focus-visible::before{background:#fff}
+@keyframes fill{from{width:0}to{width:100%}}
+@media (orientation:portrait){
+  .pager{--rw:max(100cqw, calc(100cqh * .5626));bottom:auto;top:calc(var(--rw) * 1.5);font-size:max(10px,calc(var(--rw) * .024))}
+}
+@media (orientation:portrait) and (max-aspect-ratio:9/17){.pager{top:auto;bottom:16%}}
+
+/* ---------- Metron signature in HTML (was printed on the art); geometry measured from the artwork ---------- */
+.sig{--u:calc(100cqw / 3840);position:absolute;z-index:5;left:calc(2821 * var(--u));top:calc(1797 * var(--u));display:flex;align-items:stretch;color:#fff;pointer-events:auto;
+  text-shadow:0 calc(3*var(--u)) calc(10*var(--u)) rgba(0,0,0,.6),0 0 calc(2*var(--u)) rgba(0,0,0,.35)}
+.sig::before{content:"";position:absolute;z-index:-1;inset:calc(-70*var(--u)) calc(-120*var(--u)) calc(-70*var(--u)) calc(-110*var(--u));border-radius:50%;
+  background:radial-gradient(closest-side,rgba(5,9,26,.5),rgba(5,9,26,.2) 60%,rgba(5,9,26,0));pointer-events:none}
+.sig .logo{display:flex;flex-direction:column;align-items:flex-end;text-decoration:none;color:inherit}
+.sig .m{font-family:"Metron Serif","Cormorant Garamond",Garamond,serif;font-weight:600;font-size:calc(97 * var(--u));line-height:calc(84*var(--u));letter-spacing:-0.062em;margin-left:calc(-3*var(--u))}
+.sig .s{font-family:"Metron Serif","Cormorant Garamond",Garamond,serif;font-weight:600;font-size:calc(32 * var(--u));line-height:calc(30*var(--u));letter-spacing:.005em;margin-top:calc(2*var(--u))}
+.sig .bar{width:calc(3*var(--u));background:rgba(255,255,255,.95);margin:calc(8*var(--u)) calc(38*var(--u)) calc(-2*var(--u)) calc(24*var(--u));
+  box-shadow:0 calc(2*var(--u)) calc(8*var(--u)) rgba(0,0,0,.45);transform-origin:50% 0}
+.sig .txt{display:flex;flex-direction:column;justify-content:flex-start;font-family:"Metron Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:calc(49*var(--u));line-height:calc(62*var(--u));padding-top:calc(10*var(--u));white-space:nowrap}
+.sig .txt .o{font-weight:400}
+.sig .txt b{font-weight:700;letter-spacing:var(--bls,.034em)}
+@media (orientation:portrait){
+  .sig{--rw:max(100cqw, calc(100cqh * .5626));--u:min(calc(var(--rw) / 1600 * 1.223), calc(100cqw / 1180));left:calc((100cqw - var(--rw)) / 2 + var(--rw) * .513);top:calc(var(--rw) * 2588 / 1600);transform:translateX(-50%)}
+  .sig.ned{left:50%}
+  .sig .txt{font-size:calc(41.8*var(--u));line-height:calc(54.5*var(--u));padding-top:calc(11*var(--u))}
+  .sig .bar{margin-bottom:calc(-12*var(--u))}
+}
+/* light artwork (Immune): softer, more natural protection */
+.keyart.soft .cta::before,.keyart.soft .pager::before,.keyart.soft .sig::before{background:radial-gradient(closest-side,rgba(40,44,56,.2),rgba(40,44,56,.08) 60%,rgba(40,44,56,0));filter:blur(6px)}
+.keyart.soft .cta,.keyart.soft .pager,.keyart.soft .sig{text-shadow:0 1px 6px rgba(0,0,0,.35),0 0 1px rgba(0,0,0,.25)}
+/* subtle life: the signature re-signs each project */
+.sig.enter .m{animation:sigIn .9s var(--ease) both}
+.sig.enter .s{animation:sigIn .9s var(--ease) .1s both}
+.sig.enter .bar{animation:sigBar .8s var(--ease) .15s both}
+.sig.enter .txt>*{animation:sigTxt .8s var(--ease) .3s both}
+.sig.enter .txt>*+*{animation-delay:.42s}
+@keyframes sigIn{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:none}}
+@keyframes sigBar{from{transform:scaleY(0)}to{transform:none}}
+@keyframes sigTxt{from{opacity:0;transform:translateX(-.5em)}to{opacity:1;transform:none}}
+.sig .logo:hover .m,.sig .logo:hover .s{text-shadow:0 calc(3*var(--u)) calc(10*var(--u)) rgba(0,0,0,.6),0 0 calc(18*var(--u)) rgba(255,240,210,.45)}
+@media (prefers-reduced-motion:reduce){.sig.enter *,.tick.is-active i{animation:none!important}.tick.is-active i{width:100%}}
+
+/* ---------- Metron Publishing ---------- */
+.books{color:#f2ede2;background:radial-gradient(120% 70% at 50% 0%,#0b1230 0%,#05091a 60%);padding:clamp(64px,9vw,120px) 6% clamp(80px,10vw,130px)}
+.books-header{max-width:1400px;margin:0 auto clamp(40px,5vw,64px);text-align:center}
+.books-title{letter-spacing:.08em;text-transform:uppercase;color:#f2ede2;margin:0;font-size:clamp(24px,4vw,34px);font-weight:700}
+.books-subtitle{color:#f2ede2;opacity:.65;margin:8px 0 0;font-size:clamp(14px,2vw,18px)}
+.books-header .rule{display:block;width:56px;height:1px;margin:22px auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+.shelf{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) 1px minmax(0,1fr);column-gap:clamp(16px,2vw,30px);row-gap:0;align-items:start}
+.series,.series .grid{display:contents}
+.series-head{grid-row:1;grid-column:1/7;display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 24px;padding-bottom:14px;border-bottom:1px solid rgba(242,237,226,.12);min-width:0}
+.solo .series-head{grid-column:8/9;flex-direction:column;align-items:flex-start;gap:4px}
+.series-name{margin:0;font-family:Cinzel,serif;font-weight:400;font-size:clamp(18px,1.9vw,24px);letter-spacing:.22em;color:#f2ede2}
+.series-by{margin:0;font-size:12px;opacity:.6;letter-spacing:.02em;max-width:100%}
+.divider{grid-column:7;grid-row:1/3;width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,rgba(242,237,226,.16) 20%,rgba(242,237,226,.16) 80%,transparent)}
+.book{grid-row:2;margin:0;display:flex;flex-direction:column;min-width:0}
+.solo .book{grid-column:8}
+.cover{position:relative;display:block;border-radius:2px;perspective:900px}
+.cover img{width:100%;height:auto;display:block;border-radius:2px;box-shadow:0 14px 26px -10px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.4);
+  transition:transform .55s var(--ease),box-shadow .55s var(--ease);transform-origin:left center}
+.cover::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:2px;
+  background:linear-gradient(90deg,rgba(0,0,0,.35) 0%,rgba(255,255,255,.14) 2.4%,rgba(0,0,0,.08) 5%,transparent 9%);transform-origin:left center;transition:transform .55s var(--ease)}
+.book:hover .cover img,.cover:focus-visible img{transform:translateY(-8px) rotateY(-7deg);box-shadow:18px 26px 34px -14px rgba(0,0,0,.85),0 2px 6px rgba(0,0,0,.4)}
+.book:hover .cover::before{transform:translateY(-8px) rotateY(-7deg)}
+.cover:focus-visible{outline:2px solid #f2ede2d9;outline-offset:4px}
+.meta{margin-top:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.book-caption-title{color:#f2ede2;margin:0;font-size:14px;font-weight:600;line-height:1.3}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.book-caption-tag{color:#f2ede2;letter-spacing:.02em;white-space:nowrap;background:#f2ede21a;border-radius:999px;padding:2px 10px;font-size:11px;display:inline-block}
+.book-caption-tag--coming{color:#d6c79c;background:transparent;border:1px solid rgba(214,199,156,.45)}
+.buy{margin-top:4px;display:inline-flex;align-items:center;gap:.5em;align-self:flex-start;color:var(--gold);text-decoration:none;white-space:nowrap;
+  font-family:Cinzel,serif;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(217,192,138,.35);padding-bottom:3px;transition:color .3s,border-color .3s}
+.buy::after{content:"→";letter-spacing:0;transition:transform .3s var(--ease)}
+.buy:hover,.buy:focus-visible{color:#f6e7c4;border-color:#f6e7c4;outline:none}
+.buy:hover::after{transform:translateX(3px)}
+
+@media (max-width:1100px){
+  .shelf{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .series,.series .grid{display:block}
+  .series{grid-column:1/-1}
+  .series .grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(16px,2vw,30px)}
+  .solo{margin-top:56px}
+  .solo .grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .solo .book,.book{grid-row:auto;grid-column:auto}
+  .series-head{grid-column:auto}
+  .solo .series-head{flex-direction:row;align-items:baseline}
+  .divider{display:none}
+}
+@media (max-width:760px){
+  .series-head,.solo .series-head{flex-direction:column;align-items:stretch;gap:6px}
+  .series .grid,.solo .grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:18px;margin:0 -6vw;padding:4px 6vw 18px;scroll-padding-inline:6vw;scrollbar-width:none}
+  .series .grid::-webkit-scrollbar{display:none}
+  .series .book{flex:0 0 40vw;scroll-snap-align:start}
+}
+
+.site-footer{color:#f2ede2;text-align:center;background-color:#05091a;border-top:1px solid #f2ede224;padding:32px 6% 40px}
+.site-footer-brand{letter-spacing:.16em;text-transform:uppercase;margin:0;font-size:13px;font-weight:700}
+.site-footer-links{margin:14px 0 0;font-size:13px}
+.site-footer-links a{color:#f2ede2;border-bottom:1px solid #f2ede266;text-decoration:none;transition:border-color .2s,opacity .2s}
+.site-footer-links a:hover,.site-footer-links a:focus-visible{border-color:#f2ede2e6}
+.site-footer-sep{opacity:.5;margin:0 10px}
+.site-footer-copy{opacity:.5;margin:18px 0 0;font-size:11px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="keyart-wrap">
+  <div class="keyart" role="region" aria-roledescription="carousel" aria-label="Metron Showrunners key art">
+    <div class="slide" data-slide="0" data-l1="Original" data-l2="Horror Feature Film" data-title="Laya" role="group" aria-roledescription="slide" aria-label="1 of 7: Laya"
+         data-cta="Watch Teaser" data-href="https://youtu.be/bXL5xmmQPys" data-lightbox="1" data-aria="Play the Laya teaser">
+      <picture><source media="(orientation: portrait)" srcset="images/laya-keyart-portrait.jpg?v=8"><img src="images/laya-keyart.jpg?v=8" alt="Laya — For love, she embraced eternity and relinquished her humanity. A Metron Showrunners Original Feature Film. Coming soon." class="keyart-img"></picture>
+    </div>
+    <div class="slide is-active" data-slide="1" data-l1="Original" data-l2="Drama Limited Series" data-title="Inter/Sessions" role="group" aria-roledescription="slide" aria-label="2 of 7: Inter/Sessions" data-cta="Coming Soon">
+      <picture><source media="(orientation: portrait)" srcset="images/intersessions-keyart-portrait.jpg?v=8"><img src="images/intersessions-keyart.jpg?v=8" alt="Inter/Sessions — No one stands alone. A Metron Showrunners Original Limited Series. Coming soon." class="keyart-img"></picture>
+    </div>
+    <div class="slide" data-slide="2" data-l1="Original" data-l2="Epic Thriller Series" data-title="Hybris" role="group" aria-roledescription="slide" aria-label="3 of 7: Hybris"
+         data-cta="View Project" data-href="https://files.hybris.world/" data-aria="Hybris Project — access the materials">
+      <picture><source media="(orientation: portrait)" srcset="images/hybris-keyart-portrait.jpg?v=8"><img src="images/hybris-keyart.jpg?v=8" alt="Hybris — An Ancient Conflict, Reimagined. A Metron Showrunners Original Epic Drama Series." class="keyart-img"></picture>
+    </div>
+    <div class="slide" data-slide="3" data-l1="Original" data-l2="Comedy Feature Film" data-title="Adorable Mrs. Steele" role="group" aria-roledescription="slide" aria-label="4 of 7: Adorable Mrs. Steele" data-cta="Coming Soon">
+      <picture><source media="(orientation: portrait)" srcset="images/mrs-steele-keyart-portrait.jpg?v=8"><img src="images/mrs-steele-keyart.jpg?v=8" alt="Adorable Mrs. Steele. A Metron Showrunners Original Comedy Feature Film. Coming soon." class="keyart-img"></picture>
+    </div>
+    <div class="slide" data-slide="4" data-l1="Original" data-l2="One-Minute Film" data-l2p="Dark Comedy One-Minute Film" data-title="Not Even Death" role="group" aria-roledescription="slide" aria-label="5 of 7: Not Even Death"
+         data-cta="View Script" data-href="https://files-ned.metronshowrunners.com/" data-aria="Not Even Death — view the script" data-ned="1">
+      <picture><source media="(orientation: portrait)" srcset="images/not-even-death-keyart-portrait.jpg?v=8"><img src="images/not-even-death-keyart.jpg?v=8" alt="Not Even Death — someone had to give up. A Metron Showrunners Original One-Minute Film." class="keyart-img is-ned"></picture>
+    </div>
+    <div class="slide" data-slide="5" data-l1="Original" data-l2="Vertical Short Film" data-title="Cell Phone" role="group" aria-roledescription="slide" aria-label="6 of 7: Cell Phone" data-cta="Coming Soon">
+      <picture><source media="(orientation: portrait)" srcset="images/cell-phone-keyart-portrait.jpg?v=8"><img src="images/cell-phone-keyart.jpg?v=8" alt="Cell Phone — you're free to go. A Metron Showrunners Original Vertical Mobile Film. Coming soon." class="keyart-img"></picture>
+    </div>
+    <div class="slide" data-slide="6" data-l1="Original <b>Anthology</b>" data-l2="Limited Series" data-title="Immune" role="group" aria-roledescription="slide" aria-label="7 of 7: Immune" data-cta="Coming Soon" data-soft="1">
+      <picture><source media="(orientation: portrait)" srcset="images/immune-keyart-portrait.jpg?v=8"><img src="images/immune-keyart.jpg?v=8" alt="Immune — You think you're above it. You're not. A Metron Showrunners Original Anthology Limited Series. Coming soon." class="keyart-img"></picture>
+    </div>
+
+    <a class="cta" id="cta" aria-live="polite"><span class="rule" aria-hidden="true"></span><span class="lbl">Coming Soon</span><span class="rule r2" aria-hidden="true"></span></a>
+
+    <div class="sig" id="sig" aria-hidden="true"><span class="logo"><span class="m">METRON</span><span class="s">SHOWRUNNERS</span></span><span class="bar"></span><span class="txt"><span class="l1"><span class="o">Original</span></span><b class="l2">Drama Limited Series</b></span></div>
+
+    <nav class="pager" aria-label="Choose key art">
+      <div class="pager-top">
+        <button type="button" class="step" data-nav="prev" aria-label="Previous key art"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button>
+        <span class="count" aria-live="polite"><span class="now" id="now">02</span><span class="of">/ 07</span></span>
+        <button type="button" class="step" data-nav="next" aria-label="Next key art"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
+      </div>
+      <div class="ticks" role="tablist"><button type="button" class="tick" data-dot="0" role="tab" aria-selected="false" aria-label="Show slide 1: Laya"><i></i></button><button type="button" class="tick is-active" data-dot="1" role="tab" aria-selected="true" aria-label="Show slide 2: Inter/Sessions"><i></i></button><button type="button" class="tick" data-dot="2" role="tab" aria-selected="false" aria-label="Show slide 3: Hybris"><i></i></button><button type="button" class="tick" data-dot="3" role="tab" aria-selected="false" aria-label="Show slide 4: Adorable Mrs. Steele"><i></i></button><button type="button" class="tick" data-dot="4" role="tab" aria-selected="false" aria-label="Show slide 5: Not Even Death"><i></i></button><button type="button" class="tick" data-dot="5" role="tab" aria-selected="false" aria-label="Show slide 6: Cell Phone"><i></i></button><button type="button" class="tick" data-dot="6" role="tab" aria-selected="false" aria-label="Show slide 7: Immune"><i></i></button></div>
+    </nav>
+  </div>
+  </div>
+</main>
+
+<section class="books" aria-labelledby="books-title">
+  <div class="books-header">
+    <h2 id="books-title" class="books-title">Metron Publishing</h2>
+    <p class="books-subtitle">Stories beyond the screen.</p>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+
+  <div class="shelf">
+    <div class="series">
+      <div class="series-head">
+        <h3 class="series-name">HYBRIS</h3>
+        <p class="series-by">By Julio Camacho and Guilherme Schlogel · Adapted by Rafael Doyle</p>
+      </div>
+      <div class="grid">
+        <figure class="book">
+          <a class="cover" href="https://a.co/d/074VoWqo" target="_blank" rel="noopener noreferrer" aria-label="Buy Hybris, Book 1: Melissa's Story — opens in a new window"><img src="images/books/hybris-livro-1-melissa.jpg?v=1" alt="Hybris, Book 1: Melissa's Story — inspired by the myth of Medusa. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></a>
+          <figcaption class="meta"><p class="book-caption-title">Book 1: Melissa's Story</p>
+            <div class="tags"><span class="book-caption-tag">Medusa Myth</span><span class="book-caption-tag">2024</span></div>
+            <a class="buy" href="https://a.co/d/074VoWqo" target="_blank" rel="noopener noreferrer">Buy on Amazon</a></figcaption>
+        </figure>
+        <figure class="book">
+          <a class="cover" href="https://a.co/d/0gX00Jsc" target="_blank" rel="noopener noreferrer" aria-label="Buy Hybris, Book 2: Peter's Story — opens in a new window"><img src="images/books/hybris-livro-2-peter.jpg?v=1" alt="Hybris, Book 2: Peter's Story — inspired by the myth of Perseus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></a>
+          <figcaption class="meta"><p class="book-caption-title">Book 2: Peter's Story</p>
+            <div class="tags"><span class="book-caption-tag">Perseus Myth</span><span class="book-caption-tag">2025</span></div>
+            <a class="buy" href="https://a.co/d/0gX00Jsc" target="_blank" rel="noopener noreferrer">Buy on Amazon</a></figcaption>
+        </figure>
+        <figure class="book">
+          <a class="cover" href="https://a.co/d/04kTKcmm" target="_blank" rel="noopener noreferrer" aria-label="Buy Hybris, Book 3: Matthew's Story — opens in a new window"><img src="images/books/hybris-livro-3-matthew.jpg?v=1" alt="Hybris, Book 3: Matthew's Story — inspired by the myth of Midas. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></a>
+          <figcaption class="meta"><p class="book-caption-title">Book 3: Matthew's Story</p>
+            <div class="tags"><span class="book-caption-tag">Midas Myth</span><span class="book-caption-tag">2026</span></div>
+            <a class="buy" href="https://a.co/d/04kTKcmm" target="_blank" rel="noopener noreferrer">Buy on Amazon</a></figcaption>
+        </figure>
+        <figure class="book">
+          <span class="cover"><img src="images/books/hybris-livro-4-neville.jpg?v=1" alt="Hybris, Book 4: Neville's Story — inspired by the myth of Narcissus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></span>
+          <figcaption class="meta"><p class="book-caption-title">Book 4: Neville's Story</p>
+            <div class="tags"><span class="book-caption-tag">Narcissus Myth</span><span class="book-caption-tag book-caption-tag--coming">Coming October 2026</span></div></figcaption>
+        </figure>
+        <figure class="book">
+          <span class="cover"><img src="images/books/hybris-livro-5-benedict.jpg?v=1" alt="Hybris, Book 5: Benedict's Story — inspired by the myth of Bellerophon. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></span>
+          <figcaption class="meta"><p class="book-caption-title">Book 5: Benedict's Story</p>
+            <div class="tags"><span class="book-caption-tag">Bellerophon Myth</span><span class="book-caption-tag book-caption-tag--coming">Coming March 2027</span></div></figcaption>
+        </figure>
+        <figure class="book">
+          <span class="cover"><img src="images/books/hybris-livro-6-theo.jpg?v=1" alt="Hybris, Book 6: Theo's Story — inspired by a myth of Zeus. By Julio Camacho and Guilherme Schlogel, adapted by Rafael Doyle. Metron Publishing." loading="lazy" width="900" height="1414"></span>
+          <figcaption class="meta"><p class="book-caption-title">Book 6: Theo's Story</p>
+            <div class="tags"><span class="book-caption-tag">Zeus Myth</span><span class="book-caption-tag book-caption-tag--coming">Coming October 2027</span></div></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <span class="divider" aria-hidden="true"></span>
+
+    <div class="series solo">
+      <div class="series-head">
+        <h3 class="series-name">LAYA</h3>
+        <p class="series-by">By Julio Camacho</p>
+      </div>
+      <div class="grid">
+        <figure class="book">
+          <span class="cover"><img src="images/books/laya-livro.jpg?v=1" alt="Laya, by Julio Camacho. Metron Publishing." loading="lazy" width="900" height="1414"></span>
+          <figcaption class="meta"><p class="book-caption-title">Laya</p>
+            <div class="tags"><span class="book-caption-tag book-caption-tag--coming">Coming 2027</span></div></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p class="site-footer-brand">Metron Showrunners</p>
+  <nav class="site-footer-links" aria-label="Project links">
+    <a href="https://youtu.be/bXL5xmmQPys" class="glightbox">Laya Trailer</a><span class="site-footer-sep" aria-hidden="true">·</span><a href="https://files.hybris.world/">Hybris Project</a><span class="site-footer-sep" aria-hidden="true">·</span><a href="https://files-ned.metronshowrunners.com/">Not Even Death Script</a>
+  </nav>
+  <p class="site-footer-copy">© 2026 Metron Showrunners. All rights reserved.</p>
+</footer>
+
+<script src="assets/glightbox.min.js"></script>
+<script>
+(() => {
+  const slides = [...document.querySelectorAll('.slide')], ticks = [...document.querySelectorAll('.tick')];
+  const cta = document.getElementById('cta'), lbl = cta.querySelector('.lbl');
+  const sig = document.getElementById('sig'), l1 = sig.querySelector('.l1'), l2 = sig.querySelector('.l2');
+  const now = document.getElementById('now');
+  const stage = document.querySelector('.keyart');
+  const portrait = matchMedia('(orientation: portrait)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, INTERVAL = 6000;
+  document.documentElement.style.setProperty('--dur', INTERVAL + 'ms');
+  let cur = 1, timer, paused = false;
+  const lightbox = typeof GLightbox === 'function' ? GLightbox({ selector: '.glightbox' }) : null;
+  const teaser = typeof GLightbox === 'function' ? GLightbox({ elements: [{ href: 'https://youtu.be/bXL5xmmQPys', type: 'video' }] }) : null;
+  const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+
+  const paintSig = () => {
+    const d = slides[cur].dataset;
+    l1.innerHTML = '<span class="o">' + d.l1.replace('<b>', '</span><b>') + (d.l1.includes('<b>') ? '' : '</span>');
+    l2.textContent = (portrait.matches && d.l2p) ? d.l2p : d.l2;
+    sig.classList.toggle('ned', !!d.ned);
+  };
+  portrait.addEventListener('change', paintSig);
+
+  const setCta = s => {
+    const d = s.dataset;
+    cta.classList.add('swap');
+    setTimeout(() => {
+      lbl.textContent = d.cta;
+      if (d.href) { cta.href = d.href; cta.setAttribute('aria-label', d.aria || d.cta); cta.dataset.lightbox = d.lightbox ? '1' : ''; cta.removeAttribute('aria-disabled'); }
+      else { cta.removeAttribute('href'); cta.removeAttribute('aria-label'); cta.setAttribute('aria-disabled', 'true'); cta.dataset.lightbox = ''; }
+      cta.classList.remove('swap', 'enter'); void cta.offsetWidth; cta.classList.add('enter');
+    }, reduce ? 0 : 280);
+  };
+  cta.addEventListener('click', e => { if (cta.dataset.lightbox && teaser) { e.preventDefault(); teaser.open(); } });
+
+  const go = n => {
+    cur = (n + slides.length) % slides.length;
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === cur));
+    ticks.forEach((t, i) => {
+      t.classList.toggle('done', i < cur);
+      t.setAttribute('aria-selected', String(i === cur));
+      t.classList.remove('is-active');
+    });
+    void ticks[cur].offsetWidth; ticks[cur].classList.add('is-active');
+    ticks[cur].classList.toggle('paused', paused);
+    now.textContent = String(cur + 1).padStart(2, '0');
+    setCta(slides[cur]);
+    stage.classList.toggle('soft', !!slides[cur].dataset.soft);
+    paintSig(); replay(sig, 'enter');
+  };
+  const play = () => { clearInterval(timer); if (reduce || paused || slides.length < 2) return; timer = setInterval(() => go(cur + 1), INTERVAL); };
+  const hold = on => { paused = on; ticks[cur].classList.toggle('paused', on); if (on) clearInterval(timer); else { replay(ticks[cur], 'is-active'); play(); } };
+
+  ticks.forEach((t, i) => t.addEventListener('click', () => { go(i); play(); }));
+  document.querySelector('[data-nav="prev"]').addEventListener('click', () => { go(cur - 1); play(); });
+  document.querySelector('[data-nav="next"]').addEventListener('click', () => { go(cur + 1); play(); });
+  // keyboard and swipe
+  addEventListener('keydown', e => {
+    if (e.target.closest('input,textarea') || document.querySelector('.glightbox-open')) return;
+    if (e.key === 'ArrowRight') { go(cur + 1); play(); } else if (e.key === 'ArrowLeft') { go(cur - 1); play(); }
+  });
+  let x0 = null;
+  stage.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) { go(cur + (dx < 0 ? 1 : -1)); play(); } }, { passive: true });
+  // pause while the visitor is reading the button or the index
+  [cta, document.querySelector('.pager')].forEach(el => { el.addEventListener('mouseenter', () => hold(true)); el.addEventListener('mouseleave', () => hold(false)); });
+  [lightbox, teaser].forEach(b => { if (b) { b.on('open', () => clearInterval(timer)); b.on('close', play); } });
+  go(cur); play();
+})();
+</script>
+</body>
+</html>
