@@ -1,16 +1,12 @@
 {
   "name": "metron-hotsite-beta",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "test": "astro build && astro preview --background && playwright test",
-    "test:stop": "astro preview stop"
-  },
-  "dependencies": {
-    "astro": "^7.2.0"
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/preview.mjs",
+    "test": "node scripts/build.mjs && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

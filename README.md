@@ -9,15 +9,16 @@ Technical details and working rules in [`AGENTS.md`](AGENTS.md).
 
 ## The site
 
-A single page: the Hybris key art full-screen, with the cream footer bar
-linking to [`files.hybris.world`](https://files.hybris.world) — the index
-of the series' materials, with access-code gating. That index lives in
-another repository
+Plain static files in `public/`, no framework. The home is a key-art
+carousel of the Metron Showrunners projects plus the Metron Publishing
+shelf; `/hybris/` is a standalone Hybris page with its series bible. The
+Hybris project link goes to [`files.hybris.world`](https://files.hybris.world),
+which lives in another repository
 ([`thluiz/files-hybris-world`](https://github.com/thluiz/files-hybris-world)).
 
 ## Flow
 
-1. Edit `src/` and `public/`, commit and push to `main`.
+1. Edit `public/`, run `npm test`, commit and push to `main`.
 2. The deploy publishes to `metron-beta.hybris.world`. Check it there.
 3. For production, run **Promote**.
 
@@ -35,13 +36,13 @@ one first — both touch `package-lock.json`.
 
 ## Stack
 
-Astro 4 (static) · Cloudflare Pages (project `metron-hotsite-beta`)
+Static HTML · Cloudflare Pages (project `metron-hotsite-beta`)
 
 ```bash
 npm install
-npm run dev
-npm run build
-npm run preview
+npm run build     # public/ → dist/
+npm run preview   # serves dist/ on :4321
+npm test          # build + Playwright
 ```
 
 ## Deploy

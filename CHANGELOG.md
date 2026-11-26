@@ -7,6 +7,37 @@ The 2026-08-12 → 2026-09-20 entries were reconstructed from git history on
 grouped by commit date; anything not evident from the commits themselves was
 left out rather than guessed at.
 
+## 2026-11-26
+
+### Changed
+- The home is now the static page first published at `/hotsite/`
+  (`public/index.html`): new key-art carousel with an HTML call-to-action,
+  numbered pager and METRON signature, Metron Publishing shelf and footer.
+  The key art files were replaced by the new versions, without the buttons
+  printed on them.
+- `/hotsite` and `/hotsite/*` now redirect (301) to the home via
+  `public/_redirects`. `/hotsite.zip` stays.
+
+### Removed
+- Astro: `src/`, `astro.config.mjs`, `tailwind.config.mjs`, `tsconfig.json`
+  and the `astro` dependency. `npm run build` now just copies `public/` to
+  `dist/`; `npm run preview` is a small Node server mimicking Cloudflare
+  Pages. The unused Cinzel `.otf` fonts went too.
+- Laya's **View Project** button and the "Laya Project" footer link (added
+  2026-11-09) are not in the new page.
+
+### Tests
+- `seed.spec.ts` rewritten for the new home: assets and images, the
+  starting slide, CTA per slide, teaser lightbox, arrows, book shelf, the
+  `/hotsite` redirect, and `/hybris/` with its series bible. Playwright
+  now starts the preview server itself.
+
+## 2026-11-24
+
+### Added
+- Static pages at `/hotsite/` and `/hybris/` (with `series-bible.html`), and
+  the `hotsite.zip` / `hybris.zip` download packages.
+
 ## 2026-11-09
 
 ### Added

@@ -5,6 +5,13 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4321',
   },
+  // Serves dist/ (run `npm run build` first). Reuses a preview you already
+  // have running; otherwise starts one for the run.
+  webServer: {
+    command: 'node scripts/preview.mjs',
+    url: 'http://localhost:4321/',
+    reuseExistingServer: true,
+  },
   projects: [
     {
       name: 'iphone-12',

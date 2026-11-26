@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects. The home used to live at /hotsite/ (2026-11-24 to 2026-11-26).
+/hotsite    /         301
+/hotsite/*  /:splat   301
